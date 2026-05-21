@@ -6,11 +6,11 @@ import type {
   BottomTabBarProps,
 } from '@react-navigation/bottom-tabs';
 
-import HomeScreen    from '../screens/kid/HomeScreen';
-import DiaryScreen   from '../screens/kid/DiaryScreen';
-import GamesScreen   from '../screens/kid/GamesScreen';
-import LearnScreen   from '../screens/kid/LearnScreen';
-import StoreScreen   from '../screens/kid/StoreScreen';
+import HomeScreen          from '../screens/kid/HomeScreen';
+import DiaryStackNavigator from './DiaryStackNavigator';
+import GamesScreen         from '../screens/kid/GamesScreen';
+import LearnScreen         from '../screens/kid/LearnScreen';
+import StoreScreen         from '../screens/kid/StoreScreen';
 
 import PlimIcon, { type IconName } from '../components/ui/PlimIcon';
 import { defaultPalette } from '../theme/palettes';
@@ -104,7 +104,7 @@ export default function KidTabNavigator() {
       screenOptions={{ headerShown: false }}
     >
       <Tab.Screen name="Home"  component={HomeScreen} />
-      <Tab.Screen name="Diary" component={DiaryScreen} />
+      <Tab.Screen name="Diary" component={DiaryStackNavigator} />
       <Tab.Screen name="Games" component={GamesScreen} />
       <Tab.Screen name="Learn" component={LearnScreen} />
       <Tab.Screen name="Store" component={StoreScreen} />

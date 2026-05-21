@@ -22,9 +22,9 @@ export interface KidProfile {
 }
 
 export type DiaryEntry =
-  | { type: 'mic'; time: Date; amount: 1 | 2 | 3; color: 'c1' | 'c2' | 'c3' | 'c4' | 'c5'; trigger?: string }
-  | { type: 'evac'; time: Date; bristol: 1 | 2 | 3 | 4 | 5 | 6 | 7; amount: 'pouco' | 'medio' | 'muito' }
-  | { type: 'inc'; time: Date; note?: string };
+  | { id: string; type: 'mic'; createdAt: string; cups: number; color: string; triggers: string[]; note: string }
+  | { id: string; type: 'evac'; createdAt: string; bristol: 1 | 2 | 3 | 4 | 5 | 6 | 7; poopSize: string; note: string }
+  | { id: string; type: 'inc'; createdAt: string; note?: string };
 
 export interface Alarm {
   id: string;
@@ -113,6 +113,7 @@ interface AppState {
   redemptions: Redemption[];
   savingFor: string | null;
   earnStars: (n: number) => void;
+  addStars: (n: number) => void;
   redeemReward: (id: string) => void;
   addReward: (r: Reward) => void;
   deleteReward: (id: string) => void;
@@ -154,6 +155,7 @@ export const useAppStore = create<AppState>((set) => ({
   redemptions: [],
   savingFor: null,
   earnStars: (n) => set((s) => ({ stars: s.stars + n })),
+  addStars: (n) => set((s) => ({ stars: s.stars + n })),
   redeemReward: (id) =>
     set((s) => {
       const reward = s.rewards.find((r) => r.id === id);

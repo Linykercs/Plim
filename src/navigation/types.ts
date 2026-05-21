@@ -14,6 +14,12 @@ export type KidTabParamList = {
   Store: undefined;
 };
 
+export type DiaryStackParamList = {
+  DiaryMenu: undefined;
+  DiaryMic: undefined;
+  DiaryEvac: undefined;
+};
+
 export type ParentTabParamList = {
   Overview: undefined;
   Diary: undefined;
