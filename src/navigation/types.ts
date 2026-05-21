@@ -14,6 +14,13 @@ export type KidTabParamList = {
   Store: undefined;
 };
 
+export type GamesStackParamList = {
+  GamesHub: undefined;
+  RocketGame: undefined;
+  BalloonGame: undefined;
+  FrogGame: undefined;
+};
+
 export type DiaryStackParamList = {
   DiaryMenu: undefined;
   DiaryMic: undefined;
