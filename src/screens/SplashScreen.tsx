@@ -16,6 +16,7 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import PlimLogo from '../components/mascot/PlimLogo';
 import { defaultPalette } from '../theme/palettes';
 import { fontFamily, fontSize } from '../theme/typography';
+import { useAppStore } from '../store/useAppStore';
 import type { RootStackParamList } from '../navigation/types';
 
 const { width, height } = Dimensions.get('window');
@@ -79,6 +80,7 @@ interface Props {
 
 export default function SplashScreen({ navigation }: Props) {
   const theme = defaultPalette;
+  const hasOnboarded = useAppStore((s) => s.hasOnboarded);
 
   const logoScale = useSharedValue(0.4);
   const logoTranslateY = useSharedValue(40);
@@ -97,9 +99,9 @@ export default function SplashScreen({ navigation }: Props) {
       withTiming(1, { duration: 600, easing: Easing.out(Easing.ease) }),
     );
 
-    // Auto-navigate after 2400ms
+    // Auto-navigate after 2400ms — Onboarding on first launch, ProfileSelect after
     const timer = setTimeout(() => {
-      navigation.replace('ProfileSelect');
+      navigation.replace(hasOnboarded ? 'ProfileSelect' : 'Onboarding');
     }, 2400);
 
     return () => clearTimeout(timer);
