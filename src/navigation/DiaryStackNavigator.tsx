@@ -2,8 +2,9 @@ import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import type { DiaryStackParamList } from './types';
 import DiaryMenuScreen from '../screens/kid/DiaryMenuScreen';
-import DiaryMicScreen from '../screens/kid/DiaryMicScreen';
+import DiaryMicScreen  from '../screens/kid/DiaryMicScreen';
 import DiaryEvacScreen from '../screens/kid/DiaryEvacScreen';
+import AlarmsScreen    from '../screens/kid/AlarmsScreen';
 
 const Stack = createNativeStackNavigator<DiaryStackParamList>();
 
@@ -13,6 +14,7 @@ export default function DiaryStackNavigator() {
       <Stack.Screen name="DiaryMenu" component={DiaryMenuScreen} />
       <Stack.Screen name="DiaryMic"  component={DiaryMicScreen} />
       <Stack.Screen name="DiaryEvac" component={DiaryEvacScreen} />
+      <Stack.Screen name="Alarms"    component={AlarmsScreen} />
     </Stack.Navigator>
   );
 }

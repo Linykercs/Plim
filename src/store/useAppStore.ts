@@ -127,6 +127,7 @@ interface AppState {
   // alarms
   alarms: Alarm[];
   toggleAlarm: (id: string) => void;
+  updateAlarm: (id: string, patch: Partial<Pick<Alarm, 'time' | 'days' | 'label'>>) => void;
 
   // streak (consecutive days with at least one entry)
   streak: number;
@@ -189,6 +190,10 @@ export const useAppStore = create<AppState>((set) => ({
   toggleAlarm: (id) =>
     set((s) => ({
       alarms: s.alarms.map((a) => (a.id === id ? { ...a, on: !a.on } : a)),
+    })),
+  updateAlarm: (id, patch) =>
+    set((s) => ({
+      alarms: s.alarms.map((a) => (a.id === id ? { ...a, ...patch } : a)),
     })),
 
   streak: 0,

@@ -103,6 +103,7 @@ export default function DiaryMenuScreen() {
           <TouchableOpacity
             activeOpacity={0.85}
             style={[styles.wideCard, { borderColor: theme.accent, backgroundColor: theme.surface }]}
+            onPress={() => nav.navigate('Alarms')}
           >
             <View style={[styles.wideIconBox, { backgroundColor: theme.accent + '33' }]}>
               <PlimIcon name="bell" size={28} color={theme.accent} />

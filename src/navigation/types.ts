@@ -18,6 +18,7 @@ export type DiaryStackParamList = {
   DiaryMenu: undefined;
   DiaryMic: undefined;
   DiaryEvac: undefined;
+  Alarms: undefined;
 };
 
 export type ParentTabParamList = {
