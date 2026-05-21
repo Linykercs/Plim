@@ -49,13 +49,13 @@ export default function PlimLogo({
     return (
       <View style={styles.col}>
         <View style={{ width: badgeW, height: badgeH }}>
-          <Svg width={badgeW} height={badgeH} viewBox="0 0 110 130" style={StyleSheet.absoluteFillObject}>
+          <Svg width={badgeW} height={badgeH} viewBox="0 0 110 130" style={StyleSheet.absoluteFill}>
             <Path
               d="M 55 5 C 78 35 100 55 100 80 A 45 45 0 1 1 10 80 C 10 55 32 35 55 5 Z"
               fill={primary}
             />
           </Svg>
-          <View style={[StyleSheet.absoluteFillObject, styles.badgeInner]}>
+          <View style={[StyleSheet.absoluteFill, styles.badgeInner]}>
             <PlimMascot size={size * 0.72} mood="happy" primary="#FFF7EC" accent={accent} dark={textColor} />
           </View>
         </View>
