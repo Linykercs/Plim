@@ -6,7 +6,7 @@ import SplashScreen from '../screens/SplashScreen';
 import OnboardingScreen from '../screens/OnboardingScreen';
 import ProfileSelectScreen from '../screens/ProfileSelectScreen';
 import KidTabNavigator from './KidTabNavigator';
-import ParentTabsScreen from '../screens/ParentTabsScreen';
+import ParentTabNavigator from './ParentTabNavigator';
 import type { RootStackParamList } from './types';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -22,7 +22,7 @@ export default function RootNavigator() {
         <Stack.Screen name="Onboarding"    component={OnboardingScreen} />
         <Stack.Screen name="ProfileSelect" component={ProfileSelectScreen} />
         <Stack.Screen name="KidTabs"       component={KidTabNavigator} />
-        <Stack.Screen name="ParentTabs"    component={ParentTabsScreen} />
+        <Stack.Screen name="ParentTabs"    component={ParentTabNavigator} />
       </Stack.Navigator>
     </NavigationContainer>
   );
