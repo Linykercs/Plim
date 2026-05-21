@@ -127,6 +127,10 @@ interface AppState {
   alarms: Alarm[];
   toggleAlarm: (id: string) => void;
 
+  // streak (consecutive days with at least one entry)
+  streak: number;
+  setStreak: (n: number) => void;
+
   // missions (reset at midnight — simplified: per-session)
   missionsDone: MissionsDone;
   completeMission: (key: keyof MissionsDone) => void;
@@ -184,6 +188,9 @@ export const useAppStore = create<AppState>((set) => ({
     set((s) => ({
       alarms: s.alarms.map((a) => (a.id === id ? { ...a, on: !a.on } : a)),
     })),
+
+  streak: 0,
+  setStreak: (n) => set({ streak: n }),
 
   missionsDone: { mic: false, water: false, game: false, learn: false },
   completeMission: (key) =>
