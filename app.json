@@ -1,25 +1,41 @@
 {
   "expo": {
-    "name": "plim",
+    "name": "Plim",
     "slug": "plim",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
+    "scheme": "plim",
+    "splash": {
+      "backgroundColor": "#5FCB8E",
+      "resizeMode": "contain",
+      "image": "./assets/icon.png"
+    },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": false,
+      "bundleIdentifier": "com.plim.app"
     },
     "android": {
+      "package": "com.plim.app",
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/android-icon-foreground.png",
-        "backgroundImage": "./assets/android-icon-background.png",
-        "monochromeImage": "./assets/android-icon-monochrome.png"
+        "backgroundColor": "#5FCB8E",
+        "foregroundImage": "./assets/android-icon-foreground.png"
       },
       "predictiveBackGestureEnabled": false
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#5FCB8E",
+          "image": "./assets/icon.png",
+          "imageWidth": 200
+        }
+      ]
+    ]
   }
 }
