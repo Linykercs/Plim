@@ -13,6 +13,8 @@
     "expo-font": "^56.0.5",
     "expo-linear-gradient": "~56.0.4",
     "expo-notifications": "~56.0.12",
+    "expo-print": "~14.0.3",
+    "expo-sharing": "~13.0.1",
     "expo-splash-screen": "~56.0.9",
     "expo-status-bar": "~56.0.4",
     "react": "19.2.3",
