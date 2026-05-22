@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import * as SplashScreen from 'expo-splash-screen';
@@ -12,8 +12,9 @@ import {
 } from '@expo-google-fonts/nunito';
 
 import RootNavigator from './src/navigation/RootNavigator';
+import { useAppStore } from './src/store/useAppStore';
+import { requestNotificationPermission, syncAllAlarms } from './src/services/notifications';
 
-// Keep native splash visible while fonts load
 SplashScreen.preventAutoHideAsync();
 
 export default function App() {
@@ -27,6 +28,18 @@ export default function App() {
     Nunito_800ExtraBold,
     Nunito_900Black,
   });
+
+  const alarms = useAppStore(s => s.alarms);
+  const checkAndResetMissions = useAppStore(s => s.checkAndResetMissions);
+
+  useEffect(() => {
+    // Request notification permission and sync alarms on first launch
+    requestNotificationPermission().then(granted => {
+      if (granted) syncAllAlarms(alarms);
+    });
+    // Reset daily missions if day changed
+    checkAndResetMissions();
+  }, []);
 
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded || fontError) {

@@ -16,7 +16,7 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import PlimLogo from '../components/mascot/PlimLogo';
 import { defaultPalette } from '../theme/palettes';
 import { fontFamily, fontSize } from '../theme/typography';
-import { useAppStore } from '../store/useAppStore';
+import { useAppStore , useTheme} from '../store/useAppStore';
 import type { RootStackParamList } from '../navigation/types';
 
 const { width, height } = Dimensions.get('window');
@@ -79,7 +79,7 @@ interface Props {
 }
 
 export default function SplashScreen({ navigation }: Props) {
-  const theme = defaultPalette;
+  const theme = useTheme();
   const hasOnboarded = useAppStore((s) => s.hasOnboarded);
 
   const logoScale = useSharedValue(0.4);

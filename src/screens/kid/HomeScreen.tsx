@@ -13,7 +13,7 @@ import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 
 import PlimMascot from '../../components/mascot/PlimMascot';
 import PlimIcon, { type IconName } from '../../components/ui/PlimIcon';
-import { useAppStore } from '../../store/useAppStore';
+import { useAppStore , useTheme} from '../../store/useAppStore';
 import { defaultPalette } from '../../theme/palettes';
 import { fontFamily, fontSize } from '../../theme/typography';
 import type { KidTabParamList } from '../../navigation/types';
@@ -63,7 +63,7 @@ function useNextAlarm() {
 
 // ─── Home screen ──────────────────────────────────────────────
 export default function HomeScreen({ navigation }: { navigation: Nav }) {
-  const theme = defaultPalette;
+  const theme = useTheme();
   const { profile, stars, streak, missionsDone, savingFor, rewards } = useAppStore();
 
   const missions: Mission[] = [

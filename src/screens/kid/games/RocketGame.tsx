@@ -9,7 +9,7 @@ import { useNavigation } from '@react-navigation/native';
 import { defaultPalette } from '../../../theme/palettes';
 import { spacing, radius } from '../../../theme/tokens';
 import { fontFamily, fontSize } from '../../../theme/typography';
-import { useAppStore } from '../../../store/useAppStore';
+import { useAppStore , useTheme} from '../../../store/useAppStore';
 import PlimIcon from '../../../components/ui/PlimIcon';
 
 const TOTAL_REPS = 8;
@@ -40,7 +40,7 @@ function RocketSvg({ flameOn }: { flameOn: boolean }) {
 }
 
 export default function RocketGame() {
-  const theme = defaultPalette;
+  const theme = useTheme();
   const insets = useSafeAreaInsets();
   const nav = useNavigation();
   const addStars = useAppStore(s => s.addStars);

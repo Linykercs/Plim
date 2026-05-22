@@ -8,7 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 import { defaultPalette } from '../../../theme/palettes';
 import { spacing } from '../../../theme/tokens';
 import { fontFamily, fontSize } from '../../../theme/typography';
-import { useAppStore } from '../../../store/useAppStore';
+import { useAppStore , useTheme} from '../../../store/useAppStore';
 import PlimMascot from '../../../components/mascot/PlimMascot';
 import PlimIcon from '../../../components/ui/PlimIcon';
 
@@ -17,7 +17,7 @@ const GAME_SECONDS = 30;
 const PAD_COUNT = 8;
 
 export default function FrogGame() {
-  const theme = defaultPalette;
+  const theme = useTheme();
   const insets = useSafeAreaInsets();
   const nav = useNavigation();
   const addStars = useAppStore(s => s.addStars);

@@ -15,9 +15,9 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import PlimMascot from '../components/mascot/PlimMascot';
 import PlimIcon, { type IconName } from '../components/ui/PlimIcon';
 import PlimButton from '../components/ui/PlimButton';
-import { defaultPalette, type Palette } from '../theme/palettes';
+import { type Palette } from '../theme/palettes';
 import { fontFamily, fontSize } from '../theme/typography';
-import { useAppStore, type KidCondition } from '../store/useAppStore';
+import { useAppStore, type KidCondition , useTheme} from '../store/useAppStore';
 import type { RootStackParamList } from '../navigation/types';
 
 // ─── Types ────────────────────────────────────────────────────
@@ -38,7 +38,7 @@ const AVATAR_COLORS = ['#5FCB8E', '#7DC9E8', '#FF8A7A', '#C497F0', '#FFCE5C', '#
 // ─── Main screen ──────────────────────────────────────────────
 
 export default function OnboardingScreen({ navigation }: { navigation: Nav }) {
-  const theme = defaultPalette;
+  const theme = useTheme();
   const { setProfile, setHasOnboarded } = useAppStore();
 
   const [step, setStep] = useState(0);

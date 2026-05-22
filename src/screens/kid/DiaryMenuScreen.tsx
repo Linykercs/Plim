@@ -9,7 +9,7 @@ import type { DiaryStackParamList } from '../../navigation/types';
 import { defaultPalette } from '../../theme/palettes';
 import { spacing, radius, shadow } from '../../theme/tokens';
 import { fontFamily, fontSize } from '../../theme/typography';
-import { useAppStore } from '../../store/useAppStore';
+import { useAppStore , useTheme} from '../../store/useAppStore';
 import PlimIcon from '../../components/ui/PlimIcon';
 
 type Nav = NativeStackNavigationProp<DiaryStackParamList>;
@@ -34,7 +34,7 @@ const URINE_COLORS: Record<string, string> = {
 };
 
 export default function DiaryMenuScreen() {
-  const theme = defaultPalette;
+  const theme = useTheme();
   const insets = useSafeAreaInsets();
   const nav = useNavigation<Nav>();
   const entries = useAppStore(s => s.entries);

@@ -5,7 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { defaultPalette } from '../../theme/palettes';
 import { spacing, radius, shadow } from '../../theme/tokens';
 import { fontFamily, fontSize } from '../../theme/typography';
-import { useAppStore } from '../../store/useAppStore';
+import { useAppStore , useTheme} from '../../store/useAppStore';
 
 const { width: SCREEN_W } = Dimensions.get('window');
 const CHART_W = SCREEN_W - spacing.md * 2 - spacing.md * 2; // card padding
@@ -34,7 +34,7 @@ function shortLabel(d: Date, days: number) {
 }
 
 export default function ChartScreen() {
-  const theme = defaultPalette;
+  const theme = useTheme();
   const insets = useSafeAreaInsets();
   const entries = useAppStore(s => s.entries);
   const [range, setRange] = useState<Range>('7d');

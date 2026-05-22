@@ -11,6 +11,7 @@ import { defaultPalette } from '../../theme/palettes';
 import { spacing, radius, shadow } from '../../theme/tokens';
 import { fontFamily, fontSize } from '../../theme/typography';
 import PlimIcon from '../../components/ui/PlimIcon';
+import { useTheme } from '../../store/useAppStore';
 
 // ─── Content ──────────────────────────────────────────────────
 
@@ -101,7 +102,7 @@ const PHASES = [
 ];
 
 function BreathingExercise() {
-  const theme = defaultPalette;
+  const theme = useTheme();
   const [running, setRunning] = useState(false);
   const [phaseIdx, setPhaseIdx] = useState(0);
   const scale = useSharedValue(1);
@@ -217,7 +218,7 @@ function BreathingExercise() {
 // ─── Main screen ──────────────────────────────────────────────
 
 export default function LearnScreen() {
-  const theme = defaultPalette;
+  const theme = useTheme();
   const insets = useSafeAreaInsets();
   const [active, setActive] = useState<Category>('postura');
   const activeCat = CATEGORIES.find(c => c.key === active)!;

@@ -7,8 +7,9 @@ import { useNavigation } from '@react-navigation/native';
 import { defaultPalette } from '../../theme/palettes';
 import { spacing, radius, shadow } from '../../theme/tokens';
 import { fontFamily, fontSize } from '../../theme/typography';
-import { useAppStore, type Alarm } from '../../store/useAppStore';
+import { useAppStore, type Alarm , useTheme} from '../../store/useAppStore';
 import PlimIcon from '../../components/ui/PlimIcon';
+import { scheduleAlarm, cancelAlarm } from '../../services/notifications';
 
 const DAYS_OPTIONS: Array<Alarm['days']> = ['todo dia', 'seg-sex', 'sab-dom'];
 const DAYS_LABELS: Record<Alarm['days'], string> = {
@@ -29,7 +30,7 @@ function fmtTime(h: number, m: number) {
 interface EditState { id: string; h: number; m: number; days: Alarm['days'] }
 
 export default function AlarmsScreen() {
-  const theme = defaultPalette;
+  const theme = useTheme();
   const insets = useSafeAreaInsets();
   const nav = useNavigation();
   const alarms = useAppStore(s => s.alarms);
@@ -48,10 +49,10 @@ export default function AlarmsScreen() {
 
   function saveEdit() {
     if (!editing) return;
-    updateAlarm(editing.id, {
-      time: fmtTime(editing.h, editing.m),
-      days: editing.days,
-    });
+    const patch = { time: fmtTime(editing.h, editing.m), days: editing.days };
+    updateAlarm(editing.id, patch);
+    const alarm = alarms.find(a => a.id === editing.id);
+    if (alarm?.on) scheduleAlarm({ ...alarm, ...patch });
     setEditing(null);
   }
 
@@ -85,7 +86,11 @@ export default function AlarmsScreen() {
           </Text>
           <Switch
             value={alarm.on}
-            onValueChange={() => toggleAlarm(alarm.id)}
+            onValueChange={() => {
+              toggleAlarm(alarm.id);
+              const updated = { ...alarm, on: !alarm.on };
+              if (updated.on) scheduleAlarm(updated); else cancelAlarm(alarm.id);
+            }}
             trackColor={{ false: theme.softBg2, true: theme.primary + '88' }}
             thumbColor={alarm.on ? theme.primary : '#ccc'}
           />

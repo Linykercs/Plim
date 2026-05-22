@@ -8,6 +8,7 @@ import { defaultPalette } from '../../theme/palettes';
 import { spacing, radius, shadow } from '../../theme/tokens';
 import { fontFamily, fontSize } from '../../theme/typography';
 import PlimIcon from '../../components/ui/PlimIcon';
+import { useTheme } from '../../store/useAppStore';
 
 type Nav = NativeStackNavigationProp<GamesStackParamList>;
 
@@ -45,7 +46,7 @@ const GAMES = [
 ];
 
 export default function GamesHubScreen() {
-  const theme = defaultPalette;
+  const theme = useTheme();
   const insets = useSafeAreaInsets();
   const nav = useNavigation<Nav>();
 

@@ -6,11 +6,11 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { defaultPalette } from '../../theme/palettes';
 import { spacing, radius, shadow } from '../../theme/tokens';
 import { fontFamily, fontSize } from '../../theme/typography';
-import { useAppStore, type Reward } from '../../store/useAppStore';
+import { useAppStore, type Reward , useTheme} from '../../store/useAppStore';
 import PlimIcon from '../../components/ui/PlimIcon';
 
 export default function StoreScreen() {
-  const theme = defaultPalette;
+  const theme = useTheme();
   const insets = useSafeAreaInsets();
   const stars = useAppStore(s => s.stars);
   const rewards = useAppStore(s => s.rewards);

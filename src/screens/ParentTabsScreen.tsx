@@ -2,10 +2,11 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { defaultPalette } from '../theme/palettes';
 import { fontFamily, fontSize } from '../theme/typography';
+import { useTheme } from '../store/useAppStore';
 
 // Placeholder — será substituído pelo bottom-tab navigator dos pais
 export default function ParentTabsScreen() {
-  const theme = defaultPalette;
+  const theme = useTheme();
   return (
     <View style={[styles.root, { backgroundColor: theme.bg }]}>
       <Text style={[styles.emoji]}>👨‍👩‍👧</Text>

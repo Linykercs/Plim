@@ -7,10 +7,11 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../../navigation/types';
+import { navigationRef } from '../../navigation/navigationRef';
 import { defaultPalette, type Palette } from '../../theme/palettes';
 import { spacing, radius, shadow } from '../../theme/tokens';
 import { fontFamily, fontSize } from '../../theme/typography';
-import { useAppStore } from '../../store/useAppStore';
+import { useAppStore , useTheme} from '../../store/useAppStore';
 import PlimIcon from '../../components/ui/PlimIcon';
 import PlimMascot from '../../components/mascot/PlimMascot';
 
@@ -25,7 +26,7 @@ const PALETTES: { key: string; label: string; palette: Palette; primary: string 
 const AGE_OPTIONS = [4, 5, 6, 7, 8, 9, 10];
 
 export default function SettingsScreen() {
-  const theme = defaultPalette;
+  const theme = useTheme();
   const insets = useSafeAreaInsets();
   const nav = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
@@ -65,7 +66,7 @@ export default function SettingsScreen() {
           onPress: () => {
             setHasOnboarded(false);
             setMode('kid');
-            nav.replace('Splash');
+            navigationRef.dispatch({ type: 'RESET', payload: { index: 0, routes: [{ name: 'Splash' }] } });
           },
         },
       ],
@@ -178,7 +179,7 @@ export default function SettingsScreen() {
         {/* Switch mode */}
         <TouchableOpacity
           style={[styles.rowBtn, { backgroundColor: theme.surface, ...shadow.card }]}
-          onPress={() => { setMode('kid'); nav.replace('ProfileSelect'); }}
+          onPress={() => { setMode('kid'); navigationRef.navigate('ProfileSelect'); }}
         >
           <View style={[styles.rowIcon, { backgroundColor: theme.secondary + '22' }]}>
             <PlimIcon name="family" size={18} color={theme.secondary} />

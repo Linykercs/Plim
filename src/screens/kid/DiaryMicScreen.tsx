@@ -10,7 +10,7 @@ import type { DiaryStackParamList } from '../../navigation/types';
 import { defaultPalette } from '../../theme/palettes';
 import { spacing, radius, shadow } from '../../theme/tokens';
 import { fontFamily, fontSize } from '../../theme/typography';
-import { useAppStore } from '../../store/useAppStore';
+import { useAppStore , useTheme} from '../../store/useAppStore';
 import PlimIcon from '../../components/ui/PlimIcon';
 import ClockFace from '../../components/diary/ClockFace';
 import CupGlyph from '../../components/diary/CupGlyph';
@@ -40,11 +40,12 @@ function nowHM() {
 }
 
 export default function DiaryMicScreen() {
-  const theme = defaultPalette;
+  const theme = useTheme();
   const insets = useSafeAreaInsets();
   const nav = useNavigation<Nav>();
   const addEntry = useAppStore(s => s.addEntry);
   const addStars = useAppStore(s => s.addStars);
+  const completeMission = useAppStore(s => s.completeMission);
 
   const [phase, setPhase] = useState<'form' | 'reward'>('form');
   const [time, setTime] = useState(nowHM());
@@ -79,6 +80,7 @@ export default function DiaryMicScreen() {
       note,
     });
     addStars(3);
+    completeMission('mic');
     setPhase('reward');
   }
 

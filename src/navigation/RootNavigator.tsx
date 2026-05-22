@@ -8,12 +8,13 @@ import ProfileSelectScreen from '../screens/ProfileSelectScreen';
 import KidTabNavigator from './KidTabNavigator';
 import ParentTabNavigator from './ParentTabNavigator';
 import type { RootStackParamList } from './types';
+import { navigationRef } from './navigationRef';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function RootNavigator() {
   return (
-    <NavigationContainer>
+    <NavigationContainer ref={navigationRef}>
       <Stack.Navigator
         initialRouteName="Splash"
         screenOptions={{ headerShown: false, animation: 'fade' }}

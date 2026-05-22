@@ -10,7 +10,7 @@ import type { DiaryStackParamList } from '../../navigation/types';
 import { defaultPalette } from '../../theme/palettes';
 import { spacing, radius, shadow } from '../../theme/tokens';
 import { fontFamily, fontSize } from '../../theme/typography';
-import { useAppStore } from '../../store/useAppStore';
+import { useAppStore , useTheme} from '../../store/useAppStore';
 import PlimIcon from '../../components/ui/PlimIcon';
 import ClockFace from '../../components/diary/ClockFace';
 import BristolGlyph from '../../components/diary/BristolGlyph';
@@ -44,7 +44,7 @@ function nowHM() {
 }
 
 export default function DiaryEvacScreen() {
-  const theme = defaultPalette;
+  const theme = useTheme();
   const insets = useSafeAreaInsets();
   const nav = useNavigation<Nav>();
   const addEntry = useAppStore(s => s.addEntry);

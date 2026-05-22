@@ -14,6 +14,7 @@ import PlimIcon, { type IconName } from '../components/ui/PlimIcon';
 import { defaultPalette } from '../theme/palettes';
 import { fontFamily } from '../theme/typography';
 import type { ParentTabParamList } from './types';
+import { useTheme } from '../store/useAppStore';
 
 const Tab = createBottomTabNavigator<ParentTabParamList>();
 
@@ -34,7 +35,7 @@ const TAB_LABELS: Record<keyof ParentTabParamList, string> = {
 };
 
 function ParentTabBar({ state, descriptors: _, navigation }: BottomTabBarProps) {
-  const theme = defaultPalette;
+  const theme = useTheme();
   const insets = useSafeAreaInsets();
 
   return (

@@ -4,10 +4,11 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../../navigation/types';
+import { navigationRef } from '../../navigation/navigationRef';
 import { defaultPalette } from '../../theme/palettes';
 import { spacing, radius, shadow } from '../../theme/tokens';
 import { fontFamily, fontSize } from '../../theme/typography';
-import { useAppStore } from '../../store/useAppStore';
+import { useAppStore , useTheme} from '../../store/useAppStore';
 import PlimMascot from '../../components/mascot/PlimMascot';
 import PlimIcon from '../../components/ui/PlimIcon';
 
@@ -26,7 +27,7 @@ function last7Dates() {
 }
 
 export default function OverviewScreen() {
-  const theme = defaultPalette;
+  const theme = useTheme();
   const insets = useSafeAreaInsets();
   const nav = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const profile = useAppStore(s => s.profile);
@@ -170,7 +171,7 @@ export default function OverviewScreen() {
         {/* Switch mode */}
         <TouchableOpacity
           style={[styles.switchBtn, { borderColor: theme.softBg2 }]}
-          onPress={() => { setMode('kid'); nav.replace('ProfileSelect'); }}
+          onPress={() => { setMode('kid'); navigationRef.navigate('ProfileSelect'); }}
         >
           <PlimIcon name="family" size={18} color={theme.muted} />
           <Text style={[styles.switchText, { color: theme.muted }]}>Trocar para modo criança</Text>

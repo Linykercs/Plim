@@ -4,7 +4,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { defaultPalette } from '../../theme/palettes';
 import { spacing, radius, shadow } from '../../theme/tokens';
 import { fontFamily, fontSize } from '../../theme/typography';
-import { useAppStore, type DiaryEntry } from '../../store/useAppStore';
+import { useAppStore, type DiaryEntry , useTheme} from '../../store/useAppStore';
 import PlimIcon from '../../components/ui/PlimIcon';
 
 type Filter = 'all' | 'mic' | 'evac';
@@ -27,7 +27,7 @@ function groupByDate(entries: DiaryEntry[]) {
 }
 
 export default function ParentDiaryScreen() {
-  const theme = defaultPalette;
+  const theme = useTheme();
   const insets = useSafeAreaInsets();
   const entries = useAppStore(s => s.entries);
   const [filter, setFilter] = useState<Filter>('all');
