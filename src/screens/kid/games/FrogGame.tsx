@@ -5,7 +5,6 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
-import { defaultPalette } from '../../../theme/palettes';
 import { spacing } from '../../../theme/tokens';
 import { fontFamily, fontSize } from '../../../theme/typography';
 import { useAppStore , useTheme} from '../../../store/useAppStore';
@@ -29,6 +28,7 @@ export default function FrogGame() {
   const [timeLeft, setTimeLeft] = useState(GAME_SECONDS);
 
   const jumpsRef = useRef(0);
+  const finishedRef = useRef(false);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // Frog position: which pad (0 = leftmost)
@@ -43,10 +43,9 @@ export default function FrogGame() {
     ],
   }));
 
-  // Derived: earned stars (proportional to jumps, max 10)
-  const earnedStars = Math.round((Math.min(jumpsRef.current, TOTAL_JUMPS) / TOTAL_JUMPS) * 10);
 
   function startGame() {
+    finishedRef.current = false;
     jumpsRef.current = 0;
     setJumps(0);
     setPadIdx(0);
@@ -68,6 +67,8 @@ export default function FrogGame() {
   }
 
   function finishGame() {
+    if (finishedRef.current) return;
+    finishedRef.current = true;
     clearInterval(timerRef.current!);
     const stars = Math.round((Math.min(jumpsRef.current, TOTAL_JUMPS) / TOTAL_JUMPS) * 10);
     addStars(stars);
@@ -94,11 +95,7 @@ export default function FrogGame() {
 
     if (jumpsRef.current >= TOTAL_JUMPS) {
       clearInterval(timerRef.current!);
-      setTimeout(() => {
-        addStars(10);
-        completeMission('game');
-        setPhase('done');
-      }, 400);
+      setTimeout(() => finishGame(), 400);
     }
   }
 

@@ -39,7 +39,8 @@ const AVATAR_COLORS = ['#5FCB8E', '#7DC9E8', '#FF8A7A', '#C497F0', '#FFCE5C', '#
 
 export default function OnboardingScreen({ navigation }: { navigation: Nav }) {
   const theme = useTheme();
-  const { setProfile, setHasOnboarded } = useAppStore();
+  const setProfile = useAppStore(s => s.setProfile);
+  const setHasOnboarded = useAppStore(s => s.setHasOnboarded);
 
   const [step, setStep] = useState(0);
   const [data, setData] = useState<OnbData>({

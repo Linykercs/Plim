@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { defaultPalette } from '../theme/palettes';
 import { fontFamily, fontSize } from '../theme/typography';
 import { useTheme } from '../store/useAppStore';
 

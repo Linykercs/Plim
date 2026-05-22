@@ -29,7 +29,8 @@
     },
     "plugins": [
       [
-        "expo-splash-screen",
+        "expo-notifications",
+      "expo-splash-screen",
         {
           "backgroundColor": "#5FCB8E",
           "image": "./assets/icon.png",

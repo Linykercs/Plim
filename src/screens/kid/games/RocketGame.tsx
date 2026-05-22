@@ -6,7 +6,6 @@ import Animated, {
 import Svg, { Ellipse, Rect, Circle, Polygon, Path } from 'react-native-svg';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
-import { defaultPalette } from '../../../theme/palettes';
 import { spacing, radius } from '../../../theme/tokens';
 import { fontFamily, fontSize } from '../../../theme/typography';
 import { useAppStore , useTheme} from '../../../store/useAppStore';

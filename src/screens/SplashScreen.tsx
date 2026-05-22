@@ -14,7 +14,6 @@ import Animated, {
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import PlimLogo from '../components/mascot/PlimLogo';
-import { defaultPalette } from '../theme/palettes';
 import { fontFamily, fontSize } from '../theme/typography';
 import { useAppStore , useTheme} from '../store/useAppStore';
 import type { RootStackParamList } from '../navigation/types';

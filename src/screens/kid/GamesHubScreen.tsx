@@ -4,7 +4,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { GamesStackParamList } from '../../navigation/types';
-import { defaultPalette } from '../../theme/palettes';
 import { spacing, radius, shadow } from '../../theme/tokens';
 import { fontFamily, fontSize } from '../../theme/typography';
 import PlimIcon from '../../components/ui/PlimIcon';

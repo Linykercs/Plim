@@ -125,7 +125,6 @@ interface AppState {
   rewards: Reward[];
   redemptions: Redemption[];
   savingFor: string | null;
-  earnStars: (n: number) => void;
   addStars: (n: number) => void;
   redeemReward: (id: string) => void;
   addReward: (r: Reward) => void;
@@ -168,7 +167,6 @@ export const useAppStore = create<AppState>()(
       rewards: DEFAULT_REWARDS,
       redemptions: [],
       savingFor: null,
-      earnStars: (n) => set((s) => ({ stars: s.stars + n })),
       addStars:  (n) => set((s) => ({ stars: s.stars + n })),
       redeemReward: (id) =>
         set((s) => {

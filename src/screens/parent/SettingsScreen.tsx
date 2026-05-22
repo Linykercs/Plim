@@ -7,7 +7,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../../navigation/types';
-import { navigationRef } from '../../navigation/navigationRef';
 import { defaultPalette, type Palette } from '../../theme/palettes';
 import { spacing, radius, shadow } from '../../theme/tokens';
 import { fontFamily, fontSize } from '../../theme/typography';
@@ -66,7 +65,7 @@ export default function SettingsScreen() {
           onPress: () => {
             setHasOnboarded(false);
             setMode('kid');
-            navigationRef.dispatch({ type: 'RESET', payload: { index: 0, routes: [{ name: 'Splash' }] } });
+            nav.dispatch({ type: 'RESET', payload: { index: 0, routes: [{ name: 'Splash' }] } });
           },
         },
       ],
@@ -179,7 +178,7 @@ export default function SettingsScreen() {
         {/* Switch mode */}
         <TouchableOpacity
           style={[styles.rowBtn, { backgroundColor: theme.surface, ...shadow.card }]}
-          onPress={() => { setMode('kid'); navigationRef.navigate('ProfileSelect'); }}
+          onPress={() => { setMode('kid'); nav.navigate('ProfileSelect'); }}
         >
           <View style={[styles.rowIcon, { backgroundColor: theme.secondary + '22' }]}>
             <PlimIcon name="family" size={18} color={theme.secondary} />

@@ -6,7 +6,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { DiaryStackParamList } from '../../navigation/types';
-import { defaultPalette } from '../../theme/palettes';
 import { spacing, radius, shadow } from '../../theme/tokens';
 import { fontFamily, fontSize } from '../../theme/typography';
 import { useAppStore , useTheme} from '../../store/useAppStore';

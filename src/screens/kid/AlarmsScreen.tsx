@@ -4,7 +4,6 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
-import { defaultPalette } from '../../theme/palettes';
 import { spacing, radius, shadow } from '../../theme/tokens';
 import { fontFamily, fontSize } from '../../theme/typography';
 import { useAppStore, type Alarm , useTheme} from '../../store/useAppStore';

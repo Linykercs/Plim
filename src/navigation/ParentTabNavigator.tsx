@@ -11,7 +11,6 @@ import ReportScreen       from '../screens/parent/ReportScreen';
 import SettingsScreen     from '../screens/parent/SettingsScreen';
 
 import PlimIcon, { type IconName } from '../components/ui/PlimIcon';
-import { defaultPalette } from '../theme/palettes';
 import { fontFamily } from '../theme/typography';
 import type { ParentTabParamList } from './types';
 import { useTheme } from '../store/useAppStore';

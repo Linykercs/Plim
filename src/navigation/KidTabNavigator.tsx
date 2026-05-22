@@ -13,7 +13,6 @@ import LearnScreen          from '../screens/kid/LearnScreen';
 import StoreScreen          from '../screens/kid/StoreScreen';
 
 import PlimIcon, { type IconName } from '../components/ui/PlimIcon';
-import { defaultPalette } from '../theme/palettes';
 import { fontFamily } from '../theme/typography';
 import type { KidTabParamList } from './types';
 import { useTheme } from '../store/useAppStore';

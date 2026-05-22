@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, SectionList, TouchableOpacity, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { defaultPalette } from '../../theme/palettes';
 import { spacing, radius, shadow } from '../../theme/tokens';
 import { fontFamily, fontSize } from '../../theme/typography';
 import { useAppStore, type DiaryEntry , useTheme} from '../../store/useAppStore';

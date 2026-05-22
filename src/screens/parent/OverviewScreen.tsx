@@ -4,8 +4,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../../navigation/types';
-import { navigationRef } from '../../navigation/navigationRef';
-import { defaultPalette } from '../../theme/palettes';
 import { spacing, radius, shadow } from '../../theme/tokens';
 import { fontFamily, fontSize } from '../../theme/typography';
 import { useAppStore , useTheme} from '../../store/useAppStore';
@@ -171,7 +169,7 @@ export default function OverviewScreen() {
         {/* Switch mode */}
         <TouchableOpacity
           style={[styles.switchBtn, { borderColor: theme.softBg2 }]}
-          onPress={() => { setMode('kid'); navigationRef.navigate('ProfileSelect'); }}
+          onPress={() => { setMode('kid'); nav.navigate('ProfileSelect'); }}
         >
           <PlimIcon name="family" size={18} color={theme.muted} />
           <Text style={[styles.switchText, { color: theme.muted }]}>Trocar para modo criança</Text>

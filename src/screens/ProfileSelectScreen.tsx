@@ -13,7 +13,6 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import PlimMascot from '../components/mascot/PlimMascot';
 import PlimIcon from '../components/ui/PlimIcon';
 import { useAppStore , useTheme} from '../store/useAppStore';
-import { defaultPalette } from '../theme/palettes';
 import { fontFamily, fontSize } from '../theme/typography';
 import type { RootStackParamList } from '../navigation/types';
 
