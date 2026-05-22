@@ -364,7 +364,7 @@ function StepPro({
 
   return (
     <View style={styles.stepPad}>
-      <Text style={[styles.h1, { color: theme.text }]}>Tem fisio ou médico?</Text>
+      <Text style={[styles.h1, { color: theme.text }]}>Tem enfermeiro ou médico?</Text>
       <Text style={[styles.sub, { color: theme.muted, marginBottom: 20 }]}>
         Quem for acompanhar pode receber o relatório direto.
       </Text>

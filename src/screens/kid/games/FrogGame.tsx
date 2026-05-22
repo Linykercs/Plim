@@ -33,6 +33,7 @@ export default function FrogGame() {
 
   // Frog position: which pad (0 = leftmost)
   const [padIdx, setPadIdx] = useState(0);
+  const padIdxRef = useRef(0);
   const frogX = useSharedValue(0);
   const frogY = useSharedValue(0);
 
@@ -47,6 +48,7 @@ export default function FrogGame() {
   function startGame() {
     finishedRef.current = false;
     jumpsRef.current = 0;
+    padIdxRef.current = 0;
     setJumps(0);
     setPadIdx(0);
     frogX.value = 0;
@@ -82,7 +84,8 @@ export default function FrogGame() {
     jumpsRef.current += 1;
     setJumps(jumpsRef.current);
 
-    const nextPad = (padIdx + 1) % PAD_COUNT;
+    padIdxRef.current = (padIdxRef.current + 1) % PAD_COUNT;
+    const nextPad = padIdxRef.current;
     setPadIdx(nextPad);
 
     // Jump arc: move right, arc up then land
