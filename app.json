@@ -14,23 +14,31 @@
     },
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.plim.app"
+      "bundleIdentifier": "com.plim.app",
+      "buildNumber": "1"
     },
     "android": {
       "package": "com.plim.app",
+      "versionCode": 1,
       "adaptiveIcon": {
-        "backgroundColor": "#5FCB8E",
-        "foregroundImage": "./assets/android-icon-foreground.png"
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
+    "extra": {
+      "eas": {
+        "projectId": "SEU_PROJECT_ID_AQUI"
+      }
+    },
     "plugins": [
+      "expo-notifications",
       [
-        "expo-notifications",
-      "expo-splash-screen",
+        "expo-splash-screen",
         {
           "backgroundColor": "#5FCB8E",
           "image": "./assets/icon.png",
