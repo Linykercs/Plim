@@ -20,13 +20,14 @@ const CONDITION_LABELS: Record<string, string> = {
   'incont-fec': 'Incont. fecal', training: 'Treinamento', 'dont-know': 'Em avaliacao',
 };
 
-function buildHtml(days: Period, entries: DiaryEntry[], profile: KidProfile | null): string {
+function buildHtml(days: Period, entries: DiaryEntry[], profile: KidProfile | null, waterHistory: { date: string; cups: number }[]): string {
   const cutoff = new Date();
   cutoff.setDate(cutoff.getDate() - days);
   const period = entries.filter(e => new Date(e.createdAt) >= cutoff);
   const mics  = period.filter(e => e.type === 'mic');
   const evacs = period.filter(e => e.type === 'evac');
   const incs  = period.filter(e => e.type === 'inc');
+  const waterGoalDays = waterHistory.filter(h => new Date(h.date) >= cutoff && h.cups >= 2).length;
 
   const avgMic  = (mics.length  / days).toFixed(1);
   const avgEvac = (evacs.length / days).toFixed(1);
@@ -116,7 +117,7 @@ function buildHtml(days: Period, entries: DiaryEntry[], profile: KidProfile | nu
 <div class="stats">
   <div class="stat-card"><div class="stat-num">${mics.length}</div><div class="stat-sub">registros</div></div>
   <div class="stat-card"><div class="stat-num">${avgMic}</div><div class="stat-sub">por dia</div></div>
-  <div class="stat-card"><div class="stat-num">${incs.length}</div><div class="stat-sub">escapes no periodo</div></div>
+  <div class="stat-card"><div class="stat-num">${waterGoalDays}</div><div class="stat-sub">dias c/ meta de agua (≥2 copos)</div></div>
 </div>
 ${colorRows ? `<table><tr><th>Cor da urina</th><th style="text-align:center">Ocorrencias</th></tr>${colorRows}</table>` : '<p style="color:#6B8499;font-size:12px">Nenhum registro de miccao no periodo.</p>'}
 <h2>Evacuacao</h2>
@@ -145,6 +146,7 @@ export default function ReportScreen() {
   const insets = useSafeAreaInsets();
   const entries = useAppStore(s => s.entries);
   const profile = useAppStore(s => s.profile);
+  const waterHistory = useAppStore(s => s.waterHistory);
 
   const [period, setPeriod] = useState<Period>(7);
   const [loading, setLoading] = useState(false);
@@ -157,11 +159,12 @@ export default function ReportScreen() {
   const incs  = periodEntries.filter(e => e.type === 'inc');
   const bristolOk = evacs.filter(e => e.type === 'evac' && [3, 4, 5].includes(e.bristol)).length;
   const bristolPct = evacs.length > 0 ? Math.round((bristolOk / evacs.length) * 100) : 0;
+  const waterGoalDays = waterHistory.filter(h => new Date(h.date) >= cutoff && h.cups >= 2).length;
 
   async function handleExportPdf() {
     setLoading(true);
     try {
-      const html = buildHtml(period, entries, profile);
+      const html = buildHtml(period, entries, profile, waterHistory);
       const { uri } = await Print.printToFileAsync({ html, base64: false });
       const canShare = await Sharing.isAvailableAsync();
       if (canShare) {
@@ -238,6 +241,10 @@ export default function ReportScreen() {
               <View style={styles.statItem}>
                 <Text style={[styles.statBig, { color: theme.secondary }]}>{(mics.length / period).toFixed(1)}</Text>
                 <Text style={[styles.statSm, { color: theme.muted }]}>por dia</Text>
+              </View>
+              <View style={styles.statItem}>
+                <Text style={[styles.statBig, { color: '#4AB8E0' }]}>{waterGoalDays}</Text>
+                <Text style={[styles.statSm, { color: theme.muted }]}>dias c/ água</Text>
               </View>
             </View>
           </View>

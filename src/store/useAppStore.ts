@@ -147,6 +147,7 @@ interface AppState {
   setStreak: (n: number) => void;
 
   waterToday: number;
+  waterHistory: { date: string; cups: number }[];
   addWater: () => void;
 
   pendingCelebrations: string[];
@@ -218,6 +219,7 @@ export const useAppStore = create<AppState>()(
       setStreak: (n) => set({ streak: n }),
 
       waterToday: 0,
+      waterHistory: [],
       addWater: () => set((s) => {
         const next = s.waterToday + 1;
         const shouldComplete = next >= 2 && !s.missionsDone.water;
@@ -235,7 +237,21 @@ export const useAppStore = create<AppState>()(
       missionsDone: { mic: false, water: false, game: false, learn: false, evac: false },
       missionsResetDate: null,
       completeMission: (key) => set((s) => ({ missionsDone: { ...s.missionsDone, [key]: true } })),
-      resetMissions: () => set({ missionsDone: { mic: false, water: false, game: false, learn: false, evac: false }, missionsResetDate: new Date().toISOString(), waterToday: 0 }),
+      resetMissions: () => set((s) => {
+        // Archive the day that just ended before zeroing the counter
+        const prevDate = s.missionsResetDate
+          ? new Date(s.missionsResetDate).toDateString()
+          : null;
+        const newHistory = prevDate && s.waterToday > 0
+          ? [...s.waterHistory, { date: prevDate, cups: s.waterToday }].slice(-90)
+          : s.waterHistory;
+        return {
+          missionsDone: { mic: false, water: false, game: false, learn: false, evac: false },
+          missionsResetDate: new Date().toISOString(),
+          waterToday: 0,
+          waterHistory: newHistory,
+        };
+      }),
       checkAndResetMissions: () => {
         if (shouldResetMissions(get().missionsResetDate)) get().resetMissions();
       },
@@ -260,6 +276,7 @@ export const useAppStore = create<AppState>()(
         missionsDone: s.missionsDone,
         missionsResetDate: s.missionsResetDate,
         waterToday: s.waterToday,
+        waterHistory: s.waterHistory,
         pendingCelebrations: s.pendingCelebrations,
         mode: s.mode,
       }),
