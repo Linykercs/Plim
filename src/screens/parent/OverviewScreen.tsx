@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
@@ -7,10 +7,10 @@ import type { RootStackParamList } from '../../navigation/types';
 import { spacing, radius, shadow } from '../../theme/tokens';
 import { fontFamily, fontSize } from '../../theme/typography';
 import { useAppStore , useTheme} from '../../store/useAppStore';
+import { AVATAR_COLORS } from '../../theme/palettes';
 import PlimMascot from '../../components/mascot/PlimMascot';
 import PlimIcon from '../../components/ui/PlimIcon';
 
-const AVATAR_COLORS = ['#5FCB8E', '#7DC9E8', '#FF8A7A', '#C497F0', '#FFCE5C', '#FF8E72'];
 const CONDITION_LABELS: Record<string, string> = {
   enuresis: 'Enurese', hyperactive: 'Bexiga hiperativa', constipation: 'Constipação',
   'incont-fec': 'Incontinência fecal', training: 'Treinamento', 'dont-know': 'Em avaliação',
@@ -37,27 +37,20 @@ export default function OverviewScreen() {
   const mascotColor = AVATAR_COLORS[profile?.avatarColor ?? 0];
   const days = last7Dates();
 
-  // Count entries per day
-  const entriesPerDay = days.map(d =>
-    entries.filter(e => new Date(e.createdAt).toDateString() === d).length,
-  );
-
-  // This week totals
-  const weekMic  = entries.filter(e => {
-    const d = new Date(e.createdAt);
-    const weekAgo = new Date(); weekAgo.setDate(weekAgo.getDate() - 7);
-    return e.type === 'mic' && d >= weekAgo;
-  }).length;
-  const weekEvac = entries.filter(e => {
-    const d = new Date(e.createdAt);
-    const weekAgo = new Date(); weekAgo.setDate(weekAgo.getDate() - 7);
-    return e.type === 'evac' && d >= weekAgo;
-  }).length;
-
-  // Recent entries (last 5)
-  const recent = [...entries]
-    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-    .slice(0, 5);
+  const { entriesPerDay, weekMic, weekEvac, recent } = useMemo(() => {
+    const weekAgo = new Date();
+    weekAgo.setDate(weekAgo.getDate() - 7);
+    return {
+      entriesPerDay: days.map(d =>
+        entries.filter(e => new Date(e.createdAt).toDateString() === d).length,
+      ),
+      weekMic:  entries.filter(e => e.type === 'mic'  && new Date(e.createdAt) >= weekAgo).length,
+      weekEvac: entries.filter(e => e.type === 'evac' && new Date(e.createdAt) >= weekAgo).length,
+      recent: [...entries]
+        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+        .slice(0, 5),
+    };
+  }, [entries]);
 
   const dayLabels = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
 
@@ -169,7 +162,7 @@ export default function OverviewScreen() {
         {/* Switch mode */}
         <TouchableOpacity
           style={[styles.switchBtn, { borderColor: theme.softBg2 }]}
-          onPress={() => { setMode('kid'); nav.navigate('ProfileSelect'); }}
+          onPress={() => { setMode('kid'); nav.replace('ProfileSelect'); }}
         >
           <PlimIcon name="family" size={18} color={theme.muted} />
           <Text style={[styles.switchText, { color: theme.muted }]}>Trocar para modo criança</Text>

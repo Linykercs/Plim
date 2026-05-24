@@ -57,6 +57,17 @@ export default function RocketGame() {
   const holdTimer = useRef<ReturnType<typeof setInterval> | null>(null);
   const repsRef = useRef(0);
 
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (holdTimer.current) clearInterval(holdTimer.current);
+      cancelAnimation(rocketY);
+      cancelAnimation(holdProgress);
+      cancelAnimation(orbitAngle);
+      cancelAnimation(orbitActive);
+    };
+  }, []);
+
   // Orbit animation when idle
   useEffect(() => {
     if (phase === 'idle') {

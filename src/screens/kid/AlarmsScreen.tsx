@@ -4,6 +4,8 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { DiaryStackParamList } from '../../navigation/types';
 import { spacing, radius, shadow } from '../../theme/tokens';
 import { fontFamily, fontSize } from '../../theme/typography';
 import { useAppStore, type Alarm , useTheme} from '../../store/useAppStore';
@@ -31,7 +33,7 @@ interface EditState { id: string; h: number; m: number; days: Alarm['days'] }
 export default function AlarmsScreen() {
   const theme = useTheme();
   const insets = useSafeAreaInsets();
-  const nav = useNavigation();
+  const nav = useNavigation<NativeStackNavigationProp<DiaryStackParamList, 'Alarms'>>();
   const alarms = useAppStore(s => s.alarms);
   const toggleAlarm = useAppStore(s => s.toggleAlarm);
   const updateAlarm = useAppStore(s => s.updateAlarm);

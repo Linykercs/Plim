@@ -31,6 +31,7 @@ export default function App() {
 
   const alarms = useAppStore(s => s.alarms);
   const checkAndResetMissions = useAppStore(s => s.checkAndResetMissions);
+  const hasHydrated = useAppStore(s => s._hasHydrated);
 
   useEffect(() => {
     // Request notification permission and sync alarms on first launch
@@ -47,9 +48,8 @@ export default function App() {
     }
   }, [fontsLoaded, fontError]);
 
-  if (!fontsLoaded && !fontError) {
-    return null;
-  }
+  if (!fontsLoaded && !fontError) return null;
+  if (!hasHydrated) return null;
 
   return (
     <View style={{ flex: 1 }} onLayout={onLayoutRootView}>

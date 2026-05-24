@@ -20,7 +20,7 @@ export interface KidProfile {
   avatarColor: number;
   conditions: KidCondition[];
   professional?: { name: string; email?: string };
-  createdAt: Date;
+  createdAt: string;
 }
 
 export type DiaryEntry =
@@ -48,7 +48,7 @@ export interface Reward {
 export interface Redemption {
   id: string;
   rewardId: string;
-  redeemedAt: Date;
+  redeemedAt: string;
   status: 'pending' | 'delivered';
 }
 
@@ -111,6 +111,9 @@ const DEFAULT_REWARDS: Reward[] = [
 // ─── Store ─────────────────────────────────────────────────────
 
 interface AppState {
+  _hasHydrated: boolean;
+  setHasHydrated: (v: boolean) => void;
+
   hasOnboarded: boolean;
   setHasOnboarded: (v: boolean) => void;
 
@@ -153,6 +156,9 @@ interface AppState {
 export const useAppStore = create<AppState>()(
   persist(
     (set, get) => ({
+      _hasHydrated: false,
+      setHasHydrated: (v) => set({ _hasHydrated: v }),
+
       hasOnboarded: false,
       setHasOnboarded: (v) => set({ hasOnboarded: v }),
 
@@ -168,14 +174,14 @@ export const useAppStore = create<AppState>()(
       rewards: DEFAULT_REWARDS,
       redemptions: [],
       savingFor: null,
-      addStars:  (n) => set((s) => ({ stars: s.stars + n })),
+      addStars:  (n) => { if (n > 0) set((s) => ({ stars: s.stars + n })); },
       redeemReward: (id) =>
         set((s) => {
           const reward = s.rewards.find((r) => r.id === id);
           if (!reward || s.stars < reward.cost) return s;
           return {
             stars: s.stars - reward.cost,
-            redemptions: [...s.redemptions, { id: Date.now().toString(), rewardId: id, redeemedAt: new Date(), status: 'pending' as const }],
+            redemptions: [...s.redemptions, { id: Date.now().toString(), rewardId: id, redeemedAt: new Date().toISOString(), status: 'pending' as const }],
             savingFor: s.savingFor === id ? null : s.savingFor,
           };
         }),
@@ -209,6 +215,9 @@ export const useAppStore = create<AppState>()(
     {
       name: 'plim-store',
       storage: createJSONStorage(() => AsyncStorage),
+      onRehydrateStorage: () => (state) => {
+        if (state) state.setHasHydrated(true);
+      },
       partialize: (s) => ({
         hasOnboarded: s.hasOnboarded,
         profile: s.profile,

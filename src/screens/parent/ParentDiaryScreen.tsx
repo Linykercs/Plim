@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { View, Text, SectionList, TouchableOpacity, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { spacing, radius, shadow } from '../../theme/tokens';
@@ -31,11 +31,12 @@ export default function ParentDiaryScreen() {
   const entries = useAppStore(s => s.entries);
   const [filter, setFilter] = useState<Filter>('all');
 
-  const filtered = [...entries]
-    .filter(e => filter === 'all' || e.type === filter)
-    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-
-  const sections = groupByDate(filtered);
+  const sections = useMemo(() => {
+    const filtered = [...entries]
+      .filter(e => filter === 'all' || e.type === filter)
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    return groupByDate(filtered);
+  }, [entries, filter]);
 
   const FILTERS: { key: Filter; label: string; icon: 'drop' | 'poop' | 'diary' }[] = [
     { key: 'all',  label: 'Todos',  icon: 'diary' },
@@ -77,6 +78,7 @@ export default function ParentDiaryScreen() {
         <SectionList
           sections={sections}
           keyExtractor={item => item.id}
+          stickySectionHeadersEnabled={false}
           contentContainerStyle={{ paddingHorizontal: spacing.md, paddingBottom: insets.bottom + 100 }}
           renderSectionHeader={({ section }) => (
             <View style={[styles.sectionHeader, { backgroundColor: theme.bg }]}>

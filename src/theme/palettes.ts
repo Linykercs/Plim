@@ -59,3 +59,5 @@ export const palettes: Record<string, Palette> = {
 };
 
 export const defaultPalette = palettes.fresh;
+
+export const AVATAR_COLORS = ['#5FCB8E', '#7DC9E8', '#FF8A7A', '#C497F0', '#FFCE5C', '#FF8E72'] as const;

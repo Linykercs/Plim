@@ -98,9 +98,10 @@ export default function SplashScreen({ navigation }: Props) {
       withTiming(1, { duration: 600, easing: Easing.out(Easing.ease) }),
     );
 
-    // Auto-navigate after 2400ms — Onboarding on first launch, ProfileSelect after
+    // Auto-navigate after 2400ms — read hasOnboarded fresh to avoid stale closure
     const timer = setTimeout(() => {
-      navigation.replace(hasOnboarded ? 'ProfileSelect' : 'Onboarding');
+      const onboarded = useAppStore.getState().hasOnboarded;
+      navigation.replace(onboarded ? 'ProfileSelect' : 'Onboarding');
     }, 2400);
 
     return () => clearTimeout(timer);

@@ -2,12 +2,14 @@ import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
 import Animated, {
   useSharedValue, useAnimatedStyle, withSpring, withSequence, withTiming,
+  cancelAnimation,
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { spacing } from '../../../theme/tokens';
 import { fontFamily, fontSize } from '../../../theme/typography';
 import { useAppStore , useTheme} from '../../../store/useAppStore';
+import { AVATAR_COLORS } from '../../../theme/palettes';
 import PlimMascot from '../../../components/mascot/PlimMascot';
 import PlimIcon from '../../../components/ui/PlimIcon';
 
@@ -90,6 +92,7 @@ export default function FrogGame() {
 
     // Jump arc: move right, arc up then land
     const padSpacing = 38;
+    cancelAnimation(frogY);
     frogX.value = withSpring(nextPad * padSpacing, { damping: 14, stiffness: 200 });
     frogY.value = withSequence(
       withTiming(-40, { duration: 150 }),
@@ -103,11 +106,14 @@ export default function FrogGame() {
   }
 
   useEffect(() => {
-    return () => { if (timerRef.current) clearInterval(timerRef.current); };
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+      cancelAnimation(frogX);
+      cancelAnimation(frogY);
+    };
   }, []);
 
-  const avatarColors = ['#5FCB8E', '#7DC9E8', '#FF8A7A', '#C497F0', '#FFCE5C', '#FF8E72'];
-  const mascotColor = avatarColors[profile?.avatarColor ?? 0];
+  const mascotColor = AVATAR_COLORS[profile?.avatarColor ?? 0];
 
   if (phase === 'done') {
     const stars = Math.round((Math.min(jumpsRef.current, TOTAL_JUMPS) / TOTAL_JUMPS) * 10);

@@ -1,16 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View, Text, ScrollView, TouchableOpacity, StyleSheet, Pressable,
 } from 'react-native';
 import Animated, {
-  useSharedValue, useAnimatedStyle, withTiming, withSequence,
-  withRepeat, Easing, cancelAnimation,
+  useSharedValue, useAnimatedStyle, withTiming,
+  Easing, cancelAnimation,
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { spacing, radius, shadow } from '../../theme/tokens';
 import { fontFamily, fontSize } from '../../theme/typography';
 import PlimIcon from '../../components/ui/PlimIcon';
-import { useTheme } from '../../store/useAppStore';
+import { useTheme, useAppStore } from '../../store/useAppStore';
+import { useFocusEffect } from '@react-navigation/native';
 
 // ─── Content ──────────────────────────────────────────────────
 
@@ -119,6 +120,7 @@ function BreathingExercise() {
   useEffect(() => {
     if (!running) return;
     let cancelled = false;
+    let timerId: ReturnType<typeof setTimeout> | null = null;
     let idx = 0;
     let cycles = 0;
 
@@ -130,13 +132,11 @@ function BreathingExercise() {
       opacity.value = withTiming(phase.scale === 1.4 ? 0.9 : 0.5, { duration: phase.duration, easing: Easing.inOut(Easing.ease) });
 
       const nextIdx = (idx + 1) % PHASES.length;
-      // Count a cycle when we wrap around (finish the 'expire' phase)
       if (nextIdx === 0) cycles += 1;
 
-      setTimeout(() => {
+      timerId = setTimeout(() => {
         if (cancelled) return;
         if (nextIdx === 0 && cycles >= MAX_BREATH_CYCLES) {
-          // Done — stop after the last expire
           setRunning(false);
           setFinished(true);
           scale.value = withTiming(1, { duration: 800 });
@@ -150,7 +150,12 @@ function BreathingExercise() {
     }
 
     tick();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+      if (timerId !== null) clearTimeout(timerId);
+      cancelAnimation(scale);
+      cancelAnimation(opacity);
+    };
   }, [running]);
 
   function start() {
@@ -240,6 +245,12 @@ export default function LearnScreen() {
   const insets = useSafeAreaInsets();
   const [active, setActive] = useState<Category>('postura');
   const activeCat = CATEGORIES.find(c => c.key === active)!;
+  const completeMission = useAppStore(s => s.completeMission);
+  const missionsDone = useAppStore(s => s.missionsDone);
+
+  useFocusEffect(useCallback(() => {
+    if (!missionsDone.learn) completeMission('learn');
+  }, [missionsDone.learn]));
 
   return (
     <View style={[styles.root, { backgroundColor: theme.bg }]}>

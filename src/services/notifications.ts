@@ -1,4 +1,5 @@
 import * as Notifications from 'expo-notifications';
+import { Platform } from 'react-native';
 import type { Alarm } from '../store/useAppStore';
 
 Notifications.setNotificationHandler({
@@ -6,10 +7,21 @@ Notifications.setNotificationHandler({
     shouldShowAlert: true,
     shouldPlaySound: true,
     shouldSetBadge: false,
+    shouldShowBanner: true,
+    shouldShowList: true,
   }),
 });
 
 export async function requestNotificationPermission(): Promise<boolean> {
+  if (Platform.OS === 'android') {
+    await Notifications.setNotificationChannelAsync('plim-alarms', {
+      name: 'Lembretes de xixi',
+      importance: Notifications.AndroidImportance.HIGH,
+      sound: 'plim.wav',
+      vibrationPattern: [0, 250, 250, 250],
+      lightColor: '#5FCB8E',
+    });
+  }
   const { status } = await Notifications.requestPermissionsAsync();
   return status === 'granted';
 }
@@ -36,6 +48,7 @@ export async function scheduleAlarm(alarm: Alarm): Promise<void> {
         title: alarm.kind === 'night' ? '🌙 Hora do xixi da madrugada' : '🐸 Hora do xixi!',
         body: alarm.label,
         sound: 'plim.wav',
+        ...(Platform.OS === 'android' ? { channelId: 'plim-alarms' } : {}),
       },
       trigger: {
         type: Notifications.SchedulableTriggerInputTypes.WEEKLY,

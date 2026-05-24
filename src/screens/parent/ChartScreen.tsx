@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import Svg, { Rect, Line, Text as SvgText, G } from 'react-native-svg';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -41,9 +41,11 @@ export default function ChartScreen() {
   const { days } = RANGES.find(r => r.key === range)!;
   const dayList = buildDays(days);
 
-  const micCounts  = dayList.map(d => entries.filter(e => e.type === 'mic'  && new Date(e.createdAt).toDateString() === d.toDateString()).length);
-  const evacCounts = dayList.map(d => entries.filter(e => e.type === 'evac' && new Date(e.createdAt).toDateString() === d.toDateString()).length);
-  const totalCounts = micCounts.map((m, i) => m + evacCounts[i]);
+  const { micCounts, evacCounts, totalCounts } = useMemo(() => {
+    const mic  = dayList.map(d => entries.filter(e => e.type === 'mic'  && new Date(e.createdAt).toDateString() === d.toDateString()).length);
+    const evac = dayList.map(d => entries.filter(e => e.type === 'evac' && new Date(e.createdAt).toDateString() === d.toDateString()).length);
+    return { micCounts: mic, evacCounts: evac, totalCounts: mic.map((m, i) => m + evac[i]) };
+  }, [entries, dayList]);
 
   const maxVal = Math.max(...totalCounts, 1);
   const barW = (CHART_W - (days + 1) * BAR_GAP) / days;
@@ -198,7 +200,7 @@ const styles = StyleSheet.create({
   legendText: { fontFamily: fontFamily.body, fontSize: fontSize.xs },
 
   statsGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
-  statCard: { width: '47%', flex: 1, borderRadius: radius.card, padding: spacing.md, alignItems: 'center', gap: spacing.xxs },
+  statCard: { flex: 1, minWidth: '47%', borderRadius: radius.card, padding: spacing.md, alignItems: 'center', gap: spacing.xxs },
   statValue: { fontFamily: fontFamily.heading, fontSize: fontSize.xl },
   statLabel: { fontFamily: fontFamily.body, fontSize: fontSize.xs, textAlign: 'center' },
 

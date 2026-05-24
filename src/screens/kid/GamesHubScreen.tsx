@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Pressable } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, Pressable } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -63,10 +63,8 @@ export default function GamesHubScreen() {
         {GAMES.map(game => (
           <View key={game.route} style={styles.cardWrap}>
             <View style={[styles.cardShadow, { backgroundColor: game.color }]} />
-            <TouchableOpacity
-              activeOpacity={0.95}
+            <View
               style={[styles.card, { backgroundColor: theme.surface, borderColor: game.color, borderWidth: 2 }]}
-              onPress={() => nav.navigate(game.route)}
             >
               {/* Top row */}
               <View style={styles.cardTop}>
@@ -109,7 +107,7 @@ export default function GamesHubScreen() {
                   <Text style={styles.btnLabel}>Jogar</Text>
                 </Pressable>
               </View>
-            </TouchableOpacity>
+            </View>
           </View>
         ))}
       </ScrollView>

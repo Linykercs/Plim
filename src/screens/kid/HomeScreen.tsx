@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import {
   View,
   Text,
@@ -11,20 +11,15 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import PlimMascot from '../../components/mascot/PlimMascot';
 import PlimIcon, { type IconName } from '../../components/ui/PlimIcon';
 import { useAppStore , useTheme} from '../../store/useAppStore';
-import { defaultPalette } from '../../theme/palettes';
+import { defaultPalette, AVATAR_COLORS } from '../../theme/palettes';
 import { fontFamily, fontSize } from '../../theme/typography';
 import type { KidTabParamList, RootStackParamList } from '../../navigation/types';
-
-// ─── Avatar colours (matches Onboarding picker) ───────────────
-const AVATAR_COLORS = [
-  '#5FCB8E', '#7DC9E8', '#FF8A7A', '#C497F0', '#FFCE5C', '#FF8E72',
-];
 
 // ─── Types ────────────────────────────────────────────────────
 type Nav = BottomTabNavigationProp<KidTabParamList, 'Home'>;
@@ -57,7 +52,7 @@ function useNextAlarm() {
       .map((a) => {
         const [h, m] = a.time.split(':').map(Number);
         const alarmMin = h * 60 + m;
-        const diff = alarmMin > nowMin ? alarmMin - nowMin : alarmMin + 1440 - nowMin;
+        const diff = alarmMin >= nowMin ? alarmMin - nowMin : alarmMin + 1440 - nowMin;
         return { ...a, diff, alarmMin };
       })
       .sort((a, b) => a.diff - b.diff);
@@ -68,8 +63,10 @@ function useNextAlarm() {
 // ─── Home screen ──────────────────────────────────────────────
 export default function HomeScreen({ navigation }: { navigation: Nav }) {
   const theme = useTheme();
-  const { profile, stars, streak, missionsDone, savingFor, rewards, setMode } = useAppStore();
+  const { profile, stars, streak, missionsDone, savingFor, rewards, setMode, checkAndResetMissions } = useAppStore();
   const rootNav = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
+  useFocusEffect(useCallback(() => { checkAndResetMissions(); }, []));
 
   const missions: Mission[] = [
     { id: 'mic',   label: 'Registrar xixi',   icon: 'drop',  color: theme.secondary, tab: 'Diary' },
@@ -93,8 +90,8 @@ export default function HomeScreen({ navigation }: { navigation: Nav }) {
     ? AVATAR_COLORS[profile.avatarColor]
     : theme.primary;
 
-  const formatMinutes = (min: number) =>
-    min < 60 ? `${min} min` : `${Math.floor(min / 60)}h${min % 60 > 0 ? ` ${min % 60}min` : ''}`;
+  const formatMinutes = useCallback((min: number) =>
+    min < 60 ? `${min} min` : `${Math.floor(min / 60)}h${min % 60 > 0 ? ` ${min % 60}min` : ''}`, []);
 
   return (
     <SafeAreaView style={styles.safeArea} edges={['top']}>
@@ -111,7 +108,7 @@ export default function HomeScreen({ navigation }: { navigation: Nav }) {
         >
           {/* switch profile button */}
           <TouchableOpacity
-            onPress={() => { setMode('kid'); rootNav.navigate('ProfileSelect'); }}
+            onPress={() => { setMode('kid'); rootNav.replace('ProfileSelect'); }}
             style={styles.switchBtn}
           >
             <PlimIcon name="family" color="rgba(255,255,255,0.8)" size={16} />
@@ -218,10 +215,10 @@ export default function HomeScreen({ navigation }: { navigation: Nav }) {
                 key={t.label}
                 tile={t}
                 onPress={() => {
-                  if (t.screen) {
-                    navigation.navigate(t.tab as 'Diary', { screen: t.screen as any });
+                  if (t.screen && (t.tab === 'Diary' || t.tab === 'Games')) {
+                    navigation.navigate(t.tab, { screen: t.screen } as never);
                   } else {
-                    navigation.navigate(t.tab as 'Games');
+                    navigation.navigate(t.tab as 'Store' | 'Learn');
                   }
                 }}
                 theme={theme}

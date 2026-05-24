@@ -37,25 +37,3 @@ export type ParentTabParamList = {
   Report: undefined;
   Settings: undefined;
 };
-
-export type GamesStackParamList = {
-  GamesHub: undefined;
-  RocketGame: undefined;
-  BalloonGame: undefined;
-  FrogGame: undefined;
-};
-
-export type DiaryStackParamList = {
-  DiaryMenu: undefined;
-  DiaryMic: undefined;
-  DiaryEvac: undefined;
-  Alarms: undefined;
-};
-
-export type ParentTabParamList = {
-  Overview: undefined;
-  Diary: undefined;
-  Chart: undefined;
-  Report: undefined;
-  Settings: undefined;
-};

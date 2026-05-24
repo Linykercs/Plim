@@ -280,9 +280,8 @@ const styles = StyleSheet.create({
 
   bristolGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.xs },
   bristolItem: {
-    width: '13%',
-    minWidth: 62,
     flex: 1,
+    minWidth: 62,
     alignItems: 'center',
     borderRadius: radius.chip,
     padding: spacing.xs,

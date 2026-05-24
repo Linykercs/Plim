@@ -1,25 +1,23 @@
 import React, { useState } from 'react';
 import {
   View, Text, ScrollView, TouchableOpacity, StyleSheet,
-  TextInput, Switch, Pressable, Alert,
+  TextInput, Pressable, Alert,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, CommonActions } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../../navigation/types';
-import { defaultPalette, type Palette } from '../../theme/palettes';
+import { palettes, AVATAR_COLORS, type Palette } from '../../theme/palettes';
 import { spacing, radius, shadow } from '../../theme/tokens';
 import { fontFamily, fontSize } from '../../theme/typography';
 import { useAppStore , useTheme} from '../../store/useAppStore';
 import PlimIcon from '../../components/ui/PlimIcon';
 import PlimMascot from '../../components/mascot/PlimMascot';
 
-const AVATAR_COLORS = ['#5FCB8E', '#7DC9E8', '#FF8A7A', '#C497F0', '#FFCE5C', '#FF8E72'];
-
 const PALETTES: { key: string; label: string; palette: Palette; primary: string }[] = [
-  { key: 'fresh', label: 'Menta', palette: defaultPalette, primary: '#5FCB8E' },
-  { key: 'ocean', label: 'Oceano', palette: { ...defaultPalette, primary: '#4AA8D8', primaryDark: '#2E7FAB', secondary: '#63D1C7', accent: '#F9A825', bg: '#EFF8FC', surface: '#fff', softBg: '#E3F4FA', softBg2: '#C8EBF5' }, primary: '#4AA8D8' },
-  { key: 'sweet', label: 'Doce',   palette: { ...defaultPalette, primary: '#D479C8', primaryDark: '#A85AAB', secondary: '#F4A5D8', accent: '#FFD54F', bg: '#FDF4FC', surface: '#fff', softBg: '#FAE8F8', softBg2: '#F2CBF0' }, primary: '#D479C8' },
+  { key: 'fresh', label: 'Menta',  palette: palettes.fresh, primary: palettes.fresh.primary },
+  { key: 'ocean', label: 'Oceano', palette: palettes.ocean, primary: palettes.ocean.primary },
+  { key: 'sweet', label: 'Doce',   palette: palettes.sweet, primary: palettes.sweet.primary },
 ];
 
 const AGE_OPTIONS = [4, 5, 6, 7, 8, 9, 10];
@@ -65,7 +63,7 @@ export default function SettingsScreen() {
           onPress: () => {
             setHasOnboarded(false);
             setMode('kid');
-            nav.dispatch({ type: 'RESET', payload: { index: 0, routes: [{ name: 'Splash' }] } });
+            nav.dispatch(CommonActions.reset({ index: 0, routes: [{ name: 'Splash' }] }));
           },
         },
       ],
@@ -178,7 +176,7 @@ export default function SettingsScreen() {
         {/* Switch mode */}
         <TouchableOpacity
           style={[styles.rowBtn, { backgroundColor: theme.surface, ...shadow.card }]}
-          onPress={() => { setMode('kid'); nav.navigate('ProfileSelect'); }}
+          onPress={() => { setMode('kid'); nav.replace('ProfileSelect'); }}
         >
           <View style={[styles.rowIcon, { backgroundColor: theme.secondary + '22' }]}>
             <PlimIcon name="family" size={18} color={theme.secondary} />

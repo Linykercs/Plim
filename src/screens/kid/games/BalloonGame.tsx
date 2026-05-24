@@ -84,6 +84,8 @@ export default function BalloonGame() {
           setCycles(cyclesRef.current);
           if (cyclesRef.current >= TOTAL_CYCLES) {
             cancelRef.current = true;
+            cancelAnimation(scale);
+            cancelAnimation(opacity);
             addStars(5);
             completeMission('game');
             setDone(true);

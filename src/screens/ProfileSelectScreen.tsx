@@ -13,6 +13,7 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import PlimMascot from '../components/mascot/PlimMascot';
 import PlimIcon from '../components/ui/PlimIcon';
 import { useAppStore , useTheme} from '../store/useAppStore';
+import { AVATAR_COLORS } from '../theme/palettes';
 import { fontFamily, fontSize } from '../theme/typography';
 import type { RootStackParamList } from '../navigation/types';
 
@@ -145,11 +146,6 @@ export default function ProfileSelectScreen({ navigation }: { navigation: Nav })
     </SafeAreaView>
   );
 }
-
-// Avatar colours matching the Onboarding picker
-const AVATAR_COLORS = [
-  '#5FCB8E', '#7DC9E8', '#FF8A7A', '#C497F0', '#FFCE5C', '#FF8E72',
-];
 
 const styles = StyleSheet.create({
   root: { flex: 1 },

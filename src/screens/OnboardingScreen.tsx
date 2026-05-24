@@ -15,7 +15,7 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import PlimMascot from '../components/mascot/PlimMascot';
 import PlimIcon, { type IconName } from '../components/ui/PlimIcon';
 import PlimButton from '../components/ui/PlimButton';
-import { type Palette } from '../theme/palettes';
+import { type Palette, AVATAR_COLORS } from '../theme/palettes';
 import { fontFamily, fontSize } from '../theme/typography';
 import { useAppStore, type KidCondition , useTheme} from '../store/useAppStore';
 import type { RootStackParamList } from '../navigation/types';
@@ -33,7 +33,6 @@ interface OnbData {
 }
 
 const STEPS = ['welcome', 'kid', 'condition', 'pro', 'ready'] as const;
-const AVATAR_COLORS = ['#5FCB8E', '#7DC9E8', '#FF8A7A', '#C497F0', '#FFCE5C', '#FF8E72'];
 
 // ─── Main screen ──────────────────────────────────────────────
 
@@ -67,7 +66,7 @@ export default function OnboardingScreen({ navigation }: { navigation: Nav }) {
       professional: data.professional.has
         ? { name: data.professional.name }
         : undefined,
-      createdAt: new Date(),
+      createdAt: new Date().toISOString(),
     });
     setHasOnboarded(true);
     navigation.replace('ProfileSelect');

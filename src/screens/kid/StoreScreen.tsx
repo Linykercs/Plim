@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  View, Text, ScrollView, TouchableOpacity, StyleSheet, Pressable,
+  View, Text, ScrollView, TouchableOpacity, StyleSheet, Pressable, Alert,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { spacing, radius, shadow } from '../../theme/tokens';
@@ -27,7 +27,14 @@ export default function StoreScreen() {
 
   function handleCard(reward: Reward) {
     if (stars >= reward.cost) {
-      redeemReward(reward.id);
+      Alert.alert(
+        'Resgatar prêmio',
+        `Usar ${reward.cost} ⭐ para resgatar "${reward.name}"?`,
+        [
+          { text: 'Cancelar', style: 'cancel' },
+          { text: 'Resgatar!', onPress: () => redeemReward(reward.id) },
+        ],
+      );
     } else {
       setSavingFor(savingFor === reward.id ? null : reward.id);
     }

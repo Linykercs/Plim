@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
-  View, Text, ScrollView, TouchableOpacity, StyleSheet, Platform,
+  View, Text, ScrollView, TouchableOpacity, StyleSheet,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
@@ -15,11 +15,13 @@ type Nav = NativeStackNavigationProp<DiaryStackParamList>;
 
 function formatTime(iso: string) {
   const d = new Date(iso);
+  if (isNaN(d.getTime())) return '--:--';
   return d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
 }
 
 function formatDate(iso: string) {
   const d = new Date(iso);
+  if (isNaN(d.getTime())) return '?';
   const today = new Date();
   const isToday =
     d.getDate() === today.getDate() &&
@@ -38,10 +40,12 @@ export default function DiaryMenuScreen() {
   const nav = useNavigation<Nav>();
   const entries = useAppStore(s => s.entries);
 
-  const todayStr = new Date().toDateString();
-  const todayEntries = [...entries]
-    .filter(e => new Date(e.createdAt).toDateString() === todayStr)
-    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  const todayEntries = useMemo(() => {
+    const todayStr = new Date().toDateString();
+    return [...entries]
+      .filter(e => new Date(e.createdAt).toDateString() === todayStr)
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  }, [entries]);
 
   return (
     <View style={[styles.root, { backgroundColor: theme.bg }]}>
