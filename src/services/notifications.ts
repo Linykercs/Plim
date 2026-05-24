@@ -34,29 +34,32 @@ function weekdaysFor(days: Alarm['days']): number[] {
 }
 
 export async function scheduleAlarm(alarm: Alarm): Promise<void> {
-  // Cancel existing notifications for this alarm first
-  await cancelAlarm(alarm.id);
-  if (!alarm.on) return;
+  try {
+    await cancelAlarm(alarm.id);
+    if (!alarm.on) return;
 
-  const [h, m] = alarm.time.split(':').map(Number);
-  const weekdays = weekdaysFor(alarm.days);
+    const [h, m] = alarm.time.split(':').map(Number);
+    const weekdays = weekdaysFor(alarm.days);
 
-  for (const weekday of weekdays) {
-    await Notifications.scheduleNotificationAsync({
-      identifier: `${alarm.id}-${weekday}`,
-      content: {
-        title: alarm.kind === 'night' ? '🌙 Hora do xixi da madrugada' : '🐸 Hora do xixi!',
-        body: alarm.label,
-        sound: 'plim.wav',
-        ...(Platform.OS === 'android' ? { channelId: 'plim-alarms' } : {}),
-      },
-      trigger: {
-        type: Notifications.SchedulableTriggerInputTypes.WEEKLY,
-        weekday,
-        hour: h,
-        minute: m,
-      },
-    });
+    for (const weekday of weekdays) {
+      await Notifications.scheduleNotificationAsync({
+        identifier: `${alarm.id}-${weekday}`,
+        content: {
+          title: alarm.kind === 'night' ? '🌙 Hora do xixi da madrugada' : '🐸 Hora do xixi!',
+          body: alarm.label,
+          sound: 'plim.wav',
+          ...(Platform.OS === 'android' ? { channelId: 'plim-alarms' } : {}),
+        },
+        trigger: {
+          type: Notifications.SchedulableTriggerInputTypes.WEEKLY,
+          weekday,
+          hour: h,
+          minute: m,
+        },
+      });
+    }
+  } catch {
+    // Notification scheduling may fail if permissions are revoked
   }
 }
 
@@ -70,11 +73,15 @@ export async function cancelAlarm(alarmId: string): Promise<void> {
 }
 
 export async function syncAllAlarms(alarms: Alarm[]): Promise<void> {
-  for (const alarm of alarms) {
-    if (alarm.on) {
-      await scheduleAlarm(alarm);
-    } else {
-      await cancelAlarm(alarm.id);
+  try {
+    for (const alarm of alarms) {
+      if (alarm.on) {
+        await scheduleAlarm(alarm);
+      } else {
+        await cancelAlarm(alarm.id);
+      }
     }
+  } catch {
+    // Silent failure — notifications are non-critical
   }
 }

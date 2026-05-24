@@ -146,6 +146,13 @@ interface AppState {
   streak: number;
   setStreak: (n: number) => void;
 
+  waterToday: number;
+  addWater: () => void;
+
+  pendingCelebrations: string[];
+  shiftCelebration: () => void;
+  clearCelebrations: () => void;
+
   missionsDone: MissionsDone;
   missionsResetDate: string | null;
   completeMission: (key: keyof MissionsDone) => void;
@@ -187,7 +194,13 @@ export const useAppStore = create<AppState>()(
         }),
       addReward: (r) => set((s) => ({ rewards: [...s.rewards, r] })),
       deleteReward: (id) => set((s) => ({ rewards: s.rewards.filter((r) => r.id !== id) })),
-      markDelivered: (rid) => set((s) => ({ redemptions: s.redemptions.map((r) => r.id === rid ? { ...r, status: 'delivered' as const } : r) })),
+      markDelivered: (rid) => set((s) => {
+        const redemption = s.redemptions.find((r) => r.id === rid);
+        return {
+          redemptions: s.redemptions.map((r) => r.id === rid ? { ...r, status: 'delivered' as const } : r),
+          pendingCelebrations: redemption ? [...s.pendingCelebrations, redemption.rewardId] : s.pendingCelebrations,
+        };
+      }),
       setSavingFor: (id) => set({ savingFor: id }),
 
       entries: [],
@@ -204,10 +217,25 @@ export const useAppStore = create<AppState>()(
       streak: 0,
       setStreak: (n) => set({ streak: n }),
 
+      waterToday: 0,
+      addWater: () => set((s) => {
+        const next = s.waterToday + 1;
+        const shouldComplete = next >= 2 && !s.missionsDone.water;
+        return {
+          waterToday: next,
+          missionsDone: shouldComplete ? { ...s.missionsDone, water: true } : s.missionsDone,
+          stars: shouldComplete ? s.stars + 2 : s.stars,
+        };
+      }),
+
+      pendingCelebrations: [],
+      shiftCelebration: () => set((s) => ({ pendingCelebrations: s.pendingCelebrations.slice(1) })),
+      clearCelebrations: () => set({ pendingCelebrations: [] }),
+
       missionsDone: { mic: false, water: false, game: false, learn: false, evac: false },
       missionsResetDate: null,
       completeMission: (key) => set((s) => ({ missionsDone: { ...s.missionsDone, [key]: true } })),
-      resetMissions: () => set({ missionsDone: { mic: false, water: false, game: false, learn: false, evac: false }, missionsResetDate: new Date().toISOString() }),
+      resetMissions: () => set({ missionsDone: { mic: false, water: false, game: false, learn: false, evac: false }, missionsResetDate: new Date().toISOString(), waterToday: 0 }),
       checkAndResetMissions: () => {
         if (shouldResetMissions(get().missionsResetDate)) get().resetMissions();
       },
@@ -231,6 +259,8 @@ export const useAppStore = create<AppState>()(
         streak: s.streak,
         missionsDone: s.missionsDone,
         missionsResetDate: s.missionsResetDate,
+        waterToday: s.waterToday,
+        pendingCelebrations: s.pendingCelebrations,
         mode: s.mode,
       }),
     },

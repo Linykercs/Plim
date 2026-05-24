@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Pressable } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -33,6 +33,9 @@ export default function OverviewScreen() {
   const stars = useAppStore(s => s.stars);
   const streak = useAppStore(s => s.streak);
   const setMode = useAppStore(s => s.setMode);
+  const redemptions = useAppStore(s => s.redemptions);
+  const rewards = useAppStore(s => s.rewards);
+  const markDelivered = useAppStore(s => s.markDelivered);
 
   const mascotColor = AVATAR_COLORS[profile?.avatarColor ?? 0];
   const days = last7Dates();
@@ -159,6 +162,39 @@ export default function OverviewScreen() {
           )}
         </View>
 
+        {/* Pending rewards to deliver */}
+        {redemptions.some(r => r.status === 'pending') && (
+          <View style={[styles.card, { backgroundColor: theme.surface, ...shadow.card }]}>
+            <Text style={[styles.cardTitle, { color: theme.text }]}>Prêmios a entregar</Text>
+            {redemptions
+              .filter(r => r.status === 'pending')
+              .map(r => {
+                const reward = rewards.find(rw => rw.id === r.rewardId);
+                if (!reward) return null;
+                return (
+                  <View key={r.id} style={[styles.pendingRow, { borderBottomColor: theme.softBg2 }]}>
+                    <Text style={styles.pendingEmoji}>{reward.icon}</Text>
+                    <View style={{ flex: 1 }}>
+                      <Text style={[styles.pendingName, { color: theme.text }]}>{reward.name}</Text>
+                      <Text style={[styles.pendingDate, { color: theme.muted }]}>
+                        {new Date(r.redeemedAt).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })}
+                      </Text>
+                    </View>
+                    <Pressable
+                      onPress={() => markDelivered(r.id)}
+                      style={({ pressed }) => [
+                        styles.deliverBtn,
+                        { backgroundColor: theme.primary, opacity: pressed ? 0.8 : 1 },
+                      ]}
+                    >
+                      <Text style={styles.deliverBtnText}>Entreguei!</Text>
+                    </Pressable>
+                  </View>
+                );
+              })}
+          </View>
+        )}
+
         {/* Switch mode */}
         <TouchableOpacity
           style={[styles.switchBtn, { borderColor: theme.softBg2 }]}
@@ -208,4 +244,11 @@ const styles = StyleSheet.create({
 
   switchBtn: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm, padding: spacing.md, borderRadius: radius.card, borderWidth: 1.5 },
   switchText: { fontFamily: fontFamily.body, fontSize: fontSize.sm, flex: 1 },
+
+  pendingRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm, paddingVertical: spacing.xs, borderBottomWidth: 1 },
+  pendingEmoji: { fontSize: 26 },
+  pendingName: { fontFamily: fontFamily.bodyBold, fontSize: fontSize.sm },
+  pendingDate: { fontFamily: fontFamily.body, fontSize: fontSize.xs, marginTop: 2 },
+  deliverBtn: { paddingHorizontal: spacing.sm, paddingVertical: spacing.xs, borderRadius: 10 },
+  deliverBtnText: { fontFamily: fontFamily.bodyBold, fontSize: fontSize.xs, color: '#fff' },
 });

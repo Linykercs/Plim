@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Platform,
   TouchableOpacity,
+  Modal,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -63,7 +64,11 @@ function useNextAlarm() {
 // ─── Home screen ──────────────────────────────────────────────
 export default function HomeScreen({ navigation }: { navigation: Nav }) {
   const theme = useTheme();
-  const { profile, stars, streak, missionsDone, savingFor, rewards, setMode, checkAndResetMissions } = useAppStore();
+  const {
+    profile, stars, streak, missionsDone, savingFor, rewards, setMode,
+    checkAndResetMissions, addWater, waterToday, pendingCelebrations,
+    shiftCelebration, clearCelebrations, entries,
+  } = useAppStore();
   const rootNav = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   useFocusEffect(useCallback(() => { checkAndResetMissions(); }, []));
@@ -89,6 +94,24 @@ export default function HomeScreen({ navigation }: { navigation: Nav }) {
   const avatarColor = profile?.avatarColor !== undefined
     ? AVATAR_COLORS[profile.avatarColor]
     : theme.primary;
+
+  const weekActivity = useMemo(() => {
+    const DAY_LABELS = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
+    return [...Array(7)].map((_, i) => {
+      const d = new Date();
+      d.setDate(d.getDate() - (6 - i));
+      const ds = d.toDateString();
+      return {
+        label: DAY_LABELS[d.getDay()],
+        active: entries.some(e => new Date(e.createdAt).toDateString() === ds),
+        isToday: i === 6,
+      };
+    });
+  }, [entries]);
+
+  const celebrationReward = pendingCelebrations.length > 0
+    ? rewards.find(r => r.id === pendingCelebrations[0])
+    : null;
 
   const formatMinutes = useCallback((min: number) =>
     min < 60 ? `${min} min` : `${Math.floor(min / 60)}h${min % 60 > 0 ? ` ${min % 60}min` : ''}`, []);
@@ -176,10 +199,14 @@ export default function HomeScreen({ navigation }: { navigation: Nav }) {
             <View style={styles.missionGrid}>
               {missions.map((m) => {
                 const done = missionsDone[m.id];
+                const isWater = m.id === 'water';
                 return (
                   <Pressable
                     key={m.id}
-                    onPress={() => navigation.navigate(m.tab)}
+                    onPress={() => {
+                      if (isWater) { addWater(); }
+                      else { navigation.navigate(m.tab); }
+                    }}
                     style={[
                       styles.missionTile,
                       {
@@ -192,6 +219,11 @@ export default function HomeScreen({ navigation }: { navigation: Nav }) {
                       <PlimIcon name={m.icon} color={m.color} size={20} strokeWidth={2.4} />
                     </View>
                     <Text style={[styles.missionLabel, { color: theme.text }]}>{m.label}</Text>
+                    {isWater && !done && (
+                      <Text style={[styles.waterCount, { color: '#4AB8E0' }]}>
+                        {waterToday}/2 copos
+                      </Text>
+                    )}
                     {done && (
                       <View style={[styles.checkBadge, { backgroundColor: theme.primary }]}>
                         <PlimIcon name="check" color="#fff" size={13} strokeWidth={3} />
@@ -200,6 +232,30 @@ export default function HomeScreen({ navigation }: { navigation: Nav }) {
                   </Pressable>
                 );
               })}
+            </View>
+          </View>
+        </View>
+
+        {/* ── 7-day activity strip ── */}
+        <View style={[styles.section, { marginTop: 16 }]}>
+          <View style={[styles.weekStrip, { backgroundColor: theme.surface }]}>
+            <Text style={[styles.weekLabel, { color: theme.muted }]}>Esta semana</Text>
+            <View style={styles.weekDots}>
+              {weekActivity.map((day, i) => (
+                <View key={i} style={styles.dayCol}>
+                  <View style={[
+                    styles.dayDot,
+                    {
+                      backgroundColor: day.active ? theme.primary : theme.softBg,
+                      borderWidth: day.isToday ? 2 : 0,
+                      borderColor: theme.accent,
+                    },
+                  ]} />
+                  <Text style={[styles.dayTxt, { color: day.isToday ? theme.text : theme.muted }]}>
+                    {day.label}
+                  </Text>
+                </View>
+              ))}
             </View>
           </View>
         </View>
@@ -300,6 +356,35 @@ export default function HomeScreen({ navigation }: { navigation: Nav }) {
           </Pressable>
         </View>
       </ScrollView>
+
+      {/* ── Reward celebration modal ── */}
+      <Modal
+        visible={!!celebrationReward}
+        transparent
+        animationType="fade"
+        onRequestClose={() => shiftCelebration()}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={[styles.modalCard, { backgroundColor: theme.surface }]}>
+            <Text style={styles.modalEmoji}>🎉</Text>
+            {celebrationReward && (
+              <>
+                <Text style={styles.confettiEmoji}>{celebrationReward.icon}</Text>
+                <Text style={[styles.modalTitle, { color: theme.text }]}>Prêmio chegou!</Text>
+                <Text style={[styles.modalSub, { color: theme.muted }]}>
+                  Seu {celebrationReward.name} foi entregue!
+                </Text>
+              </>
+            )}
+            <Pressable
+              onPress={() => shiftCelebration()}
+              style={[styles.modalBtn, { backgroundColor: theme.primary }]}
+            >
+              <Text style={styles.modalBtnText}>Oba! 🎊</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -413,6 +498,7 @@ const styles = StyleSheet.create({
   },
   missionIcon:  { width: 36, height: 36, borderRadius: 12, alignItems: 'center', justifyContent: 'center' },
   missionLabel: { fontFamily: fontFamily.body, fontSize: fontSize.sm + 1, lineHeight: 16 },
+  waterCount:   { fontFamily: fontFamily.bodyBold, fontSize: fontSize.xs, marginTop: 2 },
   checkBadge: {
     position: 'absolute',
     top: 8,
@@ -423,6 +509,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+
+  // Week activity strip
+  weekStrip: { borderRadius: 18, padding: 14, flexDirection: 'row', alignItems: 'center', gap: 12 },
+  weekLabel: { fontFamily: fontFamily.bodyBold, fontSize: fontSize.xs, textTransform: 'uppercase', letterSpacing: 0.4, minWidth: 52 },
+  weekDots: { flex: 1, flexDirection: 'row', justifyContent: 'space-between' },
+  dayCol: { alignItems: 'center', gap: 4 },
+  dayDot: { width: 26, height: 26, borderRadius: 13 },
+  dayTxt: { fontFamily: fontFamily.body, fontSize: fontSize.xs - 1 },
 
   // Sections wrapper
   section: { paddingHorizontal: 16, marginTop: 20 },
@@ -484,6 +578,16 @@ const styles = StyleSheet.create({
   savingTrack:    { flex: 1, height: 8, borderRadius: 4, overflow: 'hidden' },
   savingFill:     { height: '100%', borderRadius: 4 },
   savingCost:     { fontFamily: fontFamily.bodyBold, fontSize: 11 },
+
+  // Celebration modal
+  modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.55)', alignItems: 'center', justifyContent: 'center', padding: 32 },
+  modalCard: { borderRadius: 28, padding: 28, alignItems: 'center', gap: 10, width: '100%' },
+  modalEmoji: { fontSize: 48 },
+  confettiEmoji: { fontSize: 52 },
+  modalTitle: { fontFamily: fontFamily.heading, fontSize: fontSize.xxl, textAlign: 'center' },
+  modalSub: { fontFamily: fontFamily.body, fontSize: fontSize.base, textAlign: 'center' },
+  modalBtn: { marginTop: 8, borderRadius: 16, paddingVertical: 14, paddingHorizontal: 40 },
+  modalBtnText: { fontFamily: fontFamily.bodyBold, fontSize: fontSize.lg, color: '#fff' },
 
   // Alarm card
   alarmCard: {

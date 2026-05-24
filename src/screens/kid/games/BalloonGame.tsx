@@ -59,6 +59,14 @@ export default function BalloonGame() {
   }));
 
   useEffect(() => {
+    return () => {
+      cancelRef.current = true;
+      cancelAnimation(scale);
+      cancelAnimation(opacity);
+    };
+  }, []);
+
+  useEffect(() => {
     if (!running) return;
     cancelRef.current = false;
     let idx = 0;

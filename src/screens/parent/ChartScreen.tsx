@@ -90,6 +90,15 @@ export default function ChartScreen() {
 
         {/* Chart */}
         <View style={[styles.chartCard, { backgroundColor: theme.surface, ...shadow.card }]}>
+          {entries.length === 0 && (
+            <View style={styles.emptyState}>
+              <Text style={styles.emptyEmoji}>📋</Text>
+              <Text style={[styles.emptyTitle, { color: theme.text }]}>Sem registros ainda</Text>
+              <Text style={[styles.emptyText, { color: theme.muted }]}>
+                Os gráficos aparecerão aqui depois que a criança começar a registrar xixi e cocô.
+              </Text>
+            </View>
+          )}
           {/* Legend */}
           <View style={styles.legend}>
             <View style={styles.legendItem}>
@@ -207,4 +216,9 @@ const styles = StyleSheet.create({
   guideCard: { borderRadius: radius.card, padding: spacing.md, gap: spacing.xs },
   guideTitle: { fontFamily: fontFamily.bodyBold, fontSize: fontSize.base },
   guideText: { fontFamily: fontFamily.body, fontSize: fontSize.sm, lineHeight: 20 },
+
+  emptyState: { alignItems: 'center', paddingVertical: spacing.xl, gap: spacing.sm },
+  emptyEmoji: { fontSize: 40 },
+  emptyTitle: { fontFamily: fontFamily.headingSemi, fontSize: fontSize.base },
+  emptyText: { fontFamily: fontFamily.body, fontSize: fontSize.sm, textAlign: 'center', lineHeight: 20, paddingHorizontal: spacing.md },
 });

@@ -32,6 +32,7 @@ export default function FrogGame() {
   const jumpsRef = useRef(0);
   const finishedRef = useRef(false);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const finishTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Frog position: which pad (0 = leftmost)
   const [padIdx, setPadIdx] = useState(0);
@@ -101,13 +102,14 @@ export default function FrogGame() {
 
     if (jumpsRef.current >= TOTAL_JUMPS) {
       clearInterval(timerRef.current!);
-      setTimeout(() => finishGame(), 400);
+      finishTimerRef.current = setTimeout(() => finishGame(), 400);
     }
   }
 
   useEffect(() => {
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
+      if (finishTimerRef.current) clearTimeout(finishTimerRef.current);
       cancelAnimation(frogX);
       cancelAnimation(frogY);
     };

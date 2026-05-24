@@ -34,11 +34,11 @@ export default function App() {
   const hasHydrated = useAppStore(s => s._hasHydrated);
 
   useEffect(() => {
-    // Request notification permission and sync alarms on first launch
-    requestNotificationPermission().then(granted => {
-      if (granted) syncAllAlarms(alarms);
-    });
-    // Reset daily missions if day changed
+    requestNotificationPermission()
+      .then(granted => {
+        if (granted) syncAllAlarms(useAppStore.getState().alarms).catch(() => {});
+      })
+      .catch(() => {});
     checkAndResetMissions();
   }, []);
 
