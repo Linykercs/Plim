@@ -1,9 +1,10 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
 import Animated, {
-  useSharedValue, useAnimatedStyle, withSpring, withTiming, Easing,
+  useSharedValue, useAnimatedStyle, withSpring, withTiming, withRepeat,
+  Easing, cancelAnimation,
 } from 'react-native-reanimated';
-import Svg, { Ellipse, Rect, Circle, Polygon, Path } from 'react-native-svg';
+import Svg, { Ellipse, Rect, Circle, Polygon } from 'react-native-svg';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { spacing, radius } from '../../../theme/tokens';
@@ -13,21 +14,18 @@ import PlimIcon from '../../../components/ui/PlimIcon';
 
 const TOTAL_REPS = 8;
 const HOLD_MS = 3000;
+const ORBIT_RX = 64;
+const ORBIT_RY = 38;
 
 function RocketSvg({ flameOn }: { flameOn: boolean }) {
   return (
     <Svg width={80} height={160} viewBox="0 0 80 160">
-      {/* Body */}
       <Rect x={25} y={40} width={30} height={80} rx={4} fill="#E8E8F0" />
-      {/* Nose */}
       <Polygon points="40,8 25,40 55,40" fill="#FF8A7A" />
-      {/* Window */}
       <Circle cx={40} cy={70} r={10} fill="#7DC9E8" />
       <Circle cx={40} cy={70} r={7} fill="#B8E4F7" />
-      {/* Fins */}
       <Polygon points="25,100 10,120 25,120" fill="#FF8A7A" />
       <Polygon points="55,100 70,120 55,120" fill="#FF8A7A" />
-      {/* Flame */}
       {flameOn && (
         <>
           <Ellipse cx={40} cy={128} rx={10} ry={14} fill="#FFCE5C" />
@@ -52,13 +50,36 @@ export default function RocketGame() {
 
   const rocketY = useSharedValue(0);
   const holdProgress = useSharedValue(0);
+  const orbitAngle = useSharedValue(0);
+  const orbitActive = useSharedValue(1);
+
   const holdStart = useRef<number>(0);
   const holdTimer = useRef<ReturnType<typeof setInterval> | null>(null);
   const repsRef = useRef(0);
 
-  const rocketStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: rocketY.value }],
-  }));
+  // Orbit animation when idle
+  useEffect(() => {
+    if (phase === 'idle') {
+      orbitActive.value = 1;
+      orbitAngle.value = withRepeat(
+        withTiming(Math.PI * 2, { duration: 4000, easing: Easing.linear }),
+        -1,
+        false,
+      );
+    } else {
+      cancelAnimation(orbitAngle);
+      orbitActive.value = withTiming(0, { duration: 250 });
+    }
+  }, [phase]);
+
+  const rocketStyle = useAnimatedStyle(() => {
+    const t = orbitActive.value;
+    const ox = ORBIT_RX * Math.cos(orbitAngle.value) * t;
+    const oy = ORBIT_RY * Math.sin(orbitAngle.value) * t + rocketY.value * (1 - t);
+    return {
+      transform: [{ translateX: ox }, { translateY: oy }],
+    };
+  });
 
   const progressStyle = useAnimatedStyle(() => ({
     width: `${holdProgress.value * 100}%` as `${number}%`,
@@ -66,7 +87,11 @@ export default function RocketGame() {
 
   const onPressIn = useCallback(() => {
     if (phase === 'done') return;
-    if (phase === 'idle') setPhase('playing');
+    if (phase === 'idle') {
+      setPhase('playing');
+      cancelAnimation(orbitAngle);
+      orbitActive.value = withTiming(0, { duration: 200 });
+    }
     setHolding(true);
     holdStart.current = Date.now();
     rocketY.value = withSpring(-160, { damping: 12, stiffness: 60 });
@@ -136,9 +161,9 @@ export default function RocketGame() {
       </View>
 
       {/* Stars */}
-      {[...Array(3)].map((_, i) => (
-        <View key={i} style={[styles.star, { top: 60 + i * 80, left: 20 + (i % 2) * 200 }]}>
-          <Text style={{ color: '#fff', fontSize: 10, opacity: 0.4 }}>✦</Text>
+      {[...Array(6)].map((_, i) => (
+        <View key={i} style={[styles.star, { top: 50 + i * 70, left: 18 + (i % 2) * 260 }]}>
+          <Text style={{ color: '#fff', fontSize: 10 + (i % 3) * 3, opacity: 0.2 + (i % 3) * 0.1 }}>✦</Text>
         </View>
       ))}
 
@@ -159,20 +184,25 @@ export default function RocketGame() {
 
       {/* Hold button */}
       <View style={[styles.holdBtnArea, { paddingBottom: insets.bottom + spacing.lg }]}>
-        <Pressable
-          onPressIn={onPressIn}
-          onPressOut={onPressOut}
-          style={({ pressed }) => [
-            styles.holdBtn,
-            {
-              backgroundColor: holding ? theme.coral : theme.primary,
-              transform: [{ scale: pressed ? 0.95 : 1 }],
-            },
-          ]}
-        >
-          <PlimIcon name="rocket" size={32} color="#fff" />
-          <Text style={styles.holdBtnLabel}>Segurar</Text>
-        </Pressable>
+        <View style={styles.holdBtnWrap}>
+          <View style={[styles.holdBtnRing, { borderColor: holding ? theme.coral + '88' : theme.primary + '55' }]} />
+          <View style={[styles.holdBtnShadow, { backgroundColor: holding ? '#A83000' : theme.primaryDark }]} />
+          <Pressable
+            onPressIn={onPressIn}
+            onPressOut={onPressOut}
+            style={({ pressed }) => [
+              styles.holdBtn,
+              {
+                backgroundColor: holding ? theme.coral : theme.primary,
+                borderColor: holding ? '#A83000' : theme.primaryDark,
+                transform: [{ scale: pressed ? 0.96 : 1 }, { translateY: pressed ? 3 : 0 }],
+              },
+            ]}
+          >
+            <PlimIcon name="rocket" size={36} color="#fff" />
+            <Text style={styles.holdBtnLabel}>Segurar</Text>
+          </Pressable>
+        </View>
       </View>
     </View>
   );
@@ -191,16 +221,25 @@ const styles = StyleSheet.create({
 
   star: { position: 'absolute' },
 
-  rocketArea: { flex: 1, alignItems: 'center', justifyContent: 'flex-end', paddingBottom: spacing.xl },
+  rocketArea: { flex: 1, alignItems: 'center', justifyContent: 'center' },
 
   progressBg: { marginHorizontal: spacing.lg, height: 8, borderRadius: 4, overflow: 'hidden' },
   progressFill: { height: 8, borderRadius: 4 },
   hint: { fontFamily: fontFamily.body, fontSize: fontSize.sm, textAlign: 'center', marginTop: spacing.sm },
 
-  holdBtnArea: { alignItems: 'center', paddingTop: spacing.lg },
+  holdBtnArea: { alignItems: 'center', paddingTop: spacing.md },
+  holdBtnWrap: { alignItems: 'center', justifyContent: 'center', width: 130, height: 130 },
+  holdBtnRing: {
+    position: 'absolute', width: 126, height: 126, borderRadius: 63,
+    borderWidth: 2,
+  },
+  holdBtnShadow: {
+    position: 'absolute', top: 6, width: 110, height: 110, borderRadius: 55,
+  },
   holdBtn: {
-    width: 100, height: 100, borderRadius: 50,
+    width: 110, height: 110, borderRadius: 55,
     alignItems: 'center', justifyContent: 'center', gap: spacing.xs,
+    borderBottomWidth: 5, borderWidth: 0,
   },
   holdBtnLabel: { fontFamily: fontFamily.bodyBold, fontSize: fontSize.xs, color: '#fff' },
 

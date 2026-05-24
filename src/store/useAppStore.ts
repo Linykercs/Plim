@@ -57,6 +57,7 @@ export interface MissionsDone {
   water: boolean;
   game: boolean;
   learn: boolean;
+  evac: boolean;
 }
 
 // ─── Streak helper ────────────────────────────────────────────
@@ -197,10 +198,10 @@ export const useAppStore = create<AppState>()(
       streak: 0,
       setStreak: (n) => set({ streak: n }),
 
-      missionsDone: { mic: false, water: false, game: false, learn: false },
+      missionsDone: { mic: false, water: false, game: false, learn: false, evac: false },
       missionsResetDate: null,
       completeMission: (key) => set((s) => ({ missionsDone: { ...s.missionsDone, [key]: true } })),
-      resetMissions: () => set({ missionsDone: { mic: false, water: false, game: false, learn: false }, missionsResetDate: new Date().toISOString() }),
+      resetMissions: () => set({ missionsDone: { mic: false, water: false, game: false, learn: false, evac: false }, missionsResetDate: new Date().toISOString() }),
       checkAndResetMissions: () => {
         if (shouldResetMissions(get().missionsResetDate)) get().resetMissions();
       },

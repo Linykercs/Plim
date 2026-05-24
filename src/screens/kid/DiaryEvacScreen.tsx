@@ -48,6 +48,8 @@ export default function DiaryEvacScreen() {
   const nav = useNavigation<Nav>();
   const addEntry = useAppStore(s => s.addEntry);
   const addStars = useAppStore(s => s.addStars);
+  const completeMission = useAppStore(s => s.completeMission);
+  const missionsDone = useAppStore(s => s.missionsDone);
 
   const [phase, setPhase] = useState<'form' | 'reward'>('form');
   const [time, setTime] = useState(nowHM());
@@ -75,7 +77,10 @@ export default function DiaryEvacScreen() {
       poopSize,
       note,
     });
-    addStars(5);
+    if (!missionsDone.evac) {
+      addStars(5);
+      completeMission('evac');
+    }
     setPhase('reward');
   }
 

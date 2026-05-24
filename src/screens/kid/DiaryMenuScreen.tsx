@@ -179,7 +179,7 @@ const styles = StyleSheet.create({
   scroll: { paddingHorizontal: spacing.md, paddingTop: spacing.sm },
 
   row: { flexDirection: 'row', gap: spacing.sm, marginBottom: spacing.sm },
-  cardWrap: { flex: 1 },
+  cardWrap: { flex: 1, minWidth: 0 },
   cardShadow: {
     position: 'absolute', top: 4, left: 0, right: 0, bottom: 0,
     borderRadius: radius.card,
@@ -187,14 +187,14 @@ const styles = StyleSheet.create({
   card: {
     borderRadius: radius.card, borderWidth: 2,
     padding: spacing.md, gap: spacing.xs,
-    alignItems: 'flex-start',
+    alignItems: 'flex-start', minHeight: 140,
   },
-  cardIcon: { width: 52, height: 52, borderRadius: 16, alignItems: 'center', justifyContent: 'center' },
-  cardLabel: { fontFamily: fontFamily.heading, fontSize: fontSize.lg, marginTop: spacing.xxs },
+  cardIcon: { width: 48, height: 48, borderRadius: 14, alignItems: 'center', justifyContent: 'center' },
+  cardLabel: { fontFamily: fontFamily.heading, fontSize: fontSize.base, marginTop: spacing.xxs },
   cardSub: { fontFamily: fontFamily.body, fontSize: fontSize.xs, lineHeight: 16 },
   addBadge: {
     position: 'absolute', top: 10, right: 10,
-    width: 24, height: 24, borderRadius: 12,
+    width: 26, height: 26, borderRadius: 13,
     alignItems: 'center', justifyContent: 'center',
   },
 

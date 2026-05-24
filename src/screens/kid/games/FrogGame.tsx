@@ -202,12 +202,18 @@ export default function FrogGame() {
             </Pressable>
           </View>
         ) : (
-          <Pressable
-            style={({ pressed }) => [styles.jumpBtn, { transform: [{ scale: pressed ? 0.93 : 1 }] }]}
-            onPress={handleJump}
-          >
-            <Text style={styles.jumpBtnLabel}>🐸 Pular!</Text>
-          </Pressable>
+          <View style={styles.jumpBtnWrap}>
+            <View style={[styles.jumpBtnShadow, { backgroundColor: '#2D7A52' }]} />
+            <Pressable
+              style={({ pressed }) => [
+                styles.jumpBtn,
+                { borderBottomWidth: pressed ? 1 : 5, transform: [{ translateY: pressed ? 4 : 0 }] },
+              ]}
+              onPress={handleJump}
+            >
+              <Text style={styles.jumpBtnLabel}>🐸 Pular!</Text>
+            </Pressable>
+          </View>
         )}
       </View>
     </View>
@@ -244,12 +250,14 @@ const styles = StyleSheet.create({
   mainBtn: { borderRadius: 16, paddingVertical: spacing.md, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: spacing.xs, borderWidth: 0 },
   btnLabel: { fontFamily: fontFamily.bodyBold, fontSize: fontSize.lg, color: '#fff' },
 
+  jumpBtnWrap: { position: 'relative' },
+  jumpBtnShadow: { position: 'absolute', top: 5, left: 0, right: 0, bottom: 0, borderRadius: 24 },
   jumpBtn: {
-    backgroundColor: '#3DA070', borderRadius: 20,
-    paddingVertical: spacing.lg, alignItems: 'center', justifyContent: 'center',
-    borderBottomWidth: 4, borderColor: '#2D7A52',
+    backgroundColor: '#3DA070', borderRadius: 24,
+    paddingVertical: spacing.lg + 4, alignItems: 'center', justifyContent: 'center',
+    borderColor: '#2D7A52', borderWidth: 0,
   },
-  jumpBtnLabel: { fontFamily: fontFamily.bodyBold, fontSize: 28, color: '#fff' },
+  jumpBtnLabel: { fontFamily: fontFamily.bodyBold, fontSize: 32, color: '#fff' },
 
   center: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: spacing.md, paddingHorizontal: spacing.xl },
   doneTitle: { fontFamily: fontFamily.heading, fontSize: fontSize.xxl },

@@ -6,17 +6,20 @@ import {
   Pressable,
   StyleSheet,
   Platform,
+  TouchableOpacity,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import PlimMascot from '../../components/mascot/PlimMascot';
 import PlimIcon, { type IconName } from '../../components/ui/PlimIcon';
 import { useAppStore , useTheme} from '../../store/useAppStore';
 import { defaultPalette } from '../../theme/palettes';
 import { fontFamily, fontSize } from '../../theme/typography';
-import type { KidTabParamList } from '../../navigation/types';
+import type { KidTabParamList, RootStackParamList } from '../../navigation/types';
 
 // ─── Avatar colours (matches Onboarding picker) ───────────────
 const AVATAR_COLORS = [
@@ -40,6 +43,7 @@ interface QuickTile {
   icon: IconName;
   color: string;
   tab: keyof KidTabParamList;
+  screen?: string;
 }
 
 // ─── Next alarm helper ────────────────────────────────────────
@@ -64,7 +68,8 @@ function useNextAlarm() {
 // ─── Home screen ──────────────────────────────────────────────
 export default function HomeScreen({ navigation }: { navigation: Nav }) {
   const theme = useTheme();
-  const { profile, stars, streak, missionsDone, savingFor, rewards } = useAppStore();
+  const { profile, stars, streak, missionsDone, savingFor, rewards, setMode } = useAppStore();
+  const rootNav = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   const missions: Mission[] = [
     { id: 'mic',   label: 'Registrar xixi',   icon: 'drop',  color: theme.secondary, tab: 'Diary' },
@@ -74,8 +79,8 @@ export default function HomeScreen({ navigation }: { navigation: Nav }) {
   ];
 
   const quickTiles: QuickTile[] = [
-    { label: 'Xixi',     sub: 'registrar', icon: 'drop',   color: theme.secondary, tab: 'Diary' },
-    { label: 'Cocô',     sub: 'registrar', icon: 'poop',   color: '#B57F4F',       tab: 'Diary' },
+    { label: 'Xixi',     sub: 'registrar', icon: 'drop',   color: theme.secondary, tab: 'Diary', screen: 'DiaryMic' },
+    { label: 'Cocô',     sub: 'registrar', icon: 'poop',   color: '#B57F4F',       tab: 'Diary', screen: 'DiaryEvac' },
     { label: 'Foguete',  sub: 'treinar',   icon: 'rocket', color: theme.coral,     tab: 'Games' },
     { label: 'Aprender', sub: 'postura',   icon: 'book',   color: theme.accent,    tab: 'Learn' },
   ];
@@ -104,6 +109,15 @@ export default function HomeScreen({ navigation }: { navigation: Nav }) {
           end={{ x: 0, y: 1 }}
           style={styles.band}
         >
+          {/* switch profile button */}
+          <TouchableOpacity
+            onPress={() => { setMode('kid'); rootNav.navigate('ProfileSelect'); }}
+            style={styles.switchBtn}
+          >
+            <PlimIcon name="family" color="rgba(255,255,255,0.8)" size={16} />
+            <Text style={styles.switchBtnTxt}>Trocar perfil</Text>
+          </TouchableOpacity>
+
           <View style={styles.bandRow}>
             {/* left: text + chips */}
             <View style={{ flex: 1 }}>
@@ -203,7 +217,13 @@ export default function HomeScreen({ navigation }: { navigation: Nav }) {
               <QuickTileCard
                 key={t.label}
                 tile={t}
-                onPress={() => navigation.navigate(t.tab)}
+                onPress={() => {
+                  if (t.screen) {
+                    navigation.navigate(t.tab as 'Diary', { screen: t.screen as any });
+                  } else {
+                    navigation.navigate(t.tab as 'Games');
+                  }
+                }}
                 theme={theme}
               />
             ))}
@@ -336,12 +356,18 @@ const styles = StyleSheet.create({
 
   // Greeting band
   band: {
-    paddingTop: 20,
+    paddingTop: 12,
     paddingBottom: 44,
     paddingHorizontal: 22,
     borderBottomLeftRadius: 36,
     borderBottomRightRadius: 36,
   },
+  switchBtn: {
+    flexDirection: 'row', alignItems: 'center', gap: 6,
+    alignSelf: 'flex-end', paddingVertical: 4, paddingHorizontal: 10,
+    backgroundColor: 'rgba(0,0,0,0.15)', borderRadius: 12, marginBottom: 10,
+  },
+  switchBtnTxt: { fontFamily: fontFamily.body, fontSize: fontSize.xs, color: 'rgba(255,255,255,0.85)' },
   bandRow:  { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between' },
   greeting: { fontFamily: fontFamily.body, fontSize: fontSize.md },
   callout:  { fontFamily: fontFamily.headingSemi, fontSize: 26, marginTop: 2 },

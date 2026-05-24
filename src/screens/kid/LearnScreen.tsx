@@ -100,48 +100,27 @@ const PHASES = [
   { label: 'Expire',   duration: 6000, scale: 1.0 },
 ];
 
+const MAX_BREATH_CYCLES = 3;
+
 function BreathingExercise() {
   const theme = useTheme();
   const [running, setRunning] = useState(false);
   const [phaseIdx, setPhaseIdx] = useState(0);
+  const [completedCycles, setCompletedCycles] = useState(0);
+  const [finished, setFinished] = useState(false);
   const scale = useSharedValue(1);
   const opacity = useSharedValue(0.5);
-  const intervalRef = React.useRef<ReturnType<typeof setInterval> | null>(null);
 
   const animStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],
     opacity: opacity.value,
   }));
 
-  function startCycle(idx: number) {
-    const phase = PHASES[idx];
-    scale.value = withTiming(phase.scale, {
-      duration: phase.duration,
-      easing: Easing.inOut(Easing.ease),
-    });
-    opacity.value = withTiming(phase.scale === 1.4 ? 0.9 : 0.5, {
-      duration: phase.duration,
-      easing: Easing.inOut(Easing.ease),
-    });
-  }
-
-  function start() {
-    setRunning(true);
-    setPhaseIdx(0);
-    startCycle(0);
-    let current = 0;
-    intervalRef.current = setInterval(() => {
-      current = (current + 1) % PHASES.length;
-      setPhaseIdx(current);
-      startCycle(current);
-    }, PHASES[current % PHASES.length]?.duration ?? 4000);
-  }
-
-  // Recalculate intervals properly using sequential timeouts
   useEffect(() => {
     if (!running) return;
     let cancelled = false;
     let idx = 0;
+    let cycles = 0;
 
     function tick() {
       if (cancelled) return;
@@ -149,13 +128,37 @@ function BreathingExercise() {
       setPhaseIdx(idx);
       scale.value = withTiming(phase.scale, { duration: phase.duration, easing: Easing.inOut(Easing.ease) });
       opacity.value = withTiming(phase.scale === 1.4 ? 0.9 : 0.5, { duration: phase.duration, easing: Easing.inOut(Easing.ease) });
-      idx = (idx + 1) % PHASES.length;
-      setTimeout(tick, phase.duration);
+
+      const nextIdx = (idx + 1) % PHASES.length;
+      // Count a cycle when we wrap around (finish the 'expire' phase)
+      if (nextIdx === 0) cycles += 1;
+
+      setTimeout(() => {
+        if (cancelled) return;
+        if (nextIdx === 0 && cycles >= MAX_BREATH_CYCLES) {
+          // Done — stop after the last expire
+          setRunning(false);
+          setFinished(true);
+          scale.value = withTiming(1, { duration: 800 });
+          opacity.value = withTiming(0.5, { duration: 800 });
+          setCompletedCycles(cycles);
+          return;
+        }
+        idx = nextIdx;
+        tick();
+      }, phase.duration);
     }
 
     tick();
     return () => { cancelled = true; };
   }, [running]);
+
+  function start() {
+    setFinished(false);
+    setCompletedCycles(0);
+    setPhaseIdx(0);
+    setRunning(true);
+  }
 
   function stop() {
     setRunning(false);
@@ -172,15 +175,13 @@ function BreathingExercise() {
     <View style={[breathStyles.card, { backgroundColor: theme.surface, ...shadow.card }]}>
       <Text style={[breathStyles.title, { color: theme.text }]}>Exercício de respiração</Text>
       <Text style={[breathStyles.sub, { color: theme.muted }]}>
-        {running ? currentPhase.label : 'Toque para começar'}
+        {finished ? `✓ ${MAX_BREATH_CYCLES} vezes completado!` : running ? currentPhase.label : 'Toque para começar'}
       </Text>
 
       <View style={breathStyles.circleWrap}>
-        {/* Outer ring */}
-        <Animated.View style={[breathStyles.outerCircle, { borderColor: theme.secondary + '55' }, animStyle]} />
-        {/* Inner circle */}
-        <View style={[breathStyles.innerCircle, { backgroundColor: theme.secondary }]}>
-          <Text style={breathStyles.breathEmoji}>🌬️</Text>
+        <Animated.View style={[breathStyles.outerCircle, { borderColor: (finished ? '#5FCB8E' : theme.secondary) + '55' }, animStyle]} />
+        <View style={[breathStyles.innerCircle, { backgroundColor: finished ? '#5FCB8E' : theme.secondary }]}>
+          <Text style={breathStyles.breathEmoji}>{finished ? '✓' : '🌬️'}</Text>
         </View>
       </View>
 
@@ -192,24 +193,42 @@ function BreathingExercise() {
         </View>
       )}
 
-      <View style={breathStyles.btnWrap}>
-        <View style={[breathStyles.btnShadow, { backgroundColor: running ? theme.coral + 'AA' : theme.primaryDark }]} />
-        <Pressable
-          onPress={running ? stop : () => setRunning(true)}
-          style={({ pressed }) => [
-            breathStyles.btn,
-            {
-              backgroundColor: running ? theme.coral : theme.primary,
-              borderColor: running ? theme.coral + 'AA' : theme.primaryDark,
-              borderBottomWidth: pressed ? 2 : 4,
-              transform: [{ translateY: pressed ? 2 : 0 }],
-            },
-          ]}
-        >
-          <PlimIcon name={running ? 'pause' : 'play'} size={18} color="#fff" />
-          <Text style={breathStyles.btnLabel}>{running ? 'Parar' : 'Começar'}</Text>
-        </Pressable>
-      </View>
+      {!finished && (
+        <View style={breathStyles.btnWrap}>
+          <View style={[breathStyles.btnShadow, { backgroundColor: running ? theme.coral + 'AA' : theme.primaryDark }]} />
+          <Pressable
+            onPress={running ? stop : start}
+            style={({ pressed }) => [
+              breathStyles.btn,
+              {
+                backgroundColor: running ? theme.coral : theme.primary,
+                borderColor: running ? theme.coral + 'AA' : theme.primaryDark,
+                borderBottomWidth: pressed ? 2 : 4,
+                transform: [{ translateY: pressed ? 2 : 0 }],
+              },
+            ]}
+          >
+            <PlimIcon name={running ? 'pause' : 'play'} size={18} color="#fff" />
+            <Text style={breathStyles.btnLabel}>{running ? 'Parar' : 'Começar'}</Text>
+          </Pressable>
+        </View>
+      )}
+
+      {finished && (
+        <View style={breathStyles.btnWrap}>
+          <View style={[breathStyles.btnShadow, { backgroundColor: '#2D7A52' }]} />
+          <Pressable
+            onPress={start}
+            style={({ pressed }) => [
+              breathStyles.btn,
+              { backgroundColor: '#5FCB8E', borderColor: '#2D7A52', borderBottomWidth: pressed ? 2 : 4, transform: [{ translateY: pressed ? 2 : 0 }] },
+            ]}
+          >
+            <PlimIcon name="play" size={18} color="#fff" />
+            <Text style={breathStyles.btnLabel}>Repetir</Text>
+          </Pressable>
+        </View>
+      )}
     </View>
   );
 }

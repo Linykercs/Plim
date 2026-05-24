@@ -45,6 +45,7 @@ export default function DiaryMicScreen() {
   const addEntry = useAppStore(s => s.addEntry);
   const addStars = useAppStore(s => s.addStars);
   const completeMission = useAppStore(s => s.completeMission);
+  const missionsDone = useAppStore(s => s.missionsDone);
 
   const [phase, setPhase] = useState<'form' | 'reward'>('form');
   const [time, setTime] = useState(nowHM());
@@ -78,8 +79,10 @@ export default function DiaryMicScreen() {
       triggers,
       note,
     });
-    addStars(3);
-    completeMission('mic');
+    if (!missionsDone.mic) {
+      addStars(3);
+      completeMission('mic');
+    }
     setPhase('reward');
   }
 

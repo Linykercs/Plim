@@ -184,15 +184,20 @@ export default function BalloonGame() {
       {/* Button */}
       <View style={[styles.btnArea, { paddingBottom: insets.bottom + spacing.lg }]}>
         <View style={styles.mainBtnWrap}>
-          <View style={[styles.btnShadow, { backgroundColor: running ? '#D45C5280' : theme.primaryDark }]} />
+          <View style={[styles.btnShadow, { backgroundColor: running ? '#A83000' : theme.primaryDark }]} />
           <Pressable
             style={({ pressed }) => [
               styles.mainBtn,
-              { backgroundColor: running ? theme.coral : theme.primary, borderColor: running ? '#D45C52' : theme.primaryDark, borderBottomWidth: pressed ? 2 : 4, transform: [{ translateY: pressed ? 2 : 0 }] },
+              {
+                backgroundColor: running ? theme.coral : theme.primary,
+                borderColor: running ? '#A83000' : theme.primaryDark,
+                borderBottomWidth: pressed ? 2 : 5,
+                transform: [{ translateY: pressed ? 3 : 0 }],
+              },
             ]}
             onPress={running ? handleStop : handleStart}
           >
-            <PlimIcon name={running ? 'pause' : 'play'} size={20} color="#fff" />
+            <PlimIcon name={running ? 'pause' : 'play'} size={24} color="#fff" />
             <Text style={styles.btnLabel}>{running ? 'Pausar' : 'Começar'}</Text>
           </Pressable>
         </View>
@@ -221,9 +226,9 @@ const styles = StyleSheet.create({
 
   btnArea: { paddingHorizontal: spacing.lg, paddingTop: spacing.sm },
   mainBtnWrap: { position: 'relative' },
-  btnShadow: { position: 'absolute', top: 4, left: 0, right: 0, bottom: 0, borderRadius: 16 },
-  mainBtn: { borderRadius: 16, paddingVertical: spacing.md, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: spacing.xs, borderWidth: 0 },
-  btnLabel: { fontFamily: fontFamily.bodyBold, fontSize: fontSize.lg, color: '#fff' },
+  btnShadow: { position: 'absolute', top: 5, left: 0, right: 0, bottom: 0, borderRadius: 20 },
+  mainBtn: { borderRadius: 20, paddingVertical: spacing.md + 4, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: spacing.sm, borderWidth: 0 },
+  btnLabel: { fontFamily: fontFamily.bodyBold, fontSize: fontSize.xl, color: '#fff' },
 
   center: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: spacing.md, paddingHorizontal: spacing.xl },
   doneEmoji: { fontSize: 72 },

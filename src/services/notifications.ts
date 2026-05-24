@@ -35,7 +35,7 @@ export async function scheduleAlarm(alarm: Alarm): Promise<void> {
       content: {
         title: alarm.kind === 'night' ? '🌙 Hora do xixi da madrugada' : '🐸 Hora do xixi!',
         body: alarm.label,
-        sound: true,
+        sound: 'plim.wav',
       },
       trigger: {
         type: Notifications.SchedulableTriggerInputTypes.WEEKLY,

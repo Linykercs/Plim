@@ -148,11 +148,46 @@ export default function StoreScreen() {
         </View>
 
         {/* Empty stars hint */}
-        {stars === 0 && (
+        {stars === 0 && redemptions.length === 0 && (
           <View style={styles.hint}>
             <Text style={[styles.hintText, { color: theme.muted }]}>
               Complete tarefas na aba Início para ganhar ⭐
             </Text>
+          </View>
+        )}
+
+        {/* Redeemed rewards */}
+        {redemptions.length > 0 && (
+          <View style={styles.redeemedSection}>
+            <Text style={[styles.redeemedTitle, { color: theme.text }]}>Prêmios resgatados</Text>
+            {[...redemptions]
+              .sort((a, b) => new Date(b.redeemedAt).getTime() - new Date(a.redeemedAt).getTime())
+              .map(r => {
+                const reward = rewards.find(rw => rw.id === r.rewardId);
+                if (!reward) return null;
+                const date = new Date(r.redeemedAt);
+                const label = date.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' });
+                return (
+                  <View key={r.id} style={[styles.redeemedRow, { backgroundColor: theme.surface }]}>
+                    <Text style={styles.redeemedEmoji}>{reward.icon}</Text>
+                    <View style={{ flex: 1 }}>
+                      <Text style={[styles.redeemedName, { color: theme.text }]}>{reward.name}</Text>
+                      <Text style={[styles.redeemedDate, { color: theme.muted }]}>{label}</Text>
+                    </View>
+                    <View style={[
+                      styles.statusChip,
+                      { backgroundColor: r.status === 'delivered' ? '#5FCB8E22' : theme.accent + '22' },
+                    ]}>
+                      <Text style={[
+                        styles.statusText,
+                        { color: r.status === 'delivered' ? '#3DA070' : theme.accent },
+                      ]}>
+                        {r.status === 'delivered' ? '✓ Entregue' : '⏳ Pendente'}
+                      </Text>
+                    </View>
+                  </View>
+                );
+              })}
           </View>
         )}
       </ScrollView>
@@ -209,4 +244,16 @@ const styles = StyleSheet.create({
 
   hint: { alignItems: 'center', paddingVertical: spacing.md },
   hintText: { fontFamily: fontFamily.body, fontSize: fontSize.sm, textAlign: 'center', paddingHorizontal: spacing.xl },
+
+  redeemedSection: { gap: spacing.xs },
+  redeemedTitle: { fontFamily: fontFamily.heading, fontSize: fontSize.base, marginBottom: spacing.xs },
+  redeemedRow: {
+    flexDirection: 'row', alignItems: 'center', gap: spacing.sm,
+    borderRadius: radius.card, padding: spacing.sm,
+  },
+  redeemedEmoji: { fontSize: 28 },
+  redeemedName: { fontFamily: fontFamily.bodyBold, fontSize: fontSize.sm },
+  redeemedDate: { fontFamily: fontFamily.body, fontSize: fontSize.xs, marginTop: 2 },
+  statusChip: { paddingHorizontal: spacing.sm, paddingVertical: spacing.xxs, borderRadius: 10 },
+  statusText: { fontFamily: fontFamily.bodyBold, fontSize: fontSize.xs },
 });
