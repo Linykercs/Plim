@@ -36,9 +36,7 @@
       }
     },
     "plugins": [
-      ["expo-notifications", {
-        "sounds": ["./assets/sounds/plim.wav"]
-      }],
+      "expo-notifications",
       [
         "expo-splash-screen",
         {
