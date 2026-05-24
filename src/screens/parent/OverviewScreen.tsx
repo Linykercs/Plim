@@ -143,8 +143,14 @@ export default function OverviewScreen() {
           ) : (
             recent.map(entry => (
               <View key={entry.id} style={[styles.entryRow, { borderBottomColor: theme.softBg2 }]}>
-                <View style={[styles.entryIcon, { backgroundColor: entry.type === 'mic' ? theme.secondary + '22' : '#B57F4F22' }]}>
-                  <PlimIcon name={entry.type === 'mic' ? 'drop' : 'poop'} size={16} color={entry.type === 'mic' ? theme.secondary : '#B57F4F'} />
+                <View style={[styles.entryIcon, {
+                  backgroundColor: entry.type === 'mic' ? theme.secondary + '22' : entry.type === 'inc' ? '#C4364A22' : '#B57F4F22',
+                }]}>
+                  <PlimIcon
+                    name={entry.type === 'evac' ? 'poop' : 'drop'}
+                    size={16}
+                    color={entry.type === 'mic' ? theme.secondary : entry.type === 'inc' ? '#C4364A' : '#B57F4F'}
+                  />
                 </View>
                 <Text style={[styles.entryTime, { color: theme.muted }]}>
                   {new Date(entry.createdAt).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })}
@@ -156,6 +162,9 @@ export default function OverviewScreen() {
                 )}
                 {entry.type === 'evac' && (
                   <Text style={[styles.entryDetail, { color: theme.muted }]}>Tipo {entry.bristol}</Text>
+                )}
+                {entry.type === 'inc' && (
+                  <Text style={[styles.entryDetail, { color: '#C4364A' }]}>Escape</Text>
                 )}
               </View>
             ))

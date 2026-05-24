@@ -12,6 +12,7 @@ export type DiaryStackParamList = {
   DiaryMenu: undefined;
   DiaryMic: undefined;
   DiaryEvac: undefined;
+  DiaryInc: undefined;
   Alarms: undefined;
 };
 

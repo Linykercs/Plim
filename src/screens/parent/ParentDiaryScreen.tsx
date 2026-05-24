@@ -6,7 +6,7 @@ import { fontFamily, fontSize } from '../../theme/typography';
 import { useAppStore, type DiaryEntry , useTheme} from '../../store/useAppStore';
 import PlimIcon from '../../components/ui/PlimIcon';
 
-type Filter = 'all' | 'mic' | 'evac';
+type Filter = 'all' | 'mic' | 'evac' | 'inc';
 
 const URINE_COLORS: Record<string, string> = {
   c1: '#F8F4D3', c2: '#FDED9E', c3: '#F9CC4B', c4: '#D69B27', c5: '#A35F12',
@@ -39,9 +39,10 @@ export default function ParentDiaryScreen() {
   }, [entries, filter]);
 
   const FILTERS: { key: Filter; label: string; icon: 'drop' | 'poop' | 'diary' }[] = [
-    { key: 'all',  label: 'Todos',  icon: 'diary' },
-    { key: 'mic',  label: 'Xixi',   icon: 'drop' },
-    { key: 'evac', label: 'Cocô',   icon: 'poop' },
+    { key: 'all',  label: 'Todos',   icon: 'diary' },
+    { key: 'mic',  label: 'Xixi',    icon: 'drop' },
+    { key: 'evac', label: 'Cocô',    icon: 'poop' },
+    { key: 'inc',  label: 'Escapes', icon: 'drop' },
   ];
 
   return (
@@ -88,16 +89,16 @@ export default function ParentDiaryScreen() {
           renderItem={({ item: entry }) => (
             <View style={[styles.entryCard, { backgroundColor: theme.surface, ...shadow.card }]}>
               {/* Left accent bar */}
-              <View style={[styles.accentBar, { backgroundColor: entry.type === 'mic' ? theme.secondary : '#B57F4F' }]} />
+              <View style={[styles.accentBar, { backgroundColor: entry.type === 'mic' ? theme.secondary : entry.type === 'inc' ? '#C4364A' : '#B57F4F' }]} />
 
               <View style={styles.entryContent}>
                 <View style={styles.entryTop}>
-                  <View style={[styles.iconBox, { backgroundColor: entry.type === 'mic' ? theme.secondary + '22' : '#B57F4F22' }]}>
-                    <PlimIcon name={entry.type === 'mic' ? 'drop' : 'poop'} size={18} color={entry.type === 'mic' ? theme.secondary : '#B57F4F'} />
+                  <View style={[styles.iconBox, { backgroundColor: entry.type === 'mic' ? theme.secondary + '22' : entry.type === 'inc' ? '#C4364A22' : '#B57F4F22' }]}>
+                    <PlimIcon name={entry.type === 'evac' ? 'poop' : 'drop'} size={18} color={entry.type === 'mic' ? theme.secondary : entry.type === 'inc' ? '#C4364A' : '#B57F4F'} />
                   </View>
                   <View style={{ flex: 1 }}>
                     <Text style={[styles.entryType, { color: theme.text }]}>
-                      {entry.type === 'mic' ? 'Xixi' : 'Cocô'}
+                      {entry.type === 'mic' ? 'Xixi' : entry.type === 'inc' ? 'Escape' : 'Cocô'}
                     </Text>
                     <Text style={[styles.entryTime, { color: theme.muted }]}>
                       {new Date(entry.createdAt).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}

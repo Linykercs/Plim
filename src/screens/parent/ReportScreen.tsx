@@ -26,6 +26,7 @@ function buildHtml(days: Period, entries: DiaryEntry[], profile: KidProfile | nu
   const period = entries.filter(e => new Date(e.createdAt) >= cutoff);
   const mics  = period.filter(e => e.type === 'mic');
   const evacs = period.filter(e => e.type === 'evac');
+  const incs  = period.filter(e => e.type === 'inc');
 
   const avgMic  = (mics.length  / days).toFixed(1);
   const avgEvac = (evacs.length / days).toFixed(1);
@@ -115,7 +116,7 @@ function buildHtml(days: Period, entries: DiaryEntry[], profile: KidProfile | nu
 <div class="stats">
   <div class="stat-card"><div class="stat-num">${mics.length}</div><div class="stat-sub">registros</div></div>
   <div class="stat-card"><div class="stat-num">${avgMic}</div><div class="stat-sub">por dia</div></div>
-  <div class="stat-card"><div class="stat-num">${mics.filter(e => e.type === 'mic' && e.cups >= 6).length}</div><div class="stat-sub">dias c/ meta de agua</div></div>
+  <div class="stat-card"><div class="stat-num">${incs.length}</div><div class="stat-sub">escapes no periodo</div></div>
 </div>
 ${colorRows ? `<table><tr><th>Cor da urina</th><th style="text-align:center">Ocorrencias</th></tr>${colorRows}</table>` : '<p style="color:#6B8499;font-size:12px">Nenhum registro de miccao no periodo.</p>'}
 <h2>Evacuacao</h2>
@@ -125,6 +126,12 @@ ${colorRows ? `<table><tr><th>Cor da urina</th><th style="text-align:center">Oco
   <div class="stat-card"><div class="stat-num brown">${bristolPct}%</div><div class="stat-sub">consistencia normal (3-5)</div></div>
 </div>
 ${bristolRows ? `<table><tr><th>Bristol</th><th>Descricao</th><th style="text-align:center">Qtd</th></tr>${bristolRows}</table>` : '<p style="color:#6B8499;font-size:12px">Nenhum registro de evacuacao no periodo.</p>'}
+<h2>Escapes (Incontinencia)</h2>
+<div class="stats">
+  <div class="stat-card"><div class="stat-num" style="color:#C4364A">${incs.length}</div><div class="stat-sub">total de escapes</div></div>
+  <div class="stat-card"><div class="stat-num" style="color:#C4364A">${(incs.length / days).toFixed(1)}</div><div class="stat-sub">por dia</div></div>
+</div>
+${incs.length === 0 ? '<p style="color:#6B8499;font-size:12px">Nenhum escape no periodo.</p>' : ''}
 <div class="footer">
   Relatorio gerado pelo app Plim<br/>
   Este documento e informativo. Interprete os dados junto ao seu profissional de saude.
@@ -147,6 +154,7 @@ export default function ReportScreen() {
   const periodEntries = entries.filter(e => new Date(e.createdAt) >= cutoff);
   const mics  = periodEntries.filter(e => e.type === 'mic');
   const evacs = periodEntries.filter(e => e.type === 'evac');
+  const incs  = periodEntries.filter(e => e.type === 'inc');
   const bristolOk = evacs.filter(e => e.type === 'evac' && [3, 4, 5].includes(e.bristol)).length;
   const bristolPct = evacs.length > 0 ? Math.round((bristolOk / evacs.length) * 100) : 0;
 
@@ -244,6 +252,20 @@ export default function ReportScreen() {
               <View style={styles.statItem}>
                 <Text style={[styles.statBig, { color: '#B57F4F' }]}>{bristolPct}%</Text>
                 <Text style={[styles.statSm, { color: theme.muted }]}>consistencia ok</Text>
+              </View>
+            </View>
+          </View>
+
+          <View style={[styles.previewSection, { borderColor: theme.softBg2 }]}>
+            <Text style={[styles.sectionTitle, { color: theme.muted }]}>Escapes</Text>
+            <View style={styles.statRow}>
+              <View style={styles.statItem}>
+                <Text style={[styles.statBig, { color: '#C4364A' }]}>{incs.length}</Text>
+                <Text style={[styles.statSm, { color: theme.muted }]}>no periodo</Text>
+              </View>
+              <View style={styles.statItem}>
+                <Text style={[styles.statBig, { color: '#C4364A' }]}>{(incs.length / period).toFixed(1)}</Text>
+                <Text style={[styles.statSm, { color: theme.muted }]}>por dia</Text>
               </View>
             </View>
           </View>

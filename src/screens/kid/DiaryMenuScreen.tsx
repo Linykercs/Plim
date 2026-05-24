@@ -100,6 +100,25 @@ export default function DiaryMenuScreen() {
           </View>
         </View>
 
+        {/* Escape */}
+        <View style={styles.wideWrap}>
+          <View style={[styles.wideShadow, { backgroundColor: '#9B2335' }]} />
+          <TouchableOpacity
+            activeOpacity={0.85}
+            style={[styles.wideCard, { borderColor: '#C4364A', backgroundColor: theme.surface }]}
+            onPress={() => nav.navigate('DiaryInc')}
+          >
+            <View style={[styles.wideIconBox, { backgroundColor: '#C4364A33' }]}>
+              <PlimIcon name="drop" size={28} color="#C4364A" />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={[styles.cardLabel, { color: theme.text }]}>Escape</Text>
+              <Text style={[styles.cardSub, { color: theme.muted }]}>Registrar acidente</Text>
+            </View>
+            <PlimIcon name="chevron" size={20} color={theme.muted} />
+          </TouchableOpacity>
+        </View>
+
         {/* Lembretes */}
         <View style={styles.wideWrap}>
           <View style={[styles.wideShadow, { backgroundColor: theme.accent }]} />
@@ -128,7 +147,7 @@ export default function DiaryMenuScreen() {
                 <View style={styles.timelineLeft}>
                   <View style={[
                     styles.timelineDot,
-                    { backgroundColor: entry.type === 'mic' ? theme.secondary : '#B57F4F' },
+                    { backgroundColor: entry.type === 'mic' ? theme.secondary : entry.type === 'inc' ? '#C4364A' : '#B57F4F' },
                   ]} />
                   {idx < todayEntries.length - 1 && (
                     <View style={[styles.timelineLine, { backgroundColor: theme.softBg2 }]} />
@@ -137,9 +156,9 @@ export default function DiaryMenuScreen() {
                 <View style={[styles.timelineCard, { backgroundColor: theme.surface, ...shadow.card }]}>
                   <View style={styles.timelineCardRow}>
                     <PlimIcon
-                      name={entry.type === 'mic' ? 'drop' : 'poop'}
+                      name={entry.type === 'evac' ? 'poop' : 'drop'}
                       size={18}
-                      color={entry.type === 'mic' ? theme.secondary : '#B57F4F'}
+                      color={entry.type === 'mic' ? theme.secondary : entry.type === 'inc' ? '#C4364A' : '#B57F4F'}
                     />
                     <Text style={[styles.timelineTime, { color: theme.muted }]}>
                       {formatTime(entry.createdAt)}
@@ -149,6 +168,9 @@ export default function DiaryMenuScreen() {
                     )}
                     {entry.type === 'evac' && (
                       <Text style={[styles.bristolBadge, { color: '#B57F4F' }]}>T{entry.bristol}</Text>
+                    )}
+                    {entry.type === 'inc' && (
+                      <Text style={[styles.bristolBadge, { color: '#C4364A' }]}>Escape</Text>
                     )}
                   </View>
                   {entry.note ? (
