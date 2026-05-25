@@ -139,7 +139,7 @@ export default function ProfileSelectScreen({ navigation }: { navigation: Nav })
             <Text style={{ fontFamily: fontFamily.bodyBold }}>
               Para crianças de 4 a 10 anos.
             </Text>
-            {' '}Plim é complementar — use sempre junto com seu fisioterapeuta ou pediatra.
+            {' '}Plim é complementar — use sempre junto com seu médico ou enfermeiro.
           </Text>
         </View>
       </ScrollView>

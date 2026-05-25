@@ -162,7 +162,7 @@ function StepWelcome({ theme }: { theme: Palette }) {
       </View>
       <Text style={[styles.h1, { color: theme.text, marginTop: 4 }]}>Oi, sou o Plim!</Text>
       <Text style={[styles.sub, { color: theme.muted, marginBottom: 24 }]}>
-        {'Vou te ajudar a treinar o xixi e o cocô\ncom joguinhos divertidos —\ne mandar um relatório bonitinho pro seu fisio.'}
+        {'Vou te ajudar a treinar o xixi e o cocô\ncom joguinhos divertidos —\ne mandar um relatório bonitinho pro seu médico.'}
       </Text>
       <View style={{ gap: 10 }}>
         {features.map((f) => (
@@ -341,7 +341,7 @@ function StepCondition({
       <View style={[styles.disclaimer, { backgroundColor: theme.accent + '30' }]}>
         <PlimIcon name="sparkle" color={theme.text} size={16} />
         <Text style={[styles.disclaimerTxt, { color: theme.text }]}>
-          Plim é <Text style={{ fontFamily: fontFamily.bodyBold }}>complementar ao tratamento</Text>. Sempre siga as orientações do seu fisio/médico.
+          Plim é <Text style={{ fontFamily: fontFamily.bodyBold }}>complementar ao tratamento</Text>. Sempre siga as orientações do seu médico ou enfermeiro.
         </Text>
       </View>
     </View>
@@ -418,8 +418,8 @@ function StepPro({
             <Text style={[styles.featureTitle, { color: theme.text }]}>Sem problema!</Text>
             <Text style={[styles.featureSub, { color: theme.muted, marginTop: 4, lineHeight: 18 }]}>
               Plim funciona contigo. Mas se os sintomas continuarem, procura um{' '}
-              <Text style={{ fontFamily: fontFamily.bodyBold }}>uropediatra</Text> ou{' '}
-              <Text style={{ fontFamily: fontFamily.bodyBold }}>fisio pélvico infantil</Text>.
+              <Text style={{ fontFamily: fontFamily.bodyBold }}>médico</Text> ou{' '}
+              <Text style={{ fontFamily: fontFamily.bodyBold }}>enfermeiro</Text>.
             </Text>
           </View>
         </View>
