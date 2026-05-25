@@ -6,6 +6,7 @@ import Animated, {
 import Svg, { Ellipse, Path } from 'react-native-svg';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { spacing } from '../../../theme/tokens';
 import { fontFamily, fontSize } from '../../../theme/typography';
 import { useAppStore, useTheme } from '../../../store/useAppStore';
@@ -35,6 +36,7 @@ function BalloonSvg({ color }: { color: string }) {
 export default function BalloonGame() {
   const theme = useTheme();
   const insets = useSafeAreaInsets();
+  const tabBarHeight = useBottomTabBarHeight();
   const nav = useNavigation();
   const addStars = useAppStore(s => s.addStars);
   const completeMission = useAppStore(s => s.completeMission);
@@ -181,7 +183,7 @@ export default function BalloonGame() {
       )}
 
       {/* Button */}
-      <View style={[styles.btnArea, { paddingBottom: insets.bottom + spacing.lg }]}>
+      <View style={[styles.btnArea, { paddingBottom: tabBarHeight + spacing.md }]}>
         <View style={styles.mainBtnWrap}>
           <View style={[styles.btnShadow, { backgroundColor: running ? '#A83000' : theme.primaryDark }]} />
           <Pressable

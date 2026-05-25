@@ -6,6 +6,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { spacing } from '../../../theme/tokens';
 import { fontFamily, fontSize } from '../../../theme/typography';
 import { useAppStore , useTheme} from '../../../store/useAppStore';
@@ -20,6 +21,7 @@ const PAD_COUNT = 8;
 export default function FrogGame() {
   const theme = useTheme();
   const insets = useSafeAreaInsets();
+  const tabBarHeight = useBottomTabBarHeight();
   const nav = useNavigation();
   const addStars = useAppStore(s => s.addStars);
   const completeMission = useAppStore(s => s.completeMission);
@@ -197,7 +199,7 @@ export default function FrogGame() {
       </Text>
 
       {/* Jump button */}
-      <View style={[styles.jumpBtnArea, { paddingBottom: insets.bottom + spacing.lg }]}>
+      <View style={[styles.jumpBtnArea, { paddingBottom: tabBarHeight + spacing.md }]}>
         {phase === 'idle' ? (
           <View style={styles.mainBtnWrap}>
             <View style={[styles.btnShadow, { backgroundColor: theme.primaryDark }]} />

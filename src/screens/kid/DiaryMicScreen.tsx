@@ -5,6 +5,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { DiaryStackParamList } from '../../navigation/types';
 import { spacing, radius, shadow } from '../../theme/tokens';
@@ -41,6 +42,7 @@ function nowHM() {
 export default function DiaryMicScreen() {
   const theme = useTheme();
   const insets = useSafeAreaInsets();
+  const tabBarHeight = useBottomTabBarHeight();
   const nav = useNavigation<Nav>();
   const addEntry = useAppStore(s => s.addEntry);
   const addStars = useAppStore(s => s.addStars);
@@ -127,7 +129,7 @@ export default function DiaryMicScreen() {
 
       <ScrollView
         style={{ flex: 1 }}
-        contentContainerStyle={[styles.scroll, { paddingBottom: insets.bottom + 100 }]}
+        contentContainerStyle={[styles.scroll, { paddingBottom: tabBarHeight + 100 }]}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
@@ -244,7 +246,7 @@ export default function DiaryMicScreen() {
       </ScrollView>
 
       {/* Save button */}
-      <View style={[styles.footer, { paddingBottom: insets.bottom + spacing.sm }]}>
+      <View style={[styles.footer, { paddingBottom: tabBarHeight + spacing.sm }]}>
         <View style={[styles.btnShadow, { backgroundColor: theme.primaryDark }]} />
         <Pressable
           style={({ pressed }) => [

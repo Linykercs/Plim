@@ -7,6 +7,7 @@ import Animated, {
 import Svg, { Ellipse, Rect, Circle, Polygon } from 'react-native-svg';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { spacing, radius } from '../../../theme/tokens';
 import { fontFamily, fontSize } from '../../../theme/typography';
 import { useAppStore , useTheme} from '../../../store/useAppStore';
@@ -39,6 +40,7 @@ function RocketSvg({ flameOn }: { flameOn: boolean }) {
 export default function RocketGame() {
   const theme = useTheme();
   const insets = useSafeAreaInsets();
+  const tabBarHeight = useBottomTabBarHeight();
   const nav = useNavigation();
   const addStars = useAppStore(s => s.addStars);
   const completeMission = useAppStore(s => s.completeMission);
@@ -194,7 +196,7 @@ export default function RocketGame() {
       </Text>
 
       {/* Hold button */}
-      <View style={[styles.holdBtnArea, { paddingBottom: insets.bottom + spacing.lg }]}>
+      <View style={[styles.holdBtnArea, { paddingBottom: tabBarHeight + spacing.md }]}>
         <View style={styles.holdBtnWrap}>
           <View style={[styles.holdBtnRing, { borderColor: holding ? theme.coral + '88' : theme.primary + '55' }]} />
           <View style={[styles.holdBtnShadow, { backgroundColor: holding ? '#A83000' : theme.primaryDark }]} />
