@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
 import Animated, {
   useSharedValue, useAnimatedStyle, withSpring, withSequence, withTiming,
-  cancelAnimation,
+  Easing, cancelAnimation,
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
@@ -94,10 +94,10 @@ export default function FrogGame() {
     // Jump arc: move right, arc up then land
     const padSpacing = 38;
     cancelAnimation(frogY);
-    frogX.value = withSpring(nextPad * padSpacing, { damping: 14, stiffness: 200 });
+    frogX.value = withTiming(nextPad * padSpacing, { duration: 200, easing: Easing.out(Easing.quad) });
     frogY.value = withSequence(
-      withTiming(-40, { duration: 150 }),
-      withSpring(0, { damping: 10, stiffness: 200 }),
+      withTiming(-44, { duration: 140, easing: Easing.out(Easing.quad) }),
+      withTiming(0,   { duration: 180, easing: Easing.in(Easing.quad) }),
     );
 
     if (jumpsRef.current >= TOTAL_JUMPS) {
