@@ -3,18 +3,18 @@ import { View, Text, StyleSheet, Pressable } from 'react-native';
 import Animated, {
   useSharedValue, useAnimatedStyle, withTiming, Easing, cancelAnimation,
 } from 'react-native-reanimated';
-import Svg, { Ellipse, Path, Line, Circle } from 'react-native-svg';
+import Svg, { Ellipse, Path } from 'react-native-svg';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
-import { spacing, radius } from '../../../theme/tokens';
+import { spacing } from '../../../theme/tokens';
 import { fontFamily, fontSize } from '../../../theme/typography';
-import { useAppStore , useTheme} from '../../../store/useAppStore';
+import { useAppStore, useTheme } from '../../../store/useAppStore';
 import PlimIcon from '../../../components/ui/PlimIcon';
 
 const PHASES = [
-  { key: 'inspire', label: 'Inspire...', duration: 4000, targetScale: 1.4, color: '#7DC9E8' },
-  { key: 'hold',    label: 'Segure!',   duration: 2000, targetScale: 1.4, color: '#5FCB8E' },
-  { key: 'expire',  label: 'Expire...', duration: 6000, targetScale: 0.7, color: '#C497F0' },
+  { key: 'inspire', label: 'Inspire...', duration: 4000, targetScale: 1.4, targetOpacity: 0.95, color: '#7DC9E8' },
+  { key: 'hold',    label: 'Segure!',   duration: 2000, targetScale: 1.4, targetOpacity: 1.0,  color: '#5FCB8E' },
+  { key: 'expire',  label: 'Expire...', duration: 6000, targetScale: 0.7, targetOpacity: 0.75, color: '#C497F0' },
 ] as const;
 
 type PhaseKey = typeof PHASES[number]['key'];
@@ -24,13 +24,9 @@ const TOTAL_CYCLES = 5;
 function BalloonSvg({ color }: { color: string }) {
   return (
     <Svg width={120} height={170} viewBox="0 0 120 170">
-      {/* Balloon body */}
       <Ellipse cx={60} cy={68} rx={50} ry={60} fill={color} />
-      {/* Shine */}
       <Ellipse cx={42} cy={44} rx={14} ry={18} fill="#ffffff44" />
-      {/* Knot */}
       <Path d="M54 128 Q60 136 66 128" fill="none" stroke={color} strokeWidth={3} strokeLinecap="round" />
-      {/* String */}
       <Path d="M60 136 Q50 150 60 165" fill="none" stroke="#aaa" strokeWidth={1.5} strokeLinecap="round" />
     </Svg>
   );
@@ -50,7 +46,6 @@ export default function BalloonGame() {
 
   const scale = useSharedValue(0.7);
   const opacity = useSharedValue(0.85);
-  const cancelRef = useRef(false);
   const cyclesRef = useRef(0);
 
   const balloonStyle = useAnimatedStyle(() => ({
@@ -58,56 +53,51 @@ export default function BalloonGame() {
     opacity: opacity.value,
   }));
 
+  // Cleanup on unmount
   useEffect(() => {
     return () => {
-      cancelRef.current = true;
       cancelAnimation(scale);
       cancelAnimation(opacity);
     };
   }, []);
 
+  // Drive each phase: animate balloon, then advance to next phase after duration
   useEffect(() => {
     if (!running) return;
-    cancelRef.current = false;
-    let idx = 0;
 
-    function runPhase() {
-      if (cancelRef.current) return;
-      const phase = PHASES[idx];
-      setPhaseIdx(idx);
-      scale.value = withTiming(phase.targetScale, {
-        duration: phase.duration,
-        easing: Easing.inOut(Easing.ease),
-      });
-      opacity.value = withTiming(phase.key === 'inspire' ? 0.95 : phase.key === 'hold' ? 1 : 0.75, {
-        duration: phase.duration,
-        easing: Easing.inOut(Easing.ease),
-      });
+    const phase = PHASES[phaseIdx];
+    scale.value = withTiming(phase.targetScale, {
+      duration: phase.duration,
+      easing: Easing.inOut(Easing.quad),
+    });
+    opacity.value = withTiming(phase.targetOpacity, {
+      duration: phase.duration,
+      easing: Easing.inOut(Easing.quad),
+    });
 
-      setTimeout(() => {
-        if (cancelRef.current) return;
-        idx = (idx + 1) % PHASES.length;
-        if (idx === 0) {
-          cyclesRef.current += 1;
-          setCycles(cyclesRef.current);
-          if (cyclesRef.current >= TOTAL_CYCLES) {
-            cancelRef.current = true;
-            cancelAnimation(scale);
-            cancelAnimation(opacity);
-            addStars(5);
-            completeMission('game');
-            setDone(true);
-            setRunning(false);
-            return;
-          }
+    const timer = setTimeout(() => {
+      const nextIdx = (phaseIdx + 1) % PHASES.length;
+
+      if (nextIdx === 0) {
+        // Completed one full cycle
+        const next = cyclesRef.current + 1;
+        cyclesRef.current = next;
+        setCycles(next);
+
+        if (next >= TOTAL_CYCLES) {
+          addStars(5);
+          completeMission('game');
+          setDone(true);
+          setRunning(false);
+          return;
         }
-        runPhase();
-      }, phase.duration);
-    }
+      }
 
-    runPhase();
-    return () => { cancelRef.current = true; };
-  }, [running]);
+      setPhaseIdx(nextIdx);
+    }, phase.duration);
+
+    return () => clearTimeout(timer);
+  }, [running, phaseIdx]);
 
   function handleStart() {
     cyclesRef.current = 0;
@@ -117,7 +107,6 @@ export default function BalloonGame() {
   }
 
   function handleStop() {
-    cancelRef.current = true;
     setRunning(false);
     scale.value = withTiming(0.7, { duration: 600 });
     opacity.value = withTiming(0.85, { duration: 600 });
