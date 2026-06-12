@@ -61,13 +61,13 @@ export default function DiaryIncScreen() {
             </View>
           )}
           <View style={styles.btnWrap}>
-            <View style={[styles.btnShadow, { backgroundColor: theme.primaryDark }]} />
+            <View style={[styles.btnShadow, { backgroundColor: theme.btnDark }]} />
             <Pressable
               style={({ pressed }) => [
                 styles.btn,
                 {
-                  backgroundColor: theme.primary,
-                  borderColor: theme.primaryDark,
+                  backgroundColor: theme.btn,
+                  borderColor: theme.btnDark,
                   borderBottomWidth: pressed ? 2 : 4,
                   transform: [{ translateY: pressed ? 2 : 0 }],
                 },
@@ -117,13 +117,13 @@ export default function DiaryIncScreen() {
         />
 
         <View style={styles.btnWrap}>
-          <View style={[styles.btnShadow, { backgroundColor: theme.primaryDark }]} />
+          <View style={[styles.btnShadow, { backgroundColor: theme.btnDark }]} />
           <Pressable
             style={({ pressed }) => [
               styles.btn,
               {
-                backgroundColor: theme.primary,
-                borderColor: theme.primaryDark,
+                backgroundColor: theme.btn,
+                borderColor: theme.btnDark,
                 borderBottomWidth: pressed ? 2 : 4,
                 transform: [{ translateY: pressed ? 2 : 0 }],
               },

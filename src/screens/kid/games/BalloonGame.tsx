@@ -10,6 +10,8 @@ import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { spacing } from '../../../theme/tokens';
 import { fontFamily, fontSize } from '../../../theme/typography';
 import { useAppStore, useTheme } from '../../../store/useAppStore';
+import { AVATAR_COLORS } from '../../../theme/palettes';
+import PlimMascot from '../../../components/mascot/PlimMascot';
 import PlimIcon from '../../../components/ui/PlimIcon';
 
 const PHASES = [
@@ -40,6 +42,8 @@ export default function BalloonGame() {
   const nav = useNavigation();
   const addStars = useAppStore(s => s.addStars);
   const completeMission = useAppStore(s => s.completeMission);
+  const profile = useAppStore(s => s.profile);
+  const mascotColor = AVATAR_COLORS[profile?.avatarColor ?? 0];
 
   const [running, setRunning] = useState(false);
   const [cycles, setCycles] = useState(0);
@@ -125,7 +129,7 @@ export default function BalloonGame() {
     return (
       <View style={[styles.root, { backgroundColor: '#1A1040', paddingTop: insets.top }]}>
         <View style={styles.center}>
-          <Text style={styles.doneEmoji}>🎈</Text>
+          <PlimMascot size={120} mood="cheer" primary={mascotColor} accent={theme.coral} dark={theme.text} />
           <Text style={[styles.doneTitle, { color: '#fff' }]}>Arrasou!</Text>
           <Text style={[styles.doneSub, { color: '#bbb' }]}>{TOTAL_CYCLES} ciclos completos de respiração!</Text>
           <View style={[styles.starsBadge, { backgroundColor: theme.accent + '33' }]}>
@@ -133,9 +137,9 @@ export default function BalloonGame() {
             <Text style={[styles.starsText, { color: theme.accent }]}>+{earned} ⭐</Text>
           </View>
           <View style={styles.closeBtnWrap}>
-            <View style={[styles.btnShadow, { backgroundColor: theme.primaryDark }]} />
+            <View style={[styles.btnShadow, { backgroundColor: theme.btnDark }]} />
             <Pressable
-              style={({ pressed }) => [styles.btn, { backgroundColor: theme.primary, borderColor: theme.primaryDark, borderBottomWidth: pressed ? 2 : 4, transform: [{ translateY: pressed ? 2 : 0 }] }]}
+              style={({ pressed }) => [styles.btn, { backgroundColor: theme.btn, borderColor: theme.btnDark, borderBottomWidth: pressed ? 2 : 4, transform: [{ translateY: pressed ? 2 : 0 }] }]}
               onPress={() => nav.goBack()}
             >
               <Text style={styles.btnLabel}>Fechar</Text>
@@ -190,13 +194,13 @@ export default function BalloonGame() {
       {/* Button */}
       <View style={[styles.btnArea, { paddingBottom: tabBarHeight + spacing.md }]}>
         <View style={styles.mainBtnWrap}>
-          <View style={[styles.btnShadow, { backgroundColor: running ? '#A83000' : theme.primaryDark }]} />
+          <View style={[styles.btnShadow, { backgroundColor: running ? '#A83000' : theme.btnDark }]} />
           <Pressable
             style={({ pressed }) => [
               styles.mainBtn,
               {
-                backgroundColor: running ? theme.coral : theme.primary,
-                borderColor: running ? '#A83000' : theme.primaryDark,
+                backgroundColor: running ? theme.coralDark : theme.btn,
+                borderColor: running ? '#A83000' : theme.btnDark,
                 borderBottomWidth: pressed ? 2 : 5,
                 transform: [{ translateY: pressed ? 3 : 0 }],
               },
@@ -215,7 +219,7 @@ export default function BalloonGame() {
 const styles = StyleSheet.create({
   root: { flex: 1 },
   topBar: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: spacing.md, paddingBottom: spacing.sm },
-  backBtn: { width: 36, height: 36, alignItems: 'center', justifyContent: 'center' },
+  backBtn: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
   gameTitle: { fontFamily: fontFamily.heading, fontSize: fontSize.lg },
   cyclesBadge: { paddingHorizontal: spacing.sm, paddingVertical: spacing.xs, borderRadius: 12 },
   cyclesText: { fontFamily: fontFamily.bodyBold, fontSize: fontSize.base },

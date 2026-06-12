@@ -8,7 +8,7 @@ export const fontFamily = {
 } as const;
 
 export const fontSize = {
-  xs: 10,
+  xs: 12,
   sm: 12,
   md: 14,
   base: 16,

@@ -18,6 +18,7 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import PlimMascot from '../../components/mascot/PlimMascot';
 import PlimIcon, { type IconName } from '../../components/ui/PlimIcon';
 import { useAppStore, useTheme, countActiveDays } from '../../store/useAppStore';
+import { plimSay } from '../../content/plimVoice';
 import { defaultPalette, AVATAR_COLORS } from '../../theme/palettes';
 import { fontFamily, fontSize } from '../../theme/typography';
 import type { KidTabParamList, RootStackParamList } from '../../navigation/types';
@@ -90,6 +91,7 @@ export default function HomeScreen({ navigation }: { navigation: Nav }) {
 
   const doneCount = missions.filter((m) => missionsDone[m.id]).length;
   const allDone = doneCount === missions.length;
+  const callout = useMemo(() => plimSay(allDone ? 'allDone' : 'welcome'), [allDone]);
   const savingReward = savingFor ? rewards.find((r) => r.id === savingFor) : null;
   const nextAlarm = useNextAlarm();
   const avatarColor = profile?.avatarColor !== undefined
@@ -145,7 +147,7 @@ export default function HomeScreen({ navigation }: { navigation: Nav }) {
               <Text style={[styles.greeting, { color: 'rgba(255,255,255,0.88)' }]}>
                 oi, {profile?.name ?? 'amigo'}!
               </Text>
-              <Text style={[styles.callout, { color: '#fff' }]}>Bora brincar?</Text>
+              <Text style={[styles.callout, { color: '#fff' }]}>{callout}</Text>
 
               <View style={styles.chips}>
                 <View style={styles.chip}>
@@ -379,7 +381,7 @@ export default function HomeScreen({ navigation }: { navigation: Nav }) {
             )}
             <Pressable
               onPress={() => shiftCelebration()}
-              style={[styles.modalBtn, { backgroundColor: theme.primary }]}
+              style={[styles.modalBtn, { backgroundColor: theme.btn }]}
             >
               <Text style={styles.modalBtnText}>Oba! 🎊</Text>
             </Pressable>

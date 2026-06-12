@@ -133,8 +133,8 @@ export default function OnboardingScreen({ navigation }: { navigation: Nav }) {
       {/* ── Bottom CTA ── */}
       <View style={[styles.footer, { backgroundColor: theme.bg }]}>
         <PlimButton
-          color={theme.primary}
-          darkColor={theme.primaryDark}
+          color={theme.btn}
+          darkColor={theme.btnDark}
           fullWidth
           onPress={isLast ? finish : next}
         >

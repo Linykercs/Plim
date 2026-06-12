@@ -11,6 +11,8 @@ import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { spacing, radius } from '../../../theme/tokens';
 import { fontFamily, fontSize } from '../../../theme/typography';
 import { useAppStore , useTheme} from '../../../store/useAppStore';
+import { AVATAR_COLORS } from '../../../theme/palettes';
+import PlimMascot from '../../../components/mascot/PlimMascot';
 import PlimIcon from '../../../components/ui/PlimIcon';
 
 const TOTAL_REPS = 8;
@@ -46,6 +48,8 @@ export default function RocketGame() {
   const nav = useNavigation();
   const addStars = useAppStore(s => s.addStars);
   const completeMission = useAppStore(s => s.completeMission);
+  const profile = useAppStore(s => s.profile);
+  const mascotColor = AVATAR_COLORS[profile?.avatarColor ?? 0];
 
   const [phase, setPhase] = useState<'idle' | 'playing' | 'done'>('idle');
   const [reps, setReps] = useState(0);
@@ -168,7 +172,7 @@ export default function RocketGame() {
     return (
       <View style={[styles.root, { backgroundColor: '#0A0E2E', paddingTop: insets.top }]}>
         <View style={styles.center}>
-          <Text style={styles.doneEmoji}>🚀</Text>
+          <PlimMascot size={120} mood="cheer" primary={mascotColor} accent={theme.coral} dark={theme.text} />
           <Text style={[styles.doneTitle, { color: '#fff' }]}>Missão completa!</Text>
           <Text style={[styles.doneSub, { color: '#aaa' }]}>{TOTAL_REPS} contrações longas feitas!</Text>
           <View style={[styles.starsBadge, { backgroundColor: theme.accent + '33' }]}>
@@ -178,7 +182,7 @@ export default function RocketGame() {
           <View style={styles.closeBtnWrap}>
             <View style={[styles.btnShadow, { backgroundColor: theme.primaryDark }]} />
             <Pressable
-              style={({ pressed }) => [styles.btn, { backgroundColor: theme.primary, borderColor: theme.primaryDark, borderBottomWidth: pressed ? 2 : 4, transform: [{ translateY: pressed ? 2 : 0 }] }]}
+              style={({ pressed }) => [styles.btn, { backgroundColor: theme.btn, borderColor: theme.btnDark, borderBottomWidth: pressed ? 2 : 4, transform: [{ translateY: pressed ? 2 : 0 }] }]}
               onPress={() => nav.goBack()}
             >
               <Text style={styles.btnLabel}>Fechar</Text>
@@ -234,15 +238,15 @@ export default function RocketGame() {
       <View style={[styles.holdBtnArea, { paddingBottom: tabBarHeight + spacing.md }]}>
         <View style={styles.holdBtnWrap}>
           <View style={[styles.holdBtnRing, { borderColor: holding ? theme.coral + '88' : theme.primary + '55' }]} />
-          <View style={[styles.holdBtnShadow, { backgroundColor: holding ? '#A83000' : theme.primaryDark }]} />
+          <View style={[styles.holdBtnShadow, { backgroundColor: holding ? '#A83000' : theme.btnDark }]} />
           <Pressable
             onPressIn={onPressIn}
             onPressOut={onPressOut}
             style={({ pressed }) => [
               styles.holdBtn,
               {
-                backgroundColor: holding ? theme.coral : theme.primary,
-                borderColor: holding ? '#A83000' : theme.primaryDark,
+                backgroundColor: holding ? theme.coralDark : theme.btn,
+                borderColor: holding ? '#A83000' : theme.btnDark,
                 opacity: resting ? 0.5 : 1,
                 transform: [{ scale: pressed && !resting ? 0.96 : 1 }, { translateY: pressed && !resting ? 3 : 0 }],
               },
@@ -263,7 +267,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
     paddingHorizontal: spacing.md, paddingBottom: spacing.sm,
   },
-  backBtn: { width: 36, height: 36, alignItems: 'center', justifyContent: 'center' },
+  backBtn: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
   gameTitle: { fontFamily: fontFamily.heading, fontSize: fontSize.lg },
   repsBadge: { paddingHorizontal: spacing.sm, paddingVertical: spacing.xs, borderRadius: 12 },
   repsText: { fontFamily: fontFamily.bodyBold, fontSize: fontSize.base },

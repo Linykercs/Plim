@@ -48,7 +48,7 @@ export default function StoreScreen() {
         {/* Stars balance */}
         <View style={[styles.starsBadge, { backgroundColor: theme.accent + '22', borderColor: theme.accent + '55', borderWidth: 1.5 }]}>
           <PlimIcon name="star" size={18} color={theme.accent} />
-          <Text style={[styles.starsCount, { color: theme.accent }]}>{stars}</Text>
+          <Text style={[styles.starsCount, { color: theme.accentText }]}>{stars}</Text>
         </View>
       </View>
 
@@ -132,7 +132,7 @@ export default function StoreScreen() {
 
                   <View style={[
                     styles.costChip,
-                    { backgroundColor: canRedeem ? theme.primary : isSaving ? theme.accent + '22' : theme.softBg },
+                    { backgroundColor: canRedeem ? theme.btn : isSaving ? theme.accent + '22' : theme.softBg },
                   ]}>
                     {canRedeem ? (
                       <>
@@ -142,7 +142,7 @@ export default function StoreScreen() {
                     ) : (
                       <>
                         <PlimIcon name="star" size={13} color={isSaving ? theme.accent : theme.muted} />
-                        <Text style={[styles.costText, { color: isSaving ? theme.accent : theme.muted }]}>
+                        <Text style={[styles.costText, { color: isSaving ? theme.accentText : theme.muted }]}>
                           {reward.cost}
                         </Text>
                       </>
@@ -187,7 +187,7 @@ export default function StoreScreen() {
                     ]}>
                       <Text style={[
                         styles.statusText,
-                        { color: r.status === 'delivered' ? '#3DA070' : theme.accent },
+                        { color: r.status === 'delivered' ? '#3DA070' : theme.accentText },
                       ]}>
                         {r.status === 'delivered' ? '✓ Entregue' : '⏳ Pendente'}
                       </Text>

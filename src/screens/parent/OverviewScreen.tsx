@@ -192,7 +192,7 @@ export default function OverviewScreen() {
                       onPress={() => markDelivered(r.id)}
                       style={({ pressed }) => [
                         styles.deliverBtn,
-                        { backgroundColor: theme.primary, opacity: pressed ? 0.8 : 1 },
+                        { backgroundColor: theme.btn, opacity: pressed ? 0.8 : 1 },
                       ]}
                     >
                       <Text style={styles.deliverBtnText}>Entreguei!</Text>

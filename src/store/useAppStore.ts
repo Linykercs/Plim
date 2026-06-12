@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { defaultPalette, type Palette } from '../theme/palettes';
+import { defaultPalette, palettes, type Palette } from '../theme/palettes';
 
 // ─── Domain types ─────────────────────────────────────────────
 
@@ -242,7 +242,13 @@ export const useAppStore = create<AppState>()(
       name: 'plim-store',
       storage: createJSONStorage(() => AsyncStorage),
       onRehydrateStorage: () => (state) => {
-        if (state) state.setHasHydrated(true);
+        if (state) {
+          // Re-resolve a paleta persistida pela versão atual do código,
+          // senão tokens adicionados depois ficam undefined em installs antigos
+          const current = Object.values(palettes).find(p => p.name === state.palette?.name);
+          state.setPalette(current ?? defaultPalette);
+          state.setHasHydrated(true);
+        }
       },
       partialize: (s) => ({
         hasOnboarded: s.hasOnboarded,

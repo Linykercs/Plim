@@ -11,6 +11,14 @@ export type Palette = {
   muted: string;
   softBg: string;
   softBg2: string;
+  // Fundos de botão de ação com rótulo branco: mais escuros que primary/coral
+  // para contraste WCAG (texto grande em negrito pede 3:1, estes passam de 4:1)
+  btn: string;
+  btnDark: string;
+  coralDark: string;
+  // Âmbar escuro para quando o accent vira TEXTO sobre fundo claro
+  // (o amarelo #FFCxxx é ilegível como texto, fica só em ícones)
+  accentText: string;
 };
 
 export const palettes: Record<string, Palette> = {
@@ -24,9 +32,13 @@ export const palettes: Record<string, Palette> = {
     bg: '#FFF7EC',
     surface: '#FFFFFF',
     text: '#1F3A4D',
-    muted: '#6B8499',
+    muted: '#54707F',
     softBg: '#EEF7F1',
     softBg2: '#F1F5F9',
+    btn: '#2E8B5F',
+    btnDark: '#1F6B47',
+    coralDark: '#D54B38',
+    accentText: '#9A7200',
   },
   ocean: {
     name: 'Ocean',
@@ -38,9 +50,13 @@ export const palettes: Record<string, Palette> = {
     bg: '#EFF8FB',
     surface: '#FFFFFF',
     text: '#0F3148',
-    muted: '#5B7A8C',
+    muted: '#476273',
     softBg: '#E1F0F6',
     softBg2: '#EAF4F7',
+    btn: '#1F7FAD',
+    btnDark: '#16607F',
+    coralDark: '#D5503A',
+    accentText: '#9A7200',
   },
   sweet: {
     name: 'Sweet',
@@ -52,9 +68,13 @@ export const palettes: Record<string, Palette> = {
     bg: '#FFF4FA',
     surface: '#FFFFFF',
     text: '#3F2E5C',
-    muted: '#7B6B95',
+    muted: '#635378',
     softBg: '#F5EFFA',
     softBg2: '#FDEEF5',
+    btn: '#8E5FC9',
+    btnDark: '#6E46A3',
+    coralDark: '#D5485E',
+    accentText: '#9A7200',
   },
 };
 

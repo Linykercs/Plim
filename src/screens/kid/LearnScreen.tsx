@@ -200,14 +200,14 @@ function BreathingExercise({ onComplete }: { onComplete?: () => void }) {
 
       {!finished && (
         <View style={breathStyles.btnWrap}>
-          <View style={[breathStyles.btnShadow, { backgroundColor: running ? theme.coral + 'AA' : theme.primaryDark }]} />
+          <View style={[breathStyles.btnShadow, { backgroundColor: running ? '#A83000' : theme.btnDark }]} />
           <Pressable
             onPress={running ? stop : start}
             style={({ pressed }) => [
               breathStyles.btn,
               {
-                backgroundColor: running ? theme.coral : theme.primary,
-                borderColor: running ? theme.coral + 'AA' : theme.primaryDark,
+                backgroundColor: running ? theme.coralDark : theme.btn,
+                borderColor: running ? '#A83000' : theme.btnDark,
                 borderBottomWidth: pressed ? 2 : 4,
                 transform: [{ translateY: pressed ? 2 : 0 }],
               },
@@ -221,12 +221,12 @@ function BreathingExercise({ onComplete }: { onComplete?: () => void }) {
 
       {finished && (
         <View style={breathStyles.btnWrap}>
-          <View style={[breathStyles.btnShadow, { backgroundColor: '#2D7A52' }]} />
+          <View style={[breathStyles.btnShadow, { backgroundColor: theme.btnDark }]} />
           <Pressable
             onPress={start}
             style={({ pressed }) => [
               breathStyles.btn,
-              { backgroundColor: '#5FCB8E', borderColor: '#2D7A52', borderBottomWidth: pressed ? 2 : 4, transform: [{ translateY: pressed ? 2 : 0 }] },
+              { backgroundColor: theme.btn, borderColor: theme.btnDark, borderBottomWidth: pressed ? 2 : 4, transform: [{ translateY: pressed ? 2 : 0 }] },
             ]}
           >
             <PlimIcon name="play" size={18} color="#fff" />

@@ -141,9 +141,9 @@ export default function FrogGame() {
             <Text style={[styles.starsText, { color: theme.accent }]}>+{stars} ⭐</Text>
           </View>
           <View style={styles.closeBtnWrap}>
-            <View style={[styles.btnShadow, { backgroundColor: theme.primaryDark }]} />
+            <View style={[styles.btnShadow, { backgroundColor: theme.btnDark }]} />
             <Pressable
-              style={({ pressed }) => [styles.btn, { backgroundColor: theme.primary, borderColor: theme.primaryDark, borderBottomWidth: pressed ? 2 : 4, transform: [{ translateY: pressed ? 2 : 0 }] }]}
+              style={({ pressed }) => [styles.btn, { backgroundColor: theme.btn, borderColor: theme.btnDark, borderBottomWidth: pressed ? 2 : 4, transform: [{ translateY: pressed ? 2 : 0 }] }]}
               onPress={() => nav.goBack()}
             >
               <Text style={styles.btnLabel}>Fechar</Text>
@@ -161,7 +161,7 @@ export default function FrogGame() {
         <Pressable onPress={() => { if (timerRef.current) clearInterval(timerRef.current); nav.goBack(); }} style={styles.backBtn}>
           <PlimIcon name="back" size={22} color="#fff" />
         </Pressable>
-        <Text style={[styles.gameTitle, { color: '#fff' }]}>Sapo Pulo</Text>
+        <Text style={[styles.gameTitle, { color: '#fff' }]}>Pulo do Sapo</Text>
         <View style={[styles.statBadge, { backgroundColor: '#ffffff22' }]}>
           <PlimIcon name="star" size={13} color={theme.accent} />
           <Text style={[styles.statText, { color: '#fff' }]}>{jumps}</Text>
@@ -193,7 +193,7 @@ export default function FrogGame() {
         {/* Frog on first pad */}
         <View style={styles.frogBase}>
           <Animated.View style={frogStyle}>
-            <PlimMascot size={64} mood={phase === 'playing' ? 'cheer' : 'happy'} primary={mascotColor} />
+            <PlimMascot size={64} mood={phase === 'playing' ? 'focus' : 'happy'} primary={mascotColor} />
           </Animated.View>
         </View>
       </View>
@@ -207,9 +207,9 @@ export default function FrogGame() {
       <View style={[styles.jumpBtnArea, { paddingBottom: tabBarHeight + spacing.md }]}>
         {phase === 'idle' ? (
           <View style={styles.mainBtnWrap}>
-            <View style={[styles.btnShadow, { backgroundColor: theme.primaryDark }]} />
+            <View style={[styles.btnShadow, { backgroundColor: theme.btnDark }]} />
             <Pressable
-              style={({ pressed }) => [styles.mainBtn, { backgroundColor: theme.primary, borderColor: theme.primaryDark, borderBottomWidth: pressed ? 2 : 4, transform: [{ translateY: pressed ? 2 : 0 }] }]}
+              style={({ pressed }) => [styles.mainBtn, { backgroundColor: theme.btn, borderColor: theme.btnDark, borderBottomWidth: pressed ? 2 : 4, transform: [{ translateY: pressed ? 2 : 0 }] }]}
               onPress={startGame}
             >
               <PlimIcon name="play" size={20} color="#fff" />
@@ -218,11 +218,16 @@ export default function FrogGame() {
           </View>
         ) : (
           <View style={styles.jumpBtnWrap}>
-            <View style={[styles.jumpBtnShadow, { backgroundColor: '#2D7A52' }]} />
+            <View style={[styles.jumpBtnShadow, { backgroundColor: theme.btnDark }]} />
             <Pressable
               style={({ pressed }) => [
                 styles.jumpBtn,
-                { borderBottomWidth: pressed ? 1 : 5, transform: [{ translateY: pressed ? 4 : 0 }] },
+                {
+                  backgroundColor: theme.btn,
+                  borderColor: theme.btnDark,
+                  borderBottomWidth: pressed ? 1 : 5,
+                  transform: [{ translateY: pressed ? 4 : 0 }],
+                },
               ]}
               onPress={handleJump}
             >
@@ -238,7 +243,7 @@ export default function FrogGame() {
 const styles = StyleSheet.create({
   root: { flex: 1 },
   topBar: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: spacing.md, paddingBottom: spacing.sm },
-  backBtn: { width: 36, height: 36, alignItems: 'center', justifyContent: 'center' },
+  backBtn: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
   gameTitle: { fontFamily: fontFamily.heading, fontSize: fontSize.lg },
   statBadge: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: spacing.sm, paddingVertical: spacing.xs, borderRadius: 12 },
   statText: { fontFamily: fontFamily.bodyBold, fontSize: fontSize.base },
@@ -268,9 +273,9 @@ const styles = StyleSheet.create({
   jumpBtnWrap: { position: 'relative' },
   jumpBtnShadow: { position: 'absolute', top: 5, left: 0, right: 0, bottom: 0, borderRadius: 24 },
   jumpBtn: {
-    backgroundColor: '#3DA070', borderRadius: 24,
+    borderRadius: 24,
     paddingVertical: spacing.lg + 4, alignItems: 'center', justifyContent: 'center',
-    borderColor: '#2D7A52', borderWidth: 0,
+    borderWidth: 0,
   },
   jumpBtnLabel: { fontFamily: fontFamily.bodyBold, fontSize: 32, color: '#fff' },
 

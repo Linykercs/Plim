@@ -106,11 +106,11 @@ export default function DiaryEvacScreen() {
             </View>
           )}
           <View style={styles.rewardBtnWrap}>
-            <View style={[styles.btnShadow, { backgroundColor: theme.primaryDark }]} />
+            <View style={[styles.btnShadow, { backgroundColor: theme.btnDark }]} />
             <Pressable
               style={({ pressed }) => [
                 styles.btn,
-                { backgroundColor: theme.primary, borderBottomWidth: pressed ? 2 : 4, borderColor: theme.primaryDark, transform: [{ translateY: pressed ? 2 : 0 }] },
+                { backgroundColor: theme.btn, borderBottomWidth: pressed ? 2 : 4, borderColor: theme.btnDark, transform: [{ translateY: pressed ? 2 : 0 }] },
               ]}
               onPress={() => nav.goBack()}
             >
@@ -130,7 +130,7 @@ export default function DiaryEvacScreen() {
           <PlimIcon name="back" size={22} color={theme.text} />
         </TouchableOpacity>
         <Text style={[styles.headerTitle, { color: theme.text }]}>Registro de Cocô</Text>
-        <View style={{ width: 36 }} />
+        <View style={{ width: 44 }} />
       </View>
 
       <ScrollView
@@ -250,11 +250,11 @@ export default function DiaryEvacScreen() {
 
       {/* Save button */}
       <View style={[styles.footer, { paddingBottom: tabBarHeight + spacing.sm }]}>
-        <View style={[styles.btnShadow, { backgroundColor: theme.primaryDark }]} />
+        <View style={[styles.btnShadow, { backgroundColor: theme.btnDark }]} />
         <Pressable
           style={({ pressed }) => [
             styles.btn,
-            { backgroundColor: theme.primary, borderBottomWidth: pressed ? 2 : 4, borderColor: theme.primaryDark, transform: [{ translateY: pressed ? 2 : 0 }] },
+            { backgroundColor: theme.btn, borderBottomWidth: pressed ? 2 : 4, borderColor: theme.btnDark, transform: [{ translateY: pressed ? 2 : 0 }] },
           ]}
           onPress={handleSave}
         >
@@ -272,7 +272,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
     paddingHorizontal: spacing.md, paddingBottom: spacing.sm,
   },
-  backBtn: { width: 36, height: 36, alignItems: 'center', justifyContent: 'center' },
+  backBtn: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
   headerTitle: { fontFamily: fontFamily.heading, fontSize: fontSize.lg },
   scroll: { paddingHorizontal: spacing.md, gap: spacing.sm },
 

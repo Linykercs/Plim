@@ -9,7 +9,10 @@ import type { DiaryStackParamList } from '../../navigation/types';
 import { spacing, radius, shadow } from '../../theme/tokens';
 import { fontFamily, fontSize } from '../../theme/typography';
 import { useAppStore, type Alarm , useTheme} from '../../store/useAppStore';
+import { AVATAR_COLORS } from '../../theme/palettes';
 import PlimIcon from '../../components/ui/PlimIcon';
+import PlimMascot from '../../components/mascot/PlimMascot';
+import { plimSay } from '../../content/plimVoice';
 import { scheduleAlarm, cancelAlarm } from '../../services/notifications';
 
 const DAYS_OPTIONS: Array<Alarm['days']> = ['todo dia', 'seg-sex', 'sab-dom'];
@@ -37,8 +40,11 @@ export default function AlarmsScreen() {
   const alarms = useAppStore(s => s.alarms);
   const toggleAlarm = useAppStore(s => s.toggleAlarm);
   const updateAlarm = useAppStore(s => s.updateAlarm);
+  const profile = useAppStore(s => s.profile);
+  const mascotColor = AVATAR_COLORS[profile?.avatarColor ?? 0];
 
   const [editing, setEditing] = useState<EditState | null>(null);
+  const [nightPhrase] = useState(() => plimSay('night'));
 
   const dayAlarms = alarms.filter(a => a.kind === 'day');
   const nightAlarms = alarms.filter(a => a.kind === 'night');
@@ -108,7 +114,7 @@ export default function AlarmsScreen() {
           <PlimIcon name="back" size={22} color={theme.text} />
         </TouchableOpacity>
         <Text style={[styles.headerTitle, { color: theme.text }]}>Lembretes</Text>
-        <View style={{ width: 36 }} />
+        <View style={{ width: 44 }} />
       </View>
 
       <ScrollView
@@ -131,6 +137,12 @@ export default function AlarmsScreen() {
             <Text style={[styles.sectionTitle, { color: theme.text }]}>Noite</Text>
           </View>
           {nightAlarms.map(renderAlarm)}
+
+          {/* Plim sonolento acompanha os lembretes da noite */}
+          <View style={[styles.nightBanner, { backgroundColor: theme.softBg }]}>
+            <PlimMascot size={56} mood="sleepy" primary={mascotColor} accent={theme.coral} dark={theme.text} />
+            <Text style={[styles.nightBannerText, { color: theme.text }]}>{nightPhrase}</Text>
+          </View>
         </View>
 
         <Text style={[styles.tip, { color: theme.muted }]}>
@@ -204,11 +216,11 @@ export default function AlarmsScreen() {
 
             {/* Save */}
             <View style={styles.saveBtnWrap}>
-              <View style={[styles.saveShadow, { backgroundColor: theme.primaryDark }]} />
+              <View style={[styles.saveShadow, { backgroundColor: theme.btnDark }]} />
               <Pressable
                 style={({ pressed }) => [
                   styles.saveBtn,
-                  { backgroundColor: theme.primary, borderBottomWidth: pressed ? 2 : 4, borderColor: theme.primaryDark, transform: [{ translateY: pressed ? 2 : 0 }] },
+                  { backgroundColor: theme.btn, borderBottomWidth: pressed ? 2 : 4, borderColor: theme.btnDark, transform: [{ translateY: pressed ? 2 : 0 }] },
                 ]}
                 onPress={saveEdit}
               >
@@ -229,7 +241,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
     paddingHorizontal: spacing.md, paddingBottom: spacing.sm,
   },
-  backBtn: { width: 36, height: 36, alignItems: 'center', justifyContent: 'center' },
+  backBtn: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
   headerTitle: { fontFamily: fontFamily.heading, fontSize: fontSize.lg },
   scroll: { paddingHorizontal: spacing.md, gap: spacing.xs },
 
@@ -250,6 +262,11 @@ const styles = StyleSheet.create({
   alarmTime: { fontFamily: fontFamily.heading, fontSize: fontSize.lg },
 
   tip: { fontFamily: fontFamily.body, fontSize: fontSize.xs, textAlign: 'center', marginTop: spacing.sm },
+  nightBanner: {
+    flexDirection: 'row', alignItems: 'center', gap: spacing.sm,
+    borderRadius: radius.card, padding: spacing.sm, marginTop: spacing.xs,
+  },
+  nightBannerText: { flex: 1, fontFamily: fontFamily.body, fontSize: fontSize.sm, lineHeight: 19 },
 
   backdrop: { flex: 1, backgroundColor: '#00000044' },
   sheet: {

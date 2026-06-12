@@ -12,6 +12,9 @@ import { spacing, radius, shadow } from '../../theme/tokens';
 import { fontFamily, fontSize } from '../../theme/typography';
 import { useAppStore , useTheme} from '../../store/useAppStore';
 import PlimIcon from '../../components/ui/PlimIcon';
+import PlimMascot from '../../components/mascot/PlimMascot';
+import { AVATAR_COLORS } from '../../theme/palettes';
+import { plimSay } from '../../content/plimVoice';
 import ClockFace from '../../components/diary/ClockFace';
 import CupGlyph from '../../components/diary/CupGlyph';
 
@@ -48,8 +51,11 @@ export default function DiaryMicScreen() {
   const addStars = useAppStore(s => s.addStars);
   const completeMission = useAppStore(s => s.completeMission);
   const missionsDone = useAppStore(s => s.missionsDone);
+  const profile = useAppStore(s => s.profile);
+  const mascotColor = AVATAR_COLORS[profile?.avatarColor ?? 0];
 
   const [phase, setPhase] = useState<'form' | 'reward'>('form');
+  const [phrase] = useState(() => plimSay('diaryMic'));
   const [earned, setEarned] = useState(0);
   const [time, setTime] = useState(nowHM());
   const [cups, setCups] = useState(1);
@@ -94,8 +100,8 @@ export default function DiaryMicScreen() {
     return (
       <View style={[styles.root, { backgroundColor: theme.bg, paddingTop: insets.top }]}>
         <View style={styles.rewardCenter}>
-          <Text style={styles.rewardEmoji}>💧</Text>
-          <Text style={[styles.rewardTitle, { color: theme.text }]}>Ótimo registro!</Text>
+          <PlimMascot size={120} mood="water" primary={mascotColor} accent={theme.coral} dark={theme.text} />
+          <Text style={[styles.rewardTitle, { color: theme.text }]}>{phrase}</Text>
           <Text style={[styles.rewardSub, { color: theme.muted }]}>
             {earned > 0 ? `Você ganhou ${earned} estrelas!` : 'Registro anotado no diário!'}
           </Text>
@@ -106,11 +112,11 @@ export default function DiaryMicScreen() {
             </View>
           )}
           <View style={styles.rewardBtnWrap}>
-            <View style={[styles.btnShadow, { backgroundColor: theme.primaryDark }]} />
+            <View style={[styles.btnShadow, { backgroundColor: theme.btnDark }]} />
             <Pressable
               style={({ pressed }) => [
                 styles.btn,
-                { backgroundColor: theme.primary, borderBottomWidth: pressed ? 2 : 4, borderColor: theme.primaryDark, transform: [{ translateY: pressed ? 2 : 0 }] },
+                { backgroundColor: theme.btn, borderBottomWidth: pressed ? 2 : 4, borderColor: theme.btnDark, transform: [{ translateY: pressed ? 2 : 0 }] },
               ]}
               onPress={() => nav.goBack()}
             >
@@ -130,7 +136,7 @@ export default function DiaryMicScreen() {
           <PlimIcon name="back" size={22} color={theme.text} />
         </TouchableOpacity>
         <Text style={[styles.headerTitle, { color: theme.text }]}>Registro de Xixi</Text>
-        <View style={{ width: 36 }} />
+        <View style={{ width: 44 }} />
       </View>
 
       <ScrollView
@@ -253,11 +259,11 @@ export default function DiaryMicScreen() {
 
       {/* Save button */}
       <View style={[styles.footer, { paddingBottom: tabBarHeight + spacing.sm }]}>
-        <View style={[styles.btnShadow, { backgroundColor: theme.primaryDark }]} />
+        <View style={[styles.btnShadow, { backgroundColor: theme.btnDark }]} />
         <Pressable
           style={({ pressed }) => [
             styles.btn,
-            { backgroundColor: theme.primary, borderBottomWidth: pressed ? 2 : 4, borderColor: theme.primaryDark, transform: [{ translateY: pressed ? 2 : 0 }] },
+            { backgroundColor: theme.btn, borderBottomWidth: pressed ? 2 : 4, borderColor: theme.btnDark, transform: [{ translateY: pressed ? 2 : 0 }] },
           ]}
           onPress={handleSave}
         >
@@ -275,7 +281,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
     paddingHorizontal: spacing.md, paddingBottom: spacing.sm,
   },
-  backBtn: { width: 36, height: 36, alignItems: 'center', justifyContent: 'center' },
+  backBtn: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
   headerTitle: { fontFamily: fontFamily.heading, fontSize: fontSize.lg },
   scroll: { paddingHorizontal: spacing.md, gap: spacing.sm },
 
