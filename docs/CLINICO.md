@@ -4,7 +4,7 @@
 **Equipe colaboradora:** Flávia Franco, Lívia Britto, Liliane Ganzerli de Souza e Andreia Reis (Pós-Graduandas em Estomaterapia, Hospital Israelita Albert Einstein)
 **Contexto:** trabalho desenvolvido para apresentação no Seminário de Estomaterapia, Hospital Israelita Albert Einstein (São Paulo)
 
-> **Status: rascunho para validação da especialista.** Este documento foi escrito pelo desenvolvedor mapeando as decisões do app aos conceitos de uroterapia que as inspiraram. Ele NÃO é verdade clínica: precisa ser revisado, corrigido e assinado por profissional de saúde (enfermeira especialista e/ou fisioterapeuta pélvica) antes de ser apresentado como fundamentação. As perguntas em aberto estão na última seção.
+> **Status: em validação com a equipe.** Este documento mapeia as decisões do app aos conceitos de uroterapia que as inspiraram. **Atualização (12/06/2026):** os protocolos de exercícios (contração lenta, contração rápida e respiração) e as metas de hidratação por idade foram validados pela equipe da Pós-Graduação em Estomaterapia, com confirmação docente, e já estão incorporados ao aplicativo. As perguntas ainda em aberto estão na última seção.
 
 ## Desenvolvimento do projeto
 
@@ -32,10 +32,10 @@ Ferramenta de apoio à **uroterapia padrão** (urotherapy) para crianças de 4 a
 | Diário de evacuação com escala de Bristol ilustrada | Classificação da consistência fecal; constipação funcional frequentemente coexiste com sintomas urinários (disfunção vesico-intestinal) | Lewis & Heaton (1997); critérios de Roma IV para desordens funcionais pediátricas (Hyams et al., 2016) |
 | Registro de escape com acolhimento (sem punição, mesmas estrelas) | Uroterapia comportamental orienta nunca punir acidentes; culpa e vergonha pioram adesão e o dado honesto vale mais que o dado bonito | ICCS enuresis (Nevéus et al., 2020) |
 | Lembretes programados de banheiro (7 horários padrão) | Micção programada (timed voiding), componente da uroterapia padrão | ICCS uroterapia (2021) |
-| Missão diária de água + histórico de copos | Ingestão hídrica adequada e distribuída ao longo do dia, evitando concentração à noite | a confirmar com a especialista (valores no app: 6 a 8 copos, 1,2 a 1,5 L/dia) |
-| Jogo Foguete (segurar = contrair, soltar = relaxar, descanso obrigatório ≥ contração, séries por idade) | Treino da musculatura do assoalho pélvico com proporção contração/descanso; o app funciona como metrônomo lúdico, não como biofeedback | a validar com fisioterapeuta pélvica (protocolos no app: 3s/6s x5 até 5 anos; 5s/10s x6 de 6 a 7; 8s/10s x8 de 8+) |
-| Jogo Balão (inspirar 4s, segurar 2s, expirar 6s) | Respiração diafragmática para relaxamento do assoalho pélvico, útil na evacuação e na micção disfuncional | a validar |
-| Jogo Pulo do Sapo (toques rápidos em ritmo) | Coordenação e contrações rápidas (fibras de contração rápida) | a validar |
+| Missão diária de água + histórico de copos | Ingestão hídrica adequada e distribuída ao longo do dia: 1 a 3 anos 800 a 1000 mL; 4 a 8 anos 1000 a 1400 mL; 9 a 13 anos 1400 a 2000 mL. Estratégia: 1 copo de água após cada micção (≈ 6 a 8 copos/dia) | **Validado pela equipe (orientações de uroterapia, 12/06/2026)** |
+| Jogo Foguete (segurar = contrair, soltar = relaxar, descanso obrigatório) | Contração lenta do assoalho pélvico: contração 5s, relaxamento 5s, 10 repetições, 3 séries/dia; o app funciona como metrônomo lúdico, não como biofeedback | **Validado pela equipe (12/06/2026)** |
+| Jogo Balão (ciclos de respiração guiada) | Respiração diafragmática: 5 a 10 ciclos, 3 vezes ao dia, antes dos exercícios do assoalho pélvico | **Validado pela equipe (12/06/2026)** |
+| Jogo Pulo do Sapo (3 séries de 10 toques rápidos) | Contrações rápidas: 10 contrações rápidas consecutivas, intervalo de 30 segundos, 3 séries | **Validado pela equipe (12/06/2026)** |
 | Conteúdo educativo (postura no vaso, pés apoiados, sem pressa, relaxar a barriga) | Educação e desmistificação, primeiro pilar da uroterapia; postura de evacuação com apoio dos pés | ICCS uroterapia (2021) |
 | Relatório PDF para o profissional | O diário só tem valor clínico se chega a quem prescreve; exportação resume eventos, tendência de escapes e hidratação | |
 
@@ -58,13 +58,13 @@ Estas regras estão implementadas no código e documentadas no README. Qualquer 
 
 ## Perguntas para a especialista validar
 
-1. Os valores de hidratação (6 a 8 copos, 1,2 a 1,5 L/dia para 4 a 10 anos) estão corretos? Devem variar por peso ou idade?
-2. O protocolo do Foguete por faixa etária (3s/6s x5; 5s/10s x6; 8s/10s x8) é adequado? Treino de assoalho pélvico ativo é indicado para todas as condições cobertas, ou deveria ser liberado pelo profissional por criança?
-3. Os 7 lembretes padrão de micção programada (7h30 a 20h30, mais 2h opcional) fazem sentido como default?
-4. Os rótulos infantis da escala de Bristol no app estão fiéis às 7 categorias?
-5. A lista de condições no onboarding (enurese, bexiga hiperativa, constipação, incontinência fecal, treino de desfralde, "não sei") cobre o necessário? Os nomes leigos estão bons?
-6. O texto educativo ("evite refrigerante, suco de laranja e limão irritam a bexiga") está correto e completo?
-7. Há contraindicação em incentivar o jogo Balão como rotina pré-evacuação?
+As perguntas sobre protocolos de exercício e metas de hidratação foram respondidas pela equipe em 12/06/2026 e incorporadas ao app. Permanecem em aberto:
+
+1. Os 7 lembretes padrão de micção programada (7h30 a 20h30, mais 2h opcional) fazem sentido como default?
+2. Os rótulos infantis da escala de Bristol no app estão fiéis às 7 categorias?
+3. A lista de condições no onboarding (enurese, bexiga hiperativa, constipação, incontinência fecal, treino de desfralde, "não sei") cobre o necessário? Os nomes leigos estão bons?
+4. O texto educativo ("evite refrigerante, suco de laranja e limão irritam a bexiga") está correto e completo?
+5. O treino ativo de assoalho pélvico é indicado para todas as condições cobertas, ou deveria ser liberado pelo profissional caso a caso?
 
 ## Referências de partida
 

@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
 import Animated, {
-  useSharedValue, useAnimatedStyle, withSpring, withSequence, withTiming,
+  useSharedValue, useAnimatedStyle, withSequence, withTiming,
   Easing, cancelAnimation,
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -11,11 +11,18 @@ import { spacing } from '../../../theme/tokens';
 import { fontFamily, fontSize } from '../../../theme/typography';
 import { useAppStore , useTheme} from '../../../store/useAppStore';
 import { AVATAR_COLORS } from '../../../theme/palettes';
-import { gameDifficulty } from '../../../content/difficulty';
+import { FROG_PROTOCOL } from '../../../content/difficulty';
 import PlimMascot from '../../../components/mascot/PlimMascot';
 import PlimIcon from '../../../components/ui/PlimIcon';
 
+// Protocolo validado pela equipe de uroterapia: 10 contrações rápidas
+// consecutivas (1 pulo = 1 contração), 30s de intervalo, 3 séries.
+
 const PAD_COUNT = 8;
+const JUMPS = FROG_PROTOCOL.jumpsPerSeries;
+const SERIES = FROG_PROTOCOL.series;
+const REST_SECONDS = FROG_PROTOCOL.restSeconds;
+const TOTAL_JUMPS = JUMPS * SERIES;
 
 export default function FrogGame() {
   const theme = useTheme();
@@ -25,16 +32,17 @@ export default function FrogGame() {
   const addStars = useAppStore(s => s.addStars);
   const completeMission = useAppStore(s => s.completeMission);
   const profile = useAppStore(s => s.profile);
-  const { frogJumps: TOTAL_JUMPS, frogSeconds: GAME_SECONDS } = gameDifficulty(profile?.age);
 
   const [phase, setPhase] = useState<'idle' | 'playing' | 'done'>('idle');
+  const [serie, setSerie] = useState(1);
   const [jumps, setJumps] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(GAME_SECONDS);
+  const [resting, setResting] = useState(false);
+  const [restLeft, setRestLeft] = useState(0);
 
-  const jumpsRef = useRef(0);
+  const totalJumpsRef = useRef(0);
   const earnedRef = useRef(0);
   const finishedRef = useRef(false);
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const restTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const finishTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Frog position: which pad (0 = leftmost)
@@ -50,49 +58,61 @@ export default function FrogGame() {
     ],
   }));
 
-
   function startGame() {
     finishedRef.current = false;
-    jumpsRef.current = 0;
+    totalJumpsRef.current = 0;
+    earnedRef.current = 0;
     padIdxRef.current = 0;
+    setSerie(1);
     setJumps(0);
     setPadIdx(0);
+    setResting(false);
     frogX.value = 0;
     frogY.value = 0;
-    setTimeLeft(GAME_SECONDS);
     setPhase('playing');
-
-    timerRef.current = setInterval(() => {
-      setTimeLeft(t => {
-        if (t <= 1) {
-          clearInterval(timerRef.current!);
-          finishGame();
-          return 0;
-        }
-        return t - 1;
-      });
-    }, 1000);
   }
 
   function finishGame() {
     if (finishedRef.current) return;
     finishedRef.current = true;
-    clearInterval(timerRef.current!);
+    if (restTimerRef.current) clearInterval(restTimerRef.current);
     // Tentar sempre rende pelo menos 1 estrela; recompensa cheia só na
     // primeira conclusão do dia, para repetir não virar farm
-    const base = Math.max(1, Math.round((Math.min(jumpsRef.current, TOTAL_JUMPS) / TOTAL_JUMPS) * 10));
+    const base = Math.max(1, Math.round((Math.min(totalJumpsRef.current, TOTAL_JUMPS) / TOTAL_JUMPS) * 10));
     const reward = useAppStore.getState().missionsDone.game ? 1 : base;
     earnedRef.current = reward;
     addStars(reward);
-    if (jumpsRef.current >= TOTAL_JUMPS) completeMission('game');
+    if (totalJumpsRef.current >= TOTAL_JUMPS) completeMission('game');
     setPhase('done');
   }
 
-  function handleJump() {
-    if (phase !== 'playing') return;
+  function startRest() {
+    setResting(true);
+    setRestLeft(REST_SECONDS);
+    // O sapo volta pra primeira vitória-régia durante o descanso
+    padIdxRef.current = 0;
+    setPadIdx(0);
+    frogX.value = withTiming(0, { duration: 600, easing: Easing.inOut(Easing.quad) });
+    restTimerRef.current = setInterval(() => {
+      setRestLeft(prev => {
+        if (prev <= 1) {
+          clearInterval(restTimerRef.current!);
+          setResting(false);
+          setSerie(s => s + 1);
+          setJumps(0);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  }
 
-    jumpsRef.current += 1;
-    setJumps(jumpsRef.current);
+  function handleJump() {
+    if (phase !== 'playing' || resting) return;
+
+    totalJumpsRef.current += 1;
+    const jumpsInSerie = jumps + 1;
+    setJumps(jumpsInSerie);
 
     padIdxRef.current = (padIdxRef.current + 1) % PAD_COUNT;
     const nextPad = padIdxRef.current;
@@ -107,15 +127,28 @@ export default function FrogGame() {
       withTiming(0,   { duration: 180, easing: Easing.in(Easing.quad) }),
     );
 
-    if (jumpsRef.current >= TOTAL_JUMPS) {
-      clearInterval(timerRef.current!);
-      finishTimerRef.current = setTimeout(() => finishGame(), 400);
+    if (jumpsInSerie >= JUMPS) {
+      if (serie >= SERIES) {
+        finishTimerRef.current = setTimeout(() => finishGame(), 400);
+      } else {
+        startRest();
+      }
     }
+  }
+
+  function handleBack() {
+    // Sair no meio do treino ainda conta o esforço (nunca zero)
+    if (phase === 'playing' && totalJumpsRef.current > 0) {
+      finishGame();
+      return;
+    }
+    if (restTimerRef.current) clearInterval(restTimerRef.current);
+    nav.goBack();
   }
 
   useEffect(() => {
     return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
+      if (restTimerRef.current) clearInterval(restTimerRef.current);
       if (finishTimerRef.current) clearTimeout(finishTimerRef.current);
       cancelAnimation(frogX);
       cancelAnimation(frogY);
@@ -131,10 +164,12 @@ export default function FrogGame() {
         <View style={styles.center}>
           <PlimMascot size={120} mood="cheer" primary={mascotColor} />
           <Text style={[styles.doneTitle, { color: '#fff' }]}>
-            {jumpsRef.current >= TOTAL_JUMPS ? 'Perfeito!' : 'Muito bem!'}
+            {totalJumpsRef.current >= TOTAL_JUMPS ? 'Treino completo!' : 'Muito bem!'}
           </Text>
           <Text style={[styles.doneSub, { color: '#aaa' }]}>
-            {jumpsRef.current} pulos • {stars} estrelas
+            {totalJumpsRef.current >= TOTAL_JUMPS
+              ? `${SERIES} séries de ${JUMPS} pulos rapidinhos!`
+              : `${totalJumpsRef.current} pulos! Da próxima a gente completa as ${SERIES} séries.`}
           </Text>
           <View style={[styles.starsBadge, { backgroundColor: theme.accent + '33' }]}>
             <PlimIcon name="star" size={22} color={theme.accent} />
@@ -158,23 +193,23 @@ export default function FrogGame() {
     <View style={[styles.root, { backgroundColor: '#0D2B1A' }]}>
       {/* Top bar */}
       <View style={[styles.topBar, { paddingTop: insets.top + spacing.sm }]}>
-        <Pressable onPress={() => { if (timerRef.current) clearInterval(timerRef.current); nav.goBack(); }} style={styles.backBtn}>
+        <Pressable onPress={handleBack} style={styles.backBtn}>
           <PlimIcon name="back" size={22} color="#fff" />
         </Pressable>
         <Text style={[styles.gameTitle, { color: '#fff' }]}>Pulo do Sapo</Text>
         <View style={[styles.statBadge, { backgroundColor: '#ffffff22' }]}>
-          <PlimIcon name="star" size={13} color={theme.accent} />
-          <Text style={[styles.statText, { color: '#fff' }]}>{jumps}</Text>
+          <Text style={[styles.statText, { color: '#fff' }]}>
+            {phase === 'playing' ? `Série ${serie}/${SERIES}` : `${SERIES}x${JUMPS}`}
+          </Text>
         </View>
       </View>
 
-      {/* Timer bar */}
+      {/* Série progress */}
       {phase === 'playing' && (
-        <View style={styles.timerWrap}>
-          <View style={[styles.timerBg, { backgroundColor: '#ffffff22' }]}>
-            <View style={[styles.timerFill, { backgroundColor: timeLeft > 10 ? theme.primary : theme.coral, width: `${(timeLeft / GAME_SECONDS) * 100}%` as `${number}%` }]} />
-          </View>
-          <Text style={[styles.timerText, { color: '#fff' }]}>{timeLeft}s</Text>
+        <View style={styles.serieWrap}>
+          {[...Array(JUMPS)].map((_, i) => (
+            <View key={i} style={[styles.serieDot, { backgroundColor: i < jumps ? theme.accent : '#ffffff33' }]} />
+          ))}
         </View>
       )}
 
@@ -190,17 +225,21 @@ export default function FrogGame() {
           ))}
         </View>
 
-        {/* Frog on first pad */}
+        {/* Frog */}
         <View style={styles.frogBase}>
           <Animated.View style={frogStyle}>
-            <PlimMascot size={64} mood={phase === 'playing' ? 'focus' : 'happy'} primary={mascotColor} />
+            <PlimMascot size={64} mood={resting ? 'sleepy' : phase === 'playing' ? 'focus' : 'happy'} primary={mascotColor} />
           </Animated.View>
         </View>
       </View>
 
       {/* Instructions */}
       <Text style={[styles.hint, { color: '#ffffff88' }]}>
-        {phase === 'idle' ? `Faça o sapo pular ${TOTAL_JUMPS} vezes em ${GAME_SECONDS}s!` : `Pule! ${TOTAL_JUMPS - jumps} pulos restantes`}
+        {phase === 'idle'
+          ? `${SERIES} séries de ${JUMPS} pulos rapidinhos, com descanso entre elas!`
+          : resting
+            ? `Descansa... ${restLeft}s pra série ${serie + 1}`
+            : `Pula! Faltam ${JUMPS - jumps} na série ${serie}`}
       </Text>
 
       {/* Jump button */}
@@ -225,13 +264,14 @@ export default function FrogGame() {
                 {
                   backgroundColor: theme.btn,
                   borderColor: theme.btnDark,
-                  borderBottomWidth: pressed ? 1 : 5,
-                  transform: [{ translateY: pressed ? 4 : 0 }],
+                  opacity: resting ? 0.5 : 1,
+                  borderBottomWidth: pressed && !resting ? 1 : 5,
+                  transform: [{ translateY: pressed && !resting ? 4 : 0 }],
                 },
               ]}
               onPress={handleJump}
             >
-              <Text style={styles.jumpBtnLabel}>🐸 Pular!</Text>
+              <Text style={styles.jumpBtnLabel}>{resting ? '😴 Descansa...' : '🐸 Pular!'}</Text>
             </Pressable>
           </View>
         )}
@@ -246,12 +286,10 @@ const styles = StyleSheet.create({
   backBtn: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
   gameTitle: { fontFamily: fontFamily.heading, fontSize: fontSize.lg },
   statBadge: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: spacing.sm, paddingVertical: spacing.xs, borderRadius: 12 },
-  statText: { fontFamily: fontFamily.bodyBold, fontSize: fontSize.base },
+  statText: { fontFamily: fontFamily.bodyBold, fontSize: fontSize.sm },
 
-  timerWrap: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm, paddingHorizontal: spacing.md, marginBottom: spacing.sm },
-  timerBg: { flex: 1, height: 8, borderRadius: 4, overflow: 'hidden' },
-  timerFill: { height: 8, borderRadius: 4 },
-  timerText: { fontFamily: fontFamily.bodyBold, fontSize: fontSize.sm, width: 28, textAlign: 'right' },
+  serieWrap: { flexDirection: 'row', gap: 6, justifyContent: 'center', paddingVertical: spacing.sm },
+  serieDot: { width: 12, height: 12, borderRadius: 6 },
 
   gameArea: { flex: 1, position: 'relative', justifyContent: 'flex-end' },
   water: { position: 'absolute', bottom: 0, left: 0, right: 0, height: 80 },
@@ -281,7 +319,7 @@ const styles = StyleSheet.create({
 
   center: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: spacing.md, paddingHorizontal: spacing.xl },
   doneTitle: { fontFamily: fontFamily.heading, fontSize: fontSize.xxl },
-  doneSub: { fontFamily: fontFamily.body, fontSize: fontSize.base, textAlign: 'center' },
+  doneSub: { fontFamily: fontFamily.body, fontSize: fontSize.base, textAlign: 'center', lineHeight: 22 },
   starsBadge: { flexDirection: 'row', alignItems: 'center', gap: spacing.xs, paddingHorizontal: spacing.lg, paddingVertical: spacing.sm, borderRadius: 24 },
   starsText: { fontFamily: fontFamily.bodyBold, fontSize: fontSize.xl },
   closeBtnWrap: { width: '100%', marginTop: spacing.sm, position: 'relative' },

@@ -12,7 +12,7 @@ import { spacing, radius } from '../../../theme/tokens';
 import { fontFamily, fontSize } from '../../../theme/typography';
 import { useAppStore , useTheme} from '../../../store/useAppStore';
 import { AVATAR_COLORS } from '../../../theme/palettes';
-import { gameDifficulty } from '../../../content/difficulty';
+import { ROCKET_PROTOCOL } from '../../../content/difficulty';
 import PlimMascot from '../../../components/mascot/PlimMascot';
 import PlimIcon from '../../../components/ui/PlimIcon';
 
@@ -47,12 +47,10 @@ export default function RocketGame() {
   const completeMission = useAppStore(s => s.completeMission);
   const profile = useAppStore(s => s.profile);
   const mascotColor = AVATAR_COLORS[profile?.avatarColor ?? 0];
-  // Protocolo por idade; descanso sempre maior ou igual à contração
-  const {
-    rocketHoldMs: HOLD_MS,
-    rocketRestMs: REST_MS,
-    rocketReps: TOTAL_REPS,
-  } = gameDifficulty(profile?.age);
+  // Protocolo validado pela equipe de uroterapia: 5s/5s, 10 repetições
+  const HOLD_MS = ROCKET_PROTOCOL.holdMs;
+  const REST_MS = ROCKET_PROTOCOL.restMs;
+  const TOTAL_REPS = ROCKET_PROTOCOL.reps;
 
   const [phase, setPhase] = useState<'idle' | 'playing' | 'done'>('idle');
   const [reps, setReps] = useState(0);
@@ -177,7 +175,10 @@ export default function RocketGame() {
         <View style={styles.center}>
           <PlimMascot size={120} mood="cheer" primary={mascotColor} accent={theme.coral} dark={theme.text} />
           <Text style={[styles.doneTitle, { color: '#fff' }]}>Missão completa!</Text>
-          <Text style={[styles.doneSub, { color: '#aaa' }]}>{TOTAL_REPS} contrações longas feitas!</Text>
+          <Text style={[styles.doneSub, { color: '#aaa' }]}>
+            Série completa: {TOTAL_REPS} contrações de 5 segundos!{'\n'}
+            O treino completo são {ROCKET_PROTOCOL.seriesPerDay} séries por dia.
+          </Text>
           <View style={[styles.starsBadge, { backgroundColor: theme.accent + '33' }]}>
             <PlimIcon name="star" size={22} color={theme.accent} />
             <Text style={[styles.starsText, { color: theme.accent }]}>+{earned} ⭐</Text>

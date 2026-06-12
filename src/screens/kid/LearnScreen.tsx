@@ -72,7 +72,12 @@ const CONTENT: Record<Category, TipCard[]> = {
     {
       icon: '🥤',
       title: 'Quantos copos?',
-      body: 'Crianças de 4 a 10 anos precisam de 6 a 8 copos de água por dia — cerca de 1,2 a 1,5 litros. Distribua ao longo do dia!',
+      body: 'Cada idade tem sua medida: de 4 a 8 anos, 1 litro a 1,4 litro por dia; de 9 a 13 anos, 1,4 a 2 litros. Isso dá mais ou menos 6 a 8 copos no dia todo!',
+    },
+    {
+      icon: '🚰',
+      title: 'O truque do campeão',
+      body: 'Beba 1 copo de água depois de cada xixi! Assim a água fica espalhada pelo dia inteirinho, sem esforço.',
     },
     {
       icon: '🕐',

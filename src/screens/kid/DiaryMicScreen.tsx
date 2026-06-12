@@ -61,7 +61,8 @@ export default function DiaryMicScreen() {
   // Leitura assistida: metade do público ainda não lê
   useEffect(() => {
     if (phase === 'reward') {
-      speak(earned > 0 ? `${phrase} Você ganhou ${earned} estrelas!` : phrase);
+      const water = 'Agora bebe um copinho de água!';
+      speak(earned > 0 ? `${phrase} Você ganhou ${earned} estrelas! ${water}` : `${phrase} ${water}`);
     }
   }, [phase]);
   const [earned, setEarned] = useState(0);
@@ -112,6 +113,7 @@ export default function DiaryMicScreen() {
           <Text style={[styles.rewardTitle, { color: theme.text }]}>{phrase}</Text>
           <Text style={[styles.rewardSub, { color: theme.muted }]}>
             {earned > 0 ? `Você ganhou ${earned} estrelas!` : 'Registro anotado no diário!'}
+            {'\n'}💧 Agora bebe um copinho de água!
           </Text>
           {earned > 0 && (
             <View style={[styles.starsBadge, { backgroundColor: theme.accent + '33' }]}>

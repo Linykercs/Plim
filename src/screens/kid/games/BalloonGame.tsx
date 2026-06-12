@@ -11,7 +11,7 @@ import { spacing } from '../../../theme/tokens';
 import { fontFamily, fontSize } from '../../../theme/typography';
 import { useAppStore, useTheme } from '../../../store/useAppStore';
 import { AVATAR_COLORS } from '../../../theme/palettes';
-import { gameDifficulty } from '../../../content/difficulty';
+import { balloonCycles } from '../../../content/difficulty';
 import PlimMascot from '../../../components/mascot/PlimMascot';
 import PlimIcon from '../../../components/ui/PlimIcon';
 
@@ -43,7 +43,8 @@ export default function BalloonGame() {
   const completeMission = useAppStore(s => s.completeMission);
   const profile = useAppStore(s => s.profile);
   const mascotColor = AVATAR_COLORS[profile?.avatarColor ?? 0];
-  const { balloonCycles: TOTAL_CYCLES } = gameDifficulty(profile?.age);
+  // Protocolo validado: 5 a 10 ciclos, antes dos exercícios do assoalho
+  const TOTAL_CYCLES = balloonCycles(profile?.age);
 
   const [running, setRunning] = useState(false);
   const [cycles, setCycles] = useState(0);
@@ -131,7 +132,10 @@ export default function BalloonGame() {
         <View style={styles.center}>
           <PlimMascot size={120} mood="cheer" primary={mascotColor} accent={theme.coral} dark={theme.text} />
           <Text style={[styles.doneTitle, { color: '#fff' }]}>Arrasou!</Text>
-          <Text style={[styles.doneSub, { color: '#bbb' }]}>{TOTAL_CYCLES} ciclos completos de respiração!</Text>
+          <Text style={[styles.doneSub, { color: '#bbb' }]}>
+            {TOTAL_CYCLES} ciclos completos de respiração!{'\n'}
+            Agora você está pronto pro Foguete e pro Pulo do Sapo!
+          </Text>
           <View style={[styles.starsBadge, { backgroundColor: theme.accent + '33' }]}>
             <PlimIcon name="star" size={22} color={theme.accent} />
             <Text style={[styles.starsText, { color: theme.accent }]}>+{earned} ⭐</Text>
