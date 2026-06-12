@@ -32,6 +32,7 @@ export default function FrogGame() {
   const [timeLeft, setTimeLeft] = useState(GAME_SECONDS);
 
   const jumpsRef = useRef(0);
+  const earnedRef = useRef(0);
   const finishedRef = useRef(false);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const finishTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -77,8 +78,12 @@ export default function FrogGame() {
     if (finishedRef.current) return;
     finishedRef.current = true;
     clearInterval(timerRef.current!);
-    const stars = Math.round((Math.min(jumpsRef.current, TOTAL_JUMPS) / TOTAL_JUMPS) * 10);
-    addStars(stars);
+    // Tentar sempre rende pelo menos 1 estrela; recompensa cheia só na
+    // primeira conclusão do dia, para repetir não virar farm
+    const base = Math.max(1, Math.round((Math.min(jumpsRef.current, TOTAL_JUMPS) / TOTAL_JUMPS) * 10));
+    const reward = useAppStore.getState().missionsDone.game ? 1 : base;
+    earnedRef.current = reward;
+    addStars(reward);
     if (jumpsRef.current >= TOTAL_JUMPS) completeMission('game');
     setPhase('done');
   }
@@ -120,7 +125,7 @@ export default function FrogGame() {
   const mascotColor = AVATAR_COLORS[profile?.avatarColor ?? 0];
 
   if (phase === 'done') {
-    const stars = Math.round((Math.min(jumpsRef.current, TOTAL_JUMPS) / TOTAL_JUMPS) * 10);
+    const stars = earnedRef.current;
     return (
       <View style={[styles.root, { backgroundColor: '#0D2B1A', paddingTop: insets.top }]}>
         <View style={styles.center}>

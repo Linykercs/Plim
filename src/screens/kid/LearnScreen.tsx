@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View, Text, ScrollView, TouchableOpacity, StyleSheet, Pressable,
 } from 'react-native';
@@ -11,7 +11,6 @@ import { spacing, radius, shadow } from '../../theme/tokens';
 import { fontFamily, fontSize } from '../../theme/typography';
 import PlimIcon from '../../components/ui/PlimIcon';
 import { useTheme, useAppStore } from '../../store/useAppStore';
-import { useFocusEffect } from '@react-navigation/native';
 
 // ─── Content ──────────────────────────────────────────────────
 
@@ -103,7 +102,7 @@ const PHASES = [
 
 const MAX_BREATH_CYCLES = 3;
 
-function BreathingExercise() {
+function BreathingExercise({ onComplete }: { onComplete?: () => void }) {
   const theme = useTheme();
   const [running, setRunning] = useState(false);
   const [phaseIdx, setPhaseIdx] = useState(0);
@@ -142,6 +141,7 @@ function BreathingExercise() {
           scale.value = withTiming(1, { duration: 800 });
           opacity.value = withTiming(0.5, { duration: 800 });
           setCompletedCycles(cycles);
+          onComplete?.();
           return;
         }
         idx = nextIdx;
@@ -246,11 +246,24 @@ export default function LearnScreen() {
   const [active, setActive] = useState<Category>('postura');
   const activeCat = CATEGORIES.find(c => c.key === active)!;
   const completeMission = useAppStore(s => s.completeMission);
-  const missionsDone = useAppStore(s => s.missionsDone);
+  const addStars = useAppStore(s => s.addStars);
+  const [justEarned, setJustEarned] = useState(false);
+  // Missão completa com engajamento real: terminar a respiração
+  // ou explorar pelo menos 2 categorias de dicas
+  const viewedRef = useRef<Set<Category>>(new Set(['postura']));
 
-  useFocusEffect(useCallback(() => {
-    if (!missionsDone.learn) completeMission('learn');
-  }, [missionsDone.learn]));
+  function completeLearn() {
+    if (useAppStore.getState().missionsDone.learn) return;
+    addStars(2);
+    completeMission('learn');
+    setJustEarned(true);
+  }
+
+  function openCategory(key: Category) {
+    setActive(key);
+    viewedRef.current.add(key);
+    if (viewedRef.current.size >= 2) completeLearn();
+  }
 
   return (
     <View style={[styles.root, { backgroundColor: theme.bg }]}>
@@ -271,7 +284,7 @@ export default function LearnScreen() {
           return (
             <TouchableOpacity
               key={cat.key}
-              onPress={() => setActive(cat.key)}
+              onPress={() => openCategory(cat.key)}
               style={[
                 styles.tab,
                 {
@@ -294,8 +307,18 @@ export default function LearnScreen() {
         contentContainerStyle={[styles.scroll, { paddingBottom: insets.bottom + 100 }]}
         showsVerticalScrollIndicator={false}
       >
-        {/* Breathing exercise — only in Relaxamento */}
-        {active === 'relaxamento' && <BreathingExercise />}
+        {/* Earned banner */}
+        {justEarned && (
+          <View style={[styles.earnedBanner, { backgroundColor: theme.accent + '28' }]}>
+            <PlimIcon name="star" size={18} color={theme.accent} />
+            <Text style={[styles.earnedText, { color: theme.text }]}>
+              Missão Aprender completa! +2 ⭐
+            </Text>
+          </View>
+        )}
+
+        {/* Breathing exercise, only in Relaxamento */}
+        {active === 'relaxamento' && <BreathingExercise onComplete={completeLearn} />}
 
         {/* Tip cards */}
         {CONTENT[active].map((tip, i) => (
@@ -345,6 +368,12 @@ const styles = StyleSheet.create({
   tipIcon: { fontSize: 26 },
   tipTitle: { fontFamily: fontFamily.bodyBold, fontSize: fontSize.base, marginBottom: 4 },
   tipBody: { fontFamily: fontFamily.body, fontSize: fontSize.sm, lineHeight: 20 },
+
+  earnedBanner: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
+    gap: spacing.xs, borderRadius: radius.card, padding: spacing.sm,
+  },
+  earnedText: { fontFamily: fontFamily.bodyBold, fontSize: fontSize.sm },
 });
 
 const breathStyles = StyleSheet.create({

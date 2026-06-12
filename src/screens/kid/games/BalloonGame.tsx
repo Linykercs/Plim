@@ -45,6 +45,7 @@ export default function BalloonGame() {
   const [cycles, setCycles] = useState(0);
   const [phaseIdx, setPhaseIdx] = useState(0);
   const [done, setDone] = useState(false);
+  const [earned, setEarned] = useState(0);
 
   const scale = useSharedValue(0.7);
   const opacity = useSharedValue(0.85);
@@ -87,7 +88,11 @@ export default function BalloonGame() {
         setCycles(next);
 
         if (next >= TOTAL_CYCLES) {
-          addStars(5);
+          // Recompensa cheia só na primeira conclusão do dia; repetir
+          // continua divertido mas não vira fábrica de estrelas
+          const reward = useAppStore.getState().missionsDone.game ? 1 : 5;
+          addStars(reward);
+          setEarned(reward);
           completeMission('game');
           setDone(true);
           setRunning(false);
@@ -125,7 +130,7 @@ export default function BalloonGame() {
           <Text style={[styles.doneSub, { color: '#bbb' }]}>{TOTAL_CYCLES} ciclos completos de respiração!</Text>
           <View style={[styles.starsBadge, { backgroundColor: theme.accent + '33' }]}>
             <PlimIcon name="star" size={22} color={theme.accent} />
-            <Text style={[styles.starsText, { color: theme.accent }]}>+5 ⭐</Text>
+            <Text style={[styles.starsText, { color: theme.accent }]}>+{earned} ⭐</Text>
           </View>
           <View style={styles.closeBtnWrap}>
             <View style={[styles.btnShadow, { backgroundColor: theme.primaryDark }]} />

@@ -15,6 +15,8 @@ import PlimIcon from '../../../components/ui/PlimIcon';
 
 const TOTAL_REPS = 8;
 const HOLD_MS = 3000;
+// Protocolo clínico: descanso maior ou igual à contração entre as reps
+const REST_MS = 6000;
 const ORBIT_RX = 64;
 const ORBIT_RY = 38;
 
@@ -49,6 +51,9 @@ export default function RocketGame() {
   const [reps, setReps] = useState(0);
   const [holding, setHolding] = useState(false);
   const [flash, setFlash] = useState(false);
+  const [resting, setResting] = useState(false);
+  const [restLeft, setRestLeft] = useState(0);
+  const [earned, setEarned] = useState(0);
 
   const rocketY = useSharedValue(0);
   const holdProgress = useSharedValue(0);
@@ -57,12 +62,14 @@ export default function RocketGame() {
 
   const holdStart = useRef<number>(0);
   const holdTimer = useRef<ReturnType<typeof setInterval> | null>(null);
+  const restTimer = useRef<ReturnType<typeof setInterval> | null>(null);
   const repsRef = useRef(0);
 
   // Cleanup on unmount
   useEffect(() => {
     return () => {
       if (holdTimer.current) clearInterval(holdTimer.current);
+      if (restTimer.current) clearInterval(restTimer.current);
       cancelAnimation(rocketY);
       cancelAnimation(holdProgress);
       cancelAnimation(orbitAngle);
@@ -98,8 +105,25 @@ export default function RocketGame() {
     width: `${holdProgress.value * 100}%` as `${number}%`,
   }));
 
+  const startRest = useCallback(() => {
+    setHolding(false);
+    rocketY.value = withSpring(0, { damping: 10, stiffness: 80 });
+    setResting(true);
+    setRestLeft(REST_MS / 1000);
+    restTimer.current = setInterval(() => {
+      setRestLeft(prev => {
+        if (prev <= 1) {
+          clearInterval(restTimer.current!);
+          setResting(false);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  }, []);
+
   const onPressIn = useCallback(() => {
-    if (phase === 'done') return;
+    if (phase === 'done' || resting) return;
     if (phase === 'idle') {
       setPhase('playing');
       cancelAnimation(orbitAngle);
@@ -119,14 +143,19 @@ export default function RocketGame() {
         setFlash(true);
         setTimeout(() => setFlash(false), 400);
         if (repsRef.current >= TOTAL_REPS) {
-          addStars(8);
+          // Recompensa cheia só na primeira conclusão do dia
+          const reward = useAppStore.getState().missionsDone.game ? 1 : 8;
+          addStars(reward);
+          setEarned(reward);
           completeMission('game');
           setPhase('done');
+        } else {
+          startRest();
         }
         holdProgress.value = 0;
       }
     }, 100);
-  }, [phase]);
+  }, [phase, resting, startRest]);
 
   const onPressOut = useCallback(() => {
     setHolding(false);
@@ -144,7 +173,7 @@ export default function RocketGame() {
           <Text style={[styles.doneSub, { color: '#aaa' }]}>{TOTAL_REPS} contrações longas feitas!</Text>
           <View style={[styles.starsBadge, { backgroundColor: theme.accent + '33' }]}>
             <PlimIcon name="star" size={22} color={theme.accent} />
-            <Text style={[styles.starsText, { color: theme.accent }]}>+8 ⭐</Text>
+            <Text style={[styles.starsText, { color: theme.accent }]}>+{earned} ⭐</Text>
           </View>
           <View style={styles.closeBtnWrap}>
             <View style={[styles.btnShadow, { backgroundColor: theme.primaryDark }]} />
@@ -192,7 +221,13 @@ export default function RocketGame() {
         <Animated.View style={[styles.progressFill, { backgroundColor: '#FFCE5C' }, progressStyle]} />
       </View>
       <Text style={[styles.hint, { color: '#ffffffAA' }]}>
-        {phase === 'idle' ? 'Segure o botão para lançar!' : holding ? 'Segurando... não solte!' : 'Segure novamente!'}
+        {phase === 'idle'
+          ? 'Segure o botão para lançar!'
+          : resting
+            ? `Agora descansa... ${restLeft}`
+            : holding
+              ? 'Segurando... não solte!'
+              : 'Segure novamente!'}
       </Text>
 
       {/* Hold button */}
@@ -208,12 +243,13 @@ export default function RocketGame() {
               {
                 backgroundColor: holding ? theme.coral : theme.primary,
                 borderColor: holding ? '#A83000' : theme.primaryDark,
-                transform: [{ scale: pressed ? 0.96 : 1 }, { translateY: pressed ? 3 : 0 }],
+                opacity: resting ? 0.5 : 1,
+                transform: [{ scale: pressed && !resting ? 0.96 : 1 }, { translateY: pressed && !resting ? 3 : 0 }],
               },
             ]}
           >
-            <PlimIcon name="rocket" size={36} color="#fff" />
-            <Text style={styles.holdBtnLabel}>Segurar</Text>
+            <PlimIcon name={resting ? 'moon' : 'rocket'} size={36} color="#fff" />
+            <Text style={styles.holdBtnLabel}>{resting ? 'Descansar' : 'Segurar'}</Text>
           </Pressable>
         </View>
       </View>

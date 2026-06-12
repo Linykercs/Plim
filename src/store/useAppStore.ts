@@ -60,20 +60,12 @@ export interface MissionsDone {
   evac: boolean;
 }
 
-// ─── Streak helper ────────────────────────────────────────────
+// ─── Active days helper ───────────────────────────────────────
+// Total de dias com pelo menos um registro. Só cresce, nunca zera:
+// dia sem registro é neutro, não é punição.
 
-function calcStreak(entries: DiaryEntry[]): number {
-  if (entries.length === 0) return 0;
-  const days = new Set(entries.map(e => new Date(e.createdAt).toDateString()));
-  let streak = 0;
-  const d = new Date();
-  // If today has no entry, streak starts from yesterday
-  if (!days.has(d.toDateString())) d.setDate(d.getDate() - 1);
-  while (days.has(d.toDateString())) {
-    streak++;
-    d.setDate(d.getDate() - 1);
-  }
-  return streak;
+export function countActiveDays(entries: DiaryEntry[]): number {
+  return new Set(entries.map(e => new Date(e.createdAt).toDateString())).size;
 }
 
 // ─── Missions midnight reset ──────────────────────────────────
@@ -143,9 +135,6 @@ interface AppState {
   toggleAlarm: (id: string) => void;
   updateAlarm: (id: string, patch: Partial<Pick<Alarm, 'time' | 'days' | 'label'>>) => void;
 
-  streak: number;
-  setStreak: (n: number) => void;
-
   waterToday: number;
   waterHistory: { date: string; cups: number }[];
   addWater: () => void;
@@ -205,18 +194,11 @@ export const useAppStore = create<AppState>()(
       setSavingFor: (id) => set({ savingFor: id }),
 
       entries: [],
-      addEntry: (e) =>
-        set((s) => {
-          const entries = [...s.entries, e];
-          return { entries, streak: calcStreak(entries) };
-        }),
+      addEntry: (e) => set((s) => ({ entries: [...s.entries, e] })),
 
       alarms: DEFAULT_ALARMS,
       toggleAlarm: (id) => set((s) => ({ alarms: s.alarms.map((a) => a.id === id ? { ...a, on: !a.on } : a) })),
       updateAlarm: (id, patch) => set((s) => ({ alarms: s.alarms.map((a) => a.id === id ? { ...a, ...patch } : a) })),
-
-      streak: 0,
-      setStreak: (n) => set({ streak: n }),
 
       waterToday: 0,
       waterHistory: [],
@@ -272,7 +254,6 @@ export const useAppStore = create<AppState>()(
         savingFor: s.savingFor,
         entries: s.entries,
         alarms: s.alarms,
-        streak: s.streak,
         missionsDone: s.missionsDone,
         missionsResetDate: s.missionsResetDate,
         waterToday: s.waterToday,

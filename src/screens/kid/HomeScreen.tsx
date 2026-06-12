@@ -17,7 +17,7 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import PlimMascot from '../../components/mascot/PlimMascot';
 import PlimIcon, { type IconName } from '../../components/ui/PlimIcon';
-import { useAppStore , useTheme} from '../../store/useAppStore';
+import { useAppStore, useTheme, countActiveDays } from '../../store/useAppStore';
 import { defaultPalette, AVATAR_COLORS } from '../../theme/palettes';
 import { fontFamily, fontSize } from '../../theme/typography';
 import type { KidTabParamList, RootStackParamList } from '../../navigation/types';
@@ -65,10 +65,11 @@ function useNextAlarm() {
 export default function HomeScreen({ navigation }: { navigation: Nav }) {
   const theme = useTheme();
   const {
-    profile, stars, streak, missionsDone, savingFor, rewards, setMode,
+    profile, stars, missionsDone, savingFor, rewards, setMode,
     checkAndResetMissions, addWater, waterToday, pendingCelebrations,
     shiftCelebration, clearCelebrations, entries,
   } = useAppStore();
+  const activeDays = useMemo(() => countActiveDays(entries), [entries]);
   const rootNav = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   useFocusEffect(useCallback(() => { checkAndResetMissions(); }, []));
@@ -148,8 +149,8 @@ export default function HomeScreen({ navigation }: { navigation: Nav }) {
 
               <View style={styles.chips}>
                 <View style={styles.chip}>
-                  <PlimIcon name="fire" color="#fff" size={15} />
-                  <Text style={styles.chipTxt}>{streak} dias</Text>
+                  <PlimIcon name="sun" color="#fff" size={15} />
+                  <Text style={styles.chipTxt}>{activeDays} dias</Text>
                 </View>
                 <View style={styles.chip}>
                   <PlimIcon name="star" color={theme.accent} size={15} />

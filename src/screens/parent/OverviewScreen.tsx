@@ -6,7 +6,7 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../../navigation/types';
 import { spacing, radius, shadow } from '../../theme/tokens';
 import { fontFamily, fontSize } from '../../theme/typography';
-import { useAppStore , useTheme} from '../../store/useAppStore';
+import { useAppStore, useTheme, countActiveDays } from '../../store/useAppStore';
 import { AVATAR_COLORS } from '../../theme/palettes';
 import PlimMascot from '../../components/mascot/PlimMascot';
 import PlimIcon from '../../components/ui/PlimIcon';
@@ -31,7 +31,6 @@ export default function OverviewScreen() {
   const profile = useAppStore(s => s.profile);
   const entries = useAppStore(s => s.entries);
   const stars = useAppStore(s => s.stars);
-  const streak = useAppStore(s => s.streak);
   const setMode = useAppStore(s => s.setMode);
   const redemptions = useAppStore(s => s.redemptions);
   const rewards = useAppStore(s => s.rewards);
@@ -74,7 +73,7 @@ export default function OverviewScreen() {
         {/* Stat chips */}
         <View style={styles.chipRow}>
           {[
-            { icon: 'fire' as const, label: `${streak} dias`, bg: '#fff3' },
+            { icon: 'sun' as const, label: `${countActiveDays(entries)} dias`, bg: '#fff3' },
             { icon: 'star' as const, label: `${stars} ⭐`, bg: '#fff3' },
             { icon: 'drop' as const, label: `${weekMic} xixi`, bg: '#fff3' },
             { icon: 'poop' as const, label: `${weekEvac} cocô`, bg: '#fff3' },

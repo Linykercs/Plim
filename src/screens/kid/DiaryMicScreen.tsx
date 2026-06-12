@@ -50,6 +50,7 @@ export default function DiaryMicScreen() {
   const missionsDone = useAppStore(s => s.missionsDone);
 
   const [phase, setPhase] = useState<'form' | 'reward'>('form');
+  const [earned, setEarned] = useState(0);
   const [time, setTime] = useState(nowHM());
   const [cups, setCups] = useState(1);
   const [urineColor, setUrineColor] = useState('c2');
@@ -84,6 +85,7 @@ export default function DiaryMicScreen() {
     if (!missionsDone.mic) {
       addStars(3);
       completeMission('mic');
+      setEarned(3);
     }
     setPhase('reward');
   }
@@ -94,11 +96,15 @@ export default function DiaryMicScreen() {
         <View style={styles.rewardCenter}>
           <Text style={styles.rewardEmoji}>💧</Text>
           <Text style={[styles.rewardTitle, { color: theme.text }]}>Ótimo registro!</Text>
-          <Text style={[styles.rewardSub, { color: theme.muted }]}>Você ganhou 3 estrelas!</Text>
-          <View style={[styles.starsBadge, { backgroundColor: theme.accent + '33' }]}>
-            <PlimIcon name="star" size={22} color={theme.accent} />
-            <Text style={[styles.starsText, { color: theme.accent }]}>+3 ⭐</Text>
-          </View>
+          <Text style={[styles.rewardSub, { color: theme.muted }]}>
+            {earned > 0 ? `Você ganhou ${earned} estrelas!` : 'Registro anotado no diário!'}
+          </Text>
+          {earned > 0 && (
+            <View style={[styles.starsBadge, { backgroundColor: theme.accent + '33' }]}>
+              <PlimIcon name="star" size={22} color={theme.accent} />
+              <Text style={[styles.starsText, { color: theme.text }]}>+{earned} ⭐</Text>
+            </View>
+          )}
           <View style={styles.rewardBtnWrap}>
             <View style={[styles.btnShadow, { backgroundColor: theme.primaryDark }]} />
             <Pressable

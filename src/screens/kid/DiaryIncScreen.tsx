@@ -5,16 +5,27 @@ import { useNavigation } from '@react-navigation/native';
 import { spacing } from '../../theme/tokens';
 import { fontFamily, fontSize } from '../../theme/typography';
 import { useAppStore, useTheme } from '../../store/useAppStore';
+import { AVATAR_COLORS } from '../../theme/palettes';
+import PlimMascot from '../../components/mascot/PlimMascot';
 import PlimIcon from '../../components/ui/PlimIcon';
+
+// Escape é parte do tratamento, nunca punição: a tela usa o tema claro
+// normal, o Plim acolhe, e registrar vale as mesmas estrelas do xixi.
 
 export default function DiaryIncScreen() {
   const theme = useTheme();
   const insets = useSafeAreaInsets();
   const nav = useNavigation();
   const addEntry = useAppStore(s => s.addEntry);
+  const addStars = useAppStore(s => s.addStars);
+  const completeMission = useAppStore(s => s.completeMission);
+  const profile = useAppStore(s => s.profile);
 
   const [note, setNote] = useState('');
-  const [saved, setSaved] = useState(false);
+  const [phase, setPhase] = useState<'form' | 'reward'>('form');
+  const [earned, setEarned] = useState(0);
+
+  const mascotColor = AVATAR_COLORS[profile?.avatarColor ?? 0];
 
   function handleSave() {
     addEntry({
@@ -23,33 +34,82 @@ export default function DiaryIncScreen() {
       createdAt: new Date().toISOString(),
       note: note.trim() || undefined,
     });
-    setSaved(true);
-    setTimeout(() => nav.goBack(), 800);
+    // Escape é um evento de xixi: vale a mesma missão e as mesmas estrelas
+    // do registro no banheiro, para nunca premiar esconder o acidente.
+    const { missionsDone } = useAppStore.getState();
+    if (!missionsDone.mic) {
+      addStars(3);
+      completeMission('mic');
+      setEarned(3);
+    }
+    setPhase('reward');
+  }
+
+  if (phase === 'reward') {
+    return (
+      <View style={[styles.root, { backgroundColor: theme.bg, paddingTop: insets.top }]}>
+        <View style={styles.content}>
+          <PlimMascot size={130} mood="splash" primary={mascotColor} accent={theme.coral} dark={theme.text} />
+          <Text style={[styles.rewardTitle, { color: theme.text }]}>Obrigado por me contar!</Text>
+          <Text style={[styles.rewardSub, { color: theme.muted }]}>
+            Splash! Acontece com todo sapo, até comigo.{'\n'}Amanhã a gente pula de novo, juntos.
+          </Text>
+          {earned > 0 && (
+            <View style={[styles.starsBadge, { backgroundColor: theme.accent + '33' }]}>
+              <PlimIcon name="star" size={22} color={theme.accent} />
+              <Text style={[styles.starsText, { color: theme.text }]}>+{earned} ⭐</Text>
+            </View>
+          )}
+          <View style={styles.btnWrap}>
+            <View style={[styles.btnShadow, { backgroundColor: theme.primaryDark }]} />
+            <Pressable
+              style={({ pressed }) => [
+                styles.btn,
+                {
+                  backgroundColor: theme.primary,
+                  borderColor: theme.primaryDark,
+                  borderBottomWidth: pressed ? 2 : 4,
+                  transform: [{ translateY: pressed ? 2 : 0 }],
+                },
+              ]}
+              onPress={() => nav.goBack()}
+            >
+              <Text style={styles.btnLabel}>Fechar</Text>
+            </Pressable>
+          </View>
+        </View>
+      </View>
+    );
   }
 
   return (
-    <View style={[styles.root, { paddingTop: insets.top }]}>
+    <View style={[styles.root, { backgroundColor: theme.bg, paddingTop: insets.top }]}>
       <View style={styles.header}>
         <Pressable onPress={() => nav.goBack()} style={styles.backBtn}>
-          <PlimIcon name="back" size={22} color="#fff" />
+          <PlimIcon name="back" size={22} color={theme.text} />
         </Pressable>
-        <Text style={styles.title}>Registrar escape</Text>
-        <View style={{ width: 36 }} />
+        <Text style={[styles.title, { color: theme.text }]}>Registrar escape</Text>
+        <View style={{ width: 44 }} />
       </View>
 
       <View style={styles.content}>
-        <View style={[styles.iconCircle, { backgroundColor: theme.coral + '33' }]}>
-          <Text style={styles.emoji}>💧</Text>
-        </View>
+        <PlimMascot size={110} mood="splash" primary={mascotColor} accent={theme.coral} dark={theme.text} />
 
-        <Text style={styles.subtitle}>
-          Aconteceu um escape?{'\n'}Vamos anotar aqui.
+        <Text style={[styles.subtitle, { color: theme.text }]}>
+          Escapou um xixi?{'\n'}Tudo bem, acontece!
+        </Text>
+        <Text style={[styles.helper, { color: theme.muted }]}>
+          Me contar ajuda muito no seu treino.
         </Text>
 
         <TextInput
-          style={styles.noteInput}
-          placeholder="Observação (opcional)"
-          placeholderTextColor="#ffffff55"
+          style={[styles.noteInput, {
+            borderColor: theme.softBg2,
+            backgroundColor: theme.surface,
+            color: theme.text,
+          }]}
+          placeholder="Quer contar mais alguma coisa?"
+          placeholderTextColor={theme.muted + '99'}
           value={note}
           onChangeText={setNote}
           multiline
@@ -57,22 +117,21 @@ export default function DiaryIncScreen() {
         />
 
         <View style={styles.btnWrap}>
-          <View style={[styles.btnShadow, { backgroundColor: '#6B1030' }]} />
+          <View style={[styles.btnShadow, { backgroundColor: theme.primaryDark }]} />
           <Pressable
             style={({ pressed }) => [
               styles.btn,
               {
-                backgroundColor: saved ? '#5FCB8E' : theme.coral,
-                borderColor: saved ? '#3DA070' : '#6B1030',
+                backgroundColor: theme.primary,
+                borderColor: theme.primaryDark,
                 borderBottomWidth: pressed ? 2 : 4,
                 transform: [{ translateY: pressed ? 2 : 0 }],
               },
             ]}
             onPress={handleSave}
-            disabled={saved}
           >
-            <PlimIcon name={saved ? 'check' : 'plus'} size={20} color="#fff" />
-            <Text style={styles.btnLabel}>{saved ? 'Registrado!' : 'Registrar'}</Text>
+            <PlimIcon name="check" size={20} color="#fff" />
+            <Text style={styles.btnLabel}>Registrar</Text>
           </Pressable>
         </View>
       </View>
@@ -81,30 +140,44 @@ export default function DiaryIncScreen() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: '#2B1020' },
+  root: { flex: 1 },
   header: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
     paddingHorizontal: spacing.md, paddingBottom: spacing.sm,
   },
-  backBtn: { width: 36, height: 36, alignItems: 'center', justifyContent: 'center' },
-  title: { fontFamily: fontFamily.heading, fontSize: fontSize.lg, color: '#fff' },
+  backBtn: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
+  title: { fontFamily: fontFamily.heading, fontSize: fontSize.lg },
   content: {
     flex: 1, alignItems: 'center', justifyContent: 'center',
-    paddingHorizontal: spacing.xl, gap: spacing.lg,
+    paddingHorizontal: spacing.xl, gap: spacing.md,
   },
-  iconCircle: { width: 96, height: 96, borderRadius: 48, alignItems: 'center', justifyContent: 'center' },
-  emoji: { fontSize: 48 },
   subtitle: {
-    fontFamily: fontFamily.body, fontSize: fontSize.lg,
-    color: '#ffffffCC', textAlign: 'center', lineHeight: 28,
+    fontFamily: fontFamily.heading, fontSize: fontSize.xl,
+    textAlign: 'center', lineHeight: 28,
+  },
+  helper: {
+    fontFamily: fontFamily.body, fontSize: fontSize.base,
+    textAlign: 'center',
   },
   noteInput: {
-    width: '100%', borderWidth: 1.5, borderRadius: 16, borderColor: '#ffffff33',
-    backgroundColor: '#ffffff12', padding: spacing.md,
-    fontFamily: fontFamily.body, fontSize: fontSize.base, color: '#fff',
+    width: '100%', borderWidth: 2, borderRadius: 16,
+    padding: spacing.md,
+    fontFamily: fontFamily.body, fontSize: fontSize.base,
     minHeight: 80, textAlignVertical: 'top',
   },
-  btnWrap: { position: 'relative', width: '100%' },
+  rewardTitle: {
+    fontFamily: fontFamily.heading, fontSize: fontSize.xxl, textAlign: 'center',
+  },
+  rewardSub: {
+    fontFamily: fontFamily.body, fontSize: fontSize.base,
+    textAlign: 'center', lineHeight: 24,
+  },
+  starsBadge: {
+    flexDirection: 'row', alignItems: 'center', gap: spacing.xs,
+    paddingHorizontal: spacing.lg, paddingVertical: spacing.sm, borderRadius: 24,
+  },
+  starsText: { fontFamily: fontFamily.bodyBold, fontSize: fontSize.xl },
+  btnWrap: { position: 'relative', width: '100%', marginTop: spacing.sm },
   btnShadow: { position: 'absolute', top: 4, left: 0, right: 0, bottom: 0, borderRadius: 18 },
   btn: {
     borderRadius: 18, paddingVertical: spacing.md + 2,

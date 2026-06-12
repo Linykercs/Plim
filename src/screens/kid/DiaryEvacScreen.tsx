@@ -54,6 +54,7 @@ export default function DiaryEvacScreen() {
   const missionsDone = useAppStore(s => s.missionsDone);
 
   const [phase, setPhase] = useState<'form' | 'reward'>('form');
+  const [earned, setEarned] = useState(0);
   const [time, setTime] = useState(nowHM());
   const [bristol, setBristol] = useState<1|2|3|4|5|6|7>(4);
   const [poopSize, setPoopSize] = useState('medium');
@@ -82,6 +83,7 @@ export default function DiaryEvacScreen() {
     if (!missionsDone.evac) {
       addStars(5);
       completeMission('evac');
+      setEarned(5);
     }
     setPhase('reward');
   }
@@ -97,10 +99,12 @@ export default function DiaryEvacScreen() {
           <Text style={[styles.rewardSub, { color: theme.muted }]}>
             {bristolGood ? 'Cocô saudável! 🌟' : 'Obrigado por registrar! Beber água ajuda.'}
           </Text>
-          <View style={[styles.starsBadge, { backgroundColor: theme.accent + '33' }]}>
-            <PlimIcon name="star" size={22} color={theme.accent} />
-            <Text style={[styles.starsText, { color: theme.accent }]}>+5 ⭐</Text>
-          </View>
+          {earned > 0 && (
+            <View style={[styles.starsBadge, { backgroundColor: theme.accent + '33' }]}>
+              <PlimIcon name="star" size={22} color={theme.accent} />
+              <Text style={[styles.starsText, { color: theme.text }]}>+{earned} ⭐</Text>
+            </View>
+          )}
           <View style={styles.rewardBtnWrap}>
             <View style={[styles.btnShadow, { backgroundColor: theme.primaryDark }]} />
             <Pressable
