@@ -3,8 +3,8 @@
 > App lúdico para crianças de 4 a 10 anos em tratamento de enurese, bexiga hiperativa, constipação e incontinência pélvica. Gamificação com mascote-sapo, diário miccional/evacuatório, minigames terapêuticos e recompensas reais curadas pelos pais.
 
 **Desenvolvedor:** Linyker Mendes Coelho
-**Colaboração clínica:** Flávia Franco, Livia Britto, Liliane Ganzerli de Souza e Andreia Reis (enfermeiras, estudantes do Albert Einstein)
-**Contexto:** trabalho desenvolvido para apresentação no Seminário de Estomaterapia, Albert Einstein (São Paulo)
+**Equipe colaboradora:** Flávia Franco, Lívia Britto, Liliane Ganzerli de Souza e Andreia Reis (Pós-Graduandas em Estomaterapia, Hospital Israelita Albert Einstein)
+**Contexto:** desenvolvido em processo colaborativo com alunas da Pós-Graduação em Estomaterapia do Hospital Israelita Albert Einstein, para apresentação no Seminário de Estomaterapia (São Paulo)
 
 [![Expo SDK](https://img.shields.io/badge/Expo-SDK%2056-000020?logo=expo)](https://docs.expo.dev/versions/v56.0.0/)
 [![React Native](https://img.shields.io/badge/React%20Native-0.85-61DAFB?logo=react)](https://reactnative.dev/)

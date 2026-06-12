@@ -1,10 +1,24 @@
 # Fundamentação clínica do Plim
 
 **Desenvolvedor:** Linyker Mendes Coelho
-**Colaboração clínica:** Flávia Franco, Livia Britto, Liliane Ganzerli de Souza e Andreia Reis (enfermeiras, estudantes do Albert Einstein)
-**Contexto:** trabalho desenvolvido para apresentação no Seminário de Estomaterapia, Albert Einstein (São Paulo)
+**Equipe colaboradora:** Flávia Franco, Lívia Britto, Liliane Ganzerli de Souza e Andreia Reis (Pós-Graduandas em Estomaterapia, Hospital Israelita Albert Einstein)
+**Contexto:** trabalho desenvolvido para apresentação no Seminário de Estomaterapia, Hospital Israelita Albert Einstein (São Paulo)
 
 > **Status: rascunho para validação da especialista.** Este documento foi escrito pelo desenvolvedor mapeando as decisões do app aos conceitos de uroterapia que as inspiraram. Ele NÃO é verdade clínica: precisa ser revisado, corrigido e assinado por profissional de saúde (enfermeira especialista e/ou fisioterapeuta pélvica) antes de ser apresentado como fundamentação. As perguntas em aberto estão na última seção.
+
+## Desenvolvimento do projeto
+
+O aplicativo Plim foi desenvolvido por Linyker Mendes Coelho em conjunto com alunas da Pós-Graduação em Estomaterapia do Hospital Israelita Albert Einstein, por meio de um processo colaborativo de construção, discussão clínica e desenvolvimento conceitual voltado à reabilitação pélvica pediátrica.
+
+A participação da equipe contribuiu para a definição das funcionalidades do aplicativo, elaboração dos conteúdos educativos, adequação da linguagem infantil e alinhamento dos recursos gamificados aos princípios da uroterapia e da reabilitação pélvica baseada em evidências.
+
+**Equipe colaboradora:**
+
+- Linyker Mendes Coelho, Desenvolvedor
+- Flávia Franco, Pós-Graduanda em Estomaterapia
+- Lívia Britto, Pós-Graduanda em Estomaterapia
+- Liliane Ganzerli de Souza, Pós-Graduanda em Estomaterapia
+- Andreia Reis, Pós-Graduanda em Estomaterapia
 
 ## O que o Plim é
 
