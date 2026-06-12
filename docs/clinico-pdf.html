@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Plim: Fundamentação Clínica</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #5FCB8E;
+    --primary-dark: #2E8B5F;
+    --secondary: #7DC9E8;
+    --accent: #FFCE5C;
+    --accent-text: #9A7200;
+    --coral: #FF8A7A;
+    --bg: #FFF7EC;
+    --text: #1F3A4D;
+    --muted: #54707F;
+    --soft: #EEF7F1;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  @page { size: A4; margin: 18mm 16mm 20mm 16mm; }
+  body {
+    font-family: 'Nunito', sans-serif;
+    color: var(--text);
+    font-size: 10.5pt;
+    line-height: 1.55;
+  }
+  h1, h2, h3 { font-family: 'Fredoka', sans-serif; }
+
+  /* ── Capa ── */
+  .cover {
+    height: 250mm;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    page-break-after: always;
+  }
+  .cover img { width: 140px; height: 140px; border-radius: 32px; margin-bottom: 28px; }
+  .cover h1 { font-size: 30pt; font-weight: 700; color: var(--primary-dark); }
+  .cover .subtitle { font-family: 'Fredoka', sans-serif; font-size: 15pt; font-weight: 600; color: var(--text); margin-top: 6px; }
+  .cover .tagline { font-size: 11pt; color: var(--muted); margin-top: 10px; max-width: 420px; }
+  .cover .credits {
+    margin-top: 56px;
+    background: var(--soft);
+    border-radius: 16px;
+    padding: 18px 36px;
+    font-size: 10.5pt;
+  }
+  .cover .credits p { margin: 4px 0; }
+  .cover .credits strong { color: var(--primary-dark); }
+  .cover .date { margin-top: 28px; color: var(--muted); font-size: 10pt; }
+  .cover .version { margin-top: 4px; color: var(--muted); font-size: 9pt; }
+
+  /* ── Conteúdo ── */
+  h2 {
+    font-size: 15pt;
+    font-weight: 600;
+    color: var(--primary-dark);
+    margin: 22px 0 10px;
+    padding-bottom: 4px;
+    border-bottom: 2.5px solid var(--primary);
+    page-break-after: avoid;
+  }
+  h3 { font-size: 11.5pt; font-weight: 600; margin: 14px 0 6px; page-break-after: avoid; }
+  p { margin: 7px 0; text-align: justify; }
+  ul, ol { margin: 7px 0 7px 20px; }
+  li { margin: 4px 0; text-align: justify; }
+  strong { font-weight: 800; }
+
+  .callout {
+    background: #FFF3D6;
+    border-left: 5px solid var(--accent);
+    border-radius: 0 12px 12px 0;
+    padding: 12px 16px;
+    margin: 12px 0;
+    font-size: 10pt;
+  }
+  .callout.blue { background: #E9F5FB; border-left-color: var(--secondary); }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    font-size: 9.5pt;
+  }
+  th {
+    background: var(--primary);
+    color: #fff;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 600;
+    text-align: left;
+    padding: 8px 10px;
+  }
+  td { padding: 8px 10px; vertical-align: top; border-bottom: 1px solid #E3EDE7; }
+  tr:nth-child(even) td { background: var(--soft); }
+  tr { page-break-inside: avoid; }
+
+  .num-list li { margin: 8px 0; }
+  .refs li { font-size: 9.5pt; color: var(--muted); margin: 6px 0; }
+  .refs li em { color: var(--text); }
+
+  .footer {
+    position: fixed;
+    bottom: -12mm;
+    left: 0; right: 0;
+    text-align: center;
+    font-size: 8pt;
+    color: var(--muted);
+  }
+</style>
+</head>
+<body>
+
+<div class="footer">Plim · Fundamentação clínica · Desenvolvedor: Linyker Mendes Coelho</div>
+
+<!-- ══ CAPA ══ -->
+<div class="cover">
+  <img src="../assets/icon.png" alt="Logo do Plim">
+  <h1>Plim</h1>
+  <div class="subtitle">Fundamentação Clínica do Aplicativo</div>
+  <div class="tagline">Aplicativo gamificado de apoio à reabilitação pélvica pediátrica para crianças de 4 a 10 anos: enurese, bexiga hiperativa, constipação e incontinência</div>
+  <div class="credits">
+    <p><strong>Desenvolvedor:</strong> Linyker Mendes Coelho</p>
+    <p><strong>Revisão clínica:</strong> _______________________________ <span style="color:var(--muted)">(enfermeira especialista)</span></p>
+  </div>
+  <div class="date">São Paulo, junho de 2026</div>
+  <div class="version">Versão para revisão e validação clínica</div>
+</div>
+
+<!-- ══ CONTEÚDO ══ -->
+
+<div class="callout">
+  <strong>Status: documento para validação da especialista.</strong> Este material foi escrito pelo desenvolvedor mapeando as decisões do aplicativo aos conceitos de uroterapia que as inspiraram. Ele não é verdade clínica: precisa ser revisado, corrigido e validado por profissional de saúde antes de ser usado como fundamentação. As perguntas em aberto estão na seção final.
+</div>
+
+<h2>1. O que o Plim é</h2>
+<p>Ferramenta de apoio à <strong>uroterapia padrão</strong> (urotherapy) para crianças de 4 a 10 anos em tratamento de enurese, bexiga hiperativa, constipação e incontinência. O aplicativo não diagnostica, não trata sozinho e não substitui o acompanhamento profissional: ele transforma as tarefas que o tratamento já pede (diário, hidratação, rotina de banheiro, exercícios) em algo que a criança quer fazer.</p>
+<p>O app funciona 100% no aparelho da família, sem servidor, sem conta e sem coleta de dados, o que simplifica as questões de privacidade envolvidas em dados de saúde de menores (LGPD, art. 11 e art. 14).</p>
+
+<h2>2. Mapa: recurso do aplicativo → conceito clínico</h2>
+<table>
+  <tr><th style="width:34%">Recurso do app</th><th style="width:38%">Conceito clínico</th><th>Referência de partida</th></tr>
+  <tr>
+    <td>Diário de micção (horário, volume estimado em copos, cor da urina, gatilhos)</td>
+    <td>O diário miccional é a base da avaliação e do acompanhamento na uroterapia padrão recomendada pela ICCS</td>
+    <td>Nieuwhof-Leppink et al., ICCS, J Pediatr Urol, 2021</td>
+  </tr>
+  <tr>
+    <td>Diário de evacuação com escala de Bristol ilustrada</td>
+    <td>Classificação da consistência fecal; constipação funcional frequentemente coexiste com sintomas urinários (disfunção vesico-intestinal)</td>
+    <td>Lewis &amp; Heaton (1997); Roma IV (Hyams et al., 2016)</td>
+  </tr>
+  <tr>
+    <td>Registro de escape com acolhimento (sem punição, mesma recompensa)</td>
+    <td>A uroterapia comportamental orienta nunca punir acidentes; culpa e vergonha pioram a adesão, e o dado honesto vale mais que o dado bonito</td>
+    <td>ICCS enurese (Nevéus et al., 2020)</td>
+  </tr>
+  <tr>
+    <td>Lembretes programados de banheiro (7 horários padrão)</td>
+    <td>Micção programada (timed voiding), componente da uroterapia padrão</td>
+    <td>ICCS uroterapia (2021)</td>
+  </tr>
+  <tr>
+    <td>Missão diária de água com histórico de copos</td>
+    <td>Ingestão hídrica adequada e distribuída ao longo do dia, evitando concentração à noite</td>
+    <td><strong>A confirmar</strong> (valores no app: 6 a 8 copos, 1,2 a 1,5 L/dia)</td>
+  </tr>
+  <tr>
+    <td>Jogo Foguete (segurar = contrair, soltar = relaxar, descanso obrigatório, séries por idade)</td>
+    <td>Treino da musculatura do assoalho pélvico com proporção contração/descanso; o app funciona como metrônomo lúdico, não como biofeedback</td>
+    <td><strong>A validar</strong> (protocolos: 3s/6s ×5 até 5 anos; 5s/10s ×6 de 6 a 7; 8s/10s ×8 de 8+)</td>
+  </tr>
+  <tr>
+    <td>Jogo Balão (inspirar 4s, segurar 2s, expirar 6s)</td>
+    <td>Respiração diafragmática para relaxamento do assoalho pélvico, útil na evacuação e na micção disfuncional</td>
+    <td><strong>A validar</strong></td>
+  </tr>
+  <tr>
+    <td>Jogo Pulo do Sapo (toques rápidos em ritmo)</td>
+    <td>Coordenação e contrações rápidas (fibras de contração rápida)</td>
+    <td><strong>A validar</strong></td>
+  </tr>
+  <tr>
+    <td>Conteúdo educativo (postura no vaso, pés apoiados, sem pressa, relaxar a barriga)</td>
+    <td>Educação e desmistificação, primeiro pilar da uroterapia; postura de evacuação com apoio dos pés</td>
+    <td>ICCS uroterapia (2021)</td>
+  </tr>
+  <tr>
+    <td>Relatório PDF para o profissional</td>
+    <td>O diário só tem valor clínico se chega a quem prescreve; a exportação resume eventos, tendência de escapes e hidratação</td>
+    <td></td>
+  </tr>
+</table>
+
+<h2>3. Decisões de produto com justificativa clínica</h2>
+<p>Estas regras estão implementadas no código e qualquer recurso novo deve respeitá-las:</p>
+<ol class="num-list">
+  <li><strong>Recompensa-se o comportamento, nunca o resultado fisiológico.</strong> Registrar um escape vale exatamente as mesmas estrelas que registrar um xixi no banheiro. Se o resultado "bom" valesse mais, o app ensinaria a criança a esconder acidentes (corrompendo o diário) ou a restringir líquidos (risco). Noites secas geram celebração emocional do mascote, nunca moeda.</li>
+  <li><strong>Acidente não é falha.</strong> A tela de escape usa linguagem de acolhimento ("acontece com todo sapo") e visual idêntico ao resto do app, sem cores punitivas.</li>
+  <li><strong>Sem sequência (streak) que zera.</strong> O progresso é medido em "dias ativos", que só crescem. Sistemas de streak punitivos geram ansiedade, e em criança em tratamento de continência a ansiedade é clinicamente contraproducente.</li>
+  <li><strong>A criança é a heroína, não a paciente.</strong> A narrativa inverte o papel: ela cuida da Lagoa do Plim, que floresce com o uso. O foco emocional sai do corpo dela e vai para um amigo que depende dela, reduzindo a vergonha.</li>
+  <li><strong>Limites de recompensa.</strong> Teto de estrelas por dia evita uso compulsivo dos jogos e mantém a motivação extrínseca (prêmios reais definidos pelos pais) subordinada à intrínseca (história, mascote).</li>
+</ol>
+
+<h2>4. Limitações que devem ficar explícitas</h2>
+<ul>
+  <li>O celular <strong>não sente a contração</strong> do assoalho pélvico. Os jogos marcam o ritmo do exercício; o ensino do gesto correto é responsabilidade do profissional, e o app assume que isso foi orientado em consulta.</li>
+  <li>O app não tem inteligência diagnóstica: não interpreta os dados, apenas os organiza para o profissional.</li>
+  <li>Os dados ficam 100% no aparelho (sem servidor). Excelente para privacidade, mas a perda do aparelho perde o histórico (mitigação planejada na documentação técnica de backend).</li>
+  <li>Volumes de micção são estimados pela criança em "copos", não medidos.</li>
+</ul>
+
+<h2>5. Perguntas para a especialista validar</h2>
+<ol class="num-list">
+  <li>Os valores de hidratação (6 a 8 copos, 1,2 a 1,5 L/dia para 4 a 10 anos) estão corretos? Devem variar por peso ou idade?</li>
+  <li>O protocolo do jogo Foguete por faixa etária (3s/6s ×5; 5s/10s ×6; 8s/10s ×8) é adequado? O treino ativo de assoalho pélvico é indicado para todas as condições cobertas, ou deveria ser liberado pelo profissional caso a caso?</li>
+  <li>Os 7 lembretes padrão de micção programada (7h30 às 20h30, mais 2h da manhã opcional) fazem sentido como configuração inicial?</li>
+  <li>Os rótulos infantis da escala de Bristol no app estão fiéis às 7 categorias?</li>
+  <li>A lista de condições no cadastro (enurese, bexiga hiperativa, constipação, incontinência fecal, treino de desfralde, "não sei") cobre o necessário? Os nomes leigos estão adequados?</li>
+  <li>O texto educativo ("evite refrigerante; suco de laranja e limão irritam a bexiga") está correto e completo?</li>
+  <li>Há alguma contraindicação em incentivar o jogo Balão como rotina antes da evacuação?</li>
+</ol>
+
+<h2>6. Referências de partida</h2>
+<div class="callout blue">
+  <strong>Atenção:</strong> conferir edição, ano e conteúdo antes de citar em trabalho acadêmico. Esta lista foi montada pelo desenvolvedor como ponto de partida da revisão bibliográfica, não como bibliografia final.
+</div>
+<ul class="refs">
+  <li>Nieuwhof-Leppink AJ, et al. <em>Definitions, indications and practice of urotherapy in children and adolescents: an ICCS standardization document.</em> Journal of Pediatric Urology, 2021.</li>
+  <li>Nevéus T, et al. <em>Management and treatment of nocturnal enuresis: an updated standardization document from the ICCS.</em> Journal of Pediatric Urology, 2020.</li>
+  <li>Austin PF, et al. <em>The standardization of terminology of lower urinary tract function in children and adolescents (ICCS).</em> Neurourology and Urodynamics, 2016.</li>
+  <li>Lewis SJ, Heaton KW. <em>Stool form scale as a useful guide to intestinal transit time.</em> Scandinavian Journal of Gastroenterology, 1997.</li>
+  <li>Hyams JS, et al. <em>Functional disorders: children and adolescents (Rome IV).</em> Gastroenterology, 2016.</li>
+</ul>
+
+</body>
+</html>
