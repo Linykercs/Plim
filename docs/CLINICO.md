@@ -22,7 +22,7 @@ A participação da equipe contribuiu para a definição das funcionalidades do 
 
 ## O que o Plim é
 
-Ferramenta de apoio à **uroterapia padrão** (urotherapy) para crianças de 4 a 10 anos em tratamento de enurese, bexiga hiperativa, constipação e incontinência. O app não diagnostica, não trata sozinho e não substitui o acompanhamento profissional: ele transforma as tarefas que o tratamento já pede (diário, hidratação, rotina de banheiro, exercícios) em algo que a criança quer fazer.
+Ferramenta de apoio à **uroterapia padrão** (urotherapy) para crianças de 5 a 11 anos em tratamento de enurese, bexiga hiperativa, constipação e incontinência. O app não diagnostica, não trata sozinho e não substitui o acompanhamento profissional: ele transforma as tarefas que o tratamento já pede (diário, hidratação, rotina de banheiro, exercícios) em algo que a criança quer fazer.
 
 ## Mapa: feature do app → conceito clínico
 
@@ -32,10 +32,10 @@ Ferramenta de apoio à **uroterapia padrão** (urotherapy) para crianças de 4 a
 | Diário de evacuação com escala de Bristol ilustrada | Classificação da consistência fecal; constipação funcional frequentemente coexiste com sintomas urinários (disfunção vesico-intestinal) | Lewis & Heaton (1997); critérios de Roma IV para desordens funcionais pediátricas (Hyams et al., 2016) |
 | Registro de escape com acolhimento (sem punição, mesmas estrelas) | Uroterapia comportamental orienta nunca punir acidentes; culpa e vergonha pioram adesão e o dado honesto vale mais que o dado bonito | ICCS enuresis (Nevéus et al., 2020) |
 | Lembretes programados de banheiro (7 horários padrão) | Micção programada (timed voiding), componente da uroterapia padrão | ICCS uroterapia (2021) |
-| Missão diária de água + histórico de copos | Ingestão hídrica adequada e distribuída ao longo do dia: 1 a 3 anos 800 a 1000 mL; 4 a 8 anos 1000 a 1400 mL; 9 a 13 anos 1400 a 2000 mL. Estratégia: 1 copo de água após cada micção (≈ 6 a 8 copos/dia) | **Validado pela equipe (orientações de uroterapia, 12/06/2026)** |
-| Jogo Foguete (segurar = contrair, soltar = relaxar, descanso obrigatório) | Contração lenta do assoalho pélvico: contração 5s, relaxamento 5s, 10 repetições, 3 séries/dia; o app funciona como metrônomo lúdico, não como biofeedback | **Validado pela equipe (12/06/2026)** |
-| Jogo Balão (ciclos de respiração guiada) | Respiração diafragmática: 5 a 10 ciclos, 3 vezes ao dia, antes dos exercícios do assoalho pélvico | **Validado pela equipe (12/06/2026)** |
-| Jogo Pulo do Sapo (3 séries de 10 toques rápidos) | Contrações rápidas: 10 contrações rápidas consecutivas, intervalo de 30 segundos, 3 séries | **Validado pela equipe (12/06/2026)** |
+| Missão diária de água + histórico de copos | Ingestão hídrica adequada e distribuída ao longo do dia: 1 a 3 anos 800 a 1000 mL; 4 a 8 anos 1000 a 1400 mL; 9 a 13 anos 1400 a 2000 mL. Estratégia: 1 copo de água após cada micção (≈ 6 a 8 copos/dia) | Goulart ML, Curso de Uroterapia Pediátrica (São Paulo, 2024) · **validado pela equipe (12/06/2026)** |
+| Jogo Foguete (segurar = contrair, soltar = relaxar, descanso obrigatório) | Contração lenta do assoalho pélvico: contração 5s, relaxamento 5s, 10 repetições, 3 séries/dia; o app funciona como metrônomo lúdico, não como biofeedback | ICCS uroterapia (2021) · **validado pela equipe (12/06/2026)** |
+| Jogo Balão (ciclos de respiração guiada) | Respiração diafragmática: 5 a 10 ciclos, 3 vezes ao dia, antes dos exercícios do assoalho pélvico | ICCS uroterapia (2021) · **validado pela equipe (12/06/2026)** |
+| Jogo Pulo do Sapo (3 séries de 10 toques rápidos) | Contrações rápidas: 10 contrações rápidas consecutivas, intervalo de 30 segundos, 3 séries | ICCS uroterapia (2021) · **validado pela equipe (12/06/2026)** |
 | Conteúdo educativo (postura no vaso, pés apoiados, sem pressa, relaxar a barriga) | Educação e desmistificação, primeiro pilar da uroterapia; postura de evacuação com apoio dos pés | ICCS uroterapia (2021) |
 | Relatório PDF para o profissional | O diário só tem valor clínico se chega a quem prescreve; exportação resume eventos, tendência de escapes e hidratação | |
 
@@ -70,6 +70,7 @@ As perguntas sobre protocolos de exercício e metas de hidratação foram respon
 
 > Atenção: conferir edição, ano e conteúdo antes de citar em trabalho acadêmico. Esta lista foi montada de memória pelo desenvolvedor como ponto de partida da revisão bibliográfica, não como bibliografia final.
 
+- Goulart ML. *Curso de Uroterapia Pediátrica.* São Paulo; 2024.
 - Nieuwhof-Leppink AJ, et al. *Definitions, indications and practice of urotherapy in children and adolescents: an ICCS standardization document.* Journal of Pediatric Urology, 2021.
 - Nevéus T, et al. *Management and treatment of nocturnal enuresis: an updated standardization document from the ICCS.* Journal of Pediatric Urology, 2020.
 - Austin PF, et al. *The standardization of terminology of lower urinary tract function in children and adolescents (ICCS).* Neurourology and Urodynamics, 2016.

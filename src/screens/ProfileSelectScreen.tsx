@@ -137,7 +137,7 @@ export default function ProfileSelectScreen({ navigation }: { navigation: Nav })
           <PlimIcon name="sparkle" color={theme.primaryDark} size={18} />
           <Text style={[styles.disclaimerTxt, { color: theme.text }]}>
             <Text style={{ fontFamily: fontFamily.bodyBold }}>
-              Para crianças de 4 a 10 anos.
+              Para crianças de 5 a 11 anos.
             </Text>
             {' '}Plim é complementar — use sempre junto com seu médico ou enfermeiro.
           </Text>

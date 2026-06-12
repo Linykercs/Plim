@@ -1,4 +1,4 @@
-// Voz do Plim: frases curtas e calorosas, vocabulário de 4 a 10 anos.
+// Voz do Plim: frases curtas e calorosas, vocabulário de 5 a 11 anos.
 // Regras do personagem: acidente nunca é culpa, honestidade sempre é
 // celebrada, e o Plim fala como um amigo, não como um aplicativo.
 

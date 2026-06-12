@@ -20,7 +20,7 @@ const PALETTES: { key: string; label: string; palette: Palette; primary: string 
   { key: 'sweet', label: 'Doce',   palette: palettes.sweet, primary: palettes.sweet.primary },
 ];
 
-const AGE_OPTIONS = [4, 5, 6, 7, 8, 9, 10];
+const AGE_OPTIONS = [5, 6, 7, 8, 9, 10, 11];
 
 export default function SettingsScreen() {
   const theme = useTheme();

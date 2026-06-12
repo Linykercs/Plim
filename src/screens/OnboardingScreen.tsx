@@ -192,7 +192,7 @@ function StepKid({
   data: OnbData;
   set: <K extends keyof OnbData>(k: K, v: OnbData[K]) => void;
 }) {
-  const ages = [4, 5, 6, 7, 8, 9, 10];
+  const ages = [5, 6, 7, 8, 9, 10, 11];
 
   return (
     <View style={styles.stepPad}>

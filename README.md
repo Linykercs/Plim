@@ -1,6 +1,6 @@
 # 🐸 Plim — App de Reabilitação Pélvica Pediátrica
 
-> App lúdico para crianças de 4 a 10 anos em tratamento de enurese, bexiga hiperativa, constipação e incontinência pélvica. Gamificação com mascote-sapo, diário miccional/evacuatório, minigames terapêuticos e recompensas reais curadas pelos pais.
+> App lúdico para crianças de 5 a 11 anos em tratamento de enurese, bexiga hiperativa, constipação e incontinência pélvica. Gamificação com mascote-sapo, diário miccional/evacuatório, minigames terapêuticos e recompensas reais curadas pelos pais.
 
 **Desenvolvedor:** Linyker Mendes Coelho
 **Equipe colaboradora:** Flávia Franco, Lívia Britto, Liliane Ganzerli de Souza e Andreia Reis (Pós-Graduandas em Estomaterapia, Hospital Israelita Albert Einstein)
