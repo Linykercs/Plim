@@ -229,7 +229,9 @@ export default function SettingsScreen() {
           </TouchableOpacity>
         </View>
 
-        <Text style={[styles.version, { color: theme.muted }]}>Plim v1.0 • Feito com 💚</Text>
+        <Text style={[styles.version, { color: theme.muted }]}>
+          Plim v1.0 • Desenvolvido com 💚 por Linyker Mendes Coelho
+        </Text>
       </ScrollView>
     </View>
   );
