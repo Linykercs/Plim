@@ -5,8 +5,10 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { spacing, radius, shadow } from '../../theme/tokens';
 import { fontFamily, fontSize } from '../../theme/typography';
-import { useAppStore, type Reward , useTheme} from '../../store/useAppStore';
+import { useAppStore, AVATAR_COST, type Reward , useTheme} from '../../store/useAppStore';
+import { AVATAR_COLORS } from '../../theme/palettes';
 import PlimIcon from '../../components/ui/PlimIcon';
+import PlimMascot from '../../components/mascot/PlimMascot';
 
 export default function StoreScreen() {
   const theme = useTheme();
@@ -17,6 +19,10 @@ export default function StoreScreen() {
   const setSavingFor = useAppStore(s => s.setSavingFor);
   const redeemReward = useAppStore(s => s.redeemReward);
   const redemptions = useAppStore(s => s.redemptions);
+  const profile = useAppStore(s => s.profile);
+  const unlockedAvatars = useAppStore(s => s.unlockedAvatars);
+  const buyAvatar = useAppStore(s => s.buyAvatar);
+  const equipAvatar = useAppStore(s => s.equipAvatar);
 
   const savingReward = rewards.find(r => r.id === savingFor);
   const progress = savingReward ? Math.min(stars / savingReward.cost, 1) : 0;
@@ -40,6 +46,23 @@ export default function StoreScreen() {
     }
   }
 
+  function handleAvatar(index: number, owned: boolean, equipped: boolean) {
+    if (equipped) return;
+    if (owned) { equipAvatar(index); return; }
+    if (stars >= AVATAR_COST) {
+      Alert.alert(
+        'Novo amigo!',
+        `Desbloquear este Plim por ${AVATAR_COST} ⭐?`,
+        [
+          { text: 'Agora não', style: 'cancel' },
+          { text: 'Desbloquear!', onPress: () => { buyAvatar(index); equipAvatar(index); } },
+        ],
+      );
+    } else {
+      Alert.alert('Quase lá!', `Junte ${AVATAR_COST} ⭐ nas missões para este Plim.`);
+    }
+  }
+
   return (
     <View style={[styles.root, { backgroundColor: theme.bg }]}>
       {/* Header */}
@@ -56,6 +79,51 @@ export default function StoreScreen() {
         contentContainerStyle={[styles.scroll, { paddingBottom: insets.bottom + 100 }]}
         showsVerticalScrollIndicator={false}
       >
+        {/* Avatares do Plim */}
+        <View>
+          <Text style={[styles.avatarsTitle, { color: theme.text }]}>Avatares do Plim</Text>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.avatarRow}
+          >
+            {AVATAR_COLORS.map((color, i) => {
+              const owned = unlockedAvatars.includes(i);
+              const equipped = profile?.avatarColor === i;
+              return (
+                <Pressable
+                  key={color}
+                  onPress={() => handleAvatar(i, owned, equipped)}
+                  style={({ pressed }) => [
+                    styles.avatarCard,
+                    {
+                      backgroundColor: theme.surface,
+                      borderColor: equipped ? theme.accent : owned ? theme.primary + '66' : theme.softBg2,
+                      opacity: pressed ? 0.85 : 1,
+                    },
+                  ]}
+                >
+                  <View style={{ opacity: owned ? 1 : 0.45 }}>
+                    <PlimMascot size={56} mood={equipped ? 'cheer' : 'happy'} primary={color} />
+                  </View>
+                  {equipped ? (
+                    <View style={[styles.avatarBadge, { backgroundColor: theme.btn }]}>
+                      <PlimIcon name="check" size={12} color="#fff" strokeWidth={3} />
+                    </View>
+                  ) : !owned ? (
+                    <View style={[styles.avatarCost, { backgroundColor: theme.softBg }]}>
+                      <PlimIcon name="star" size={11} color={theme.accent} />
+                      <Text style={[styles.avatarCostTxt, { color: theme.accentText }]}>{AVATAR_COST}</Text>
+                    </View>
+                  ) : (
+                    <Text style={[styles.avatarUse, { color: theme.muted }]}>usar</Text>
+                  )}
+                </Pressable>
+              );
+            })}
+          </ScrollView>
+        </View>
+
         {/* Saving-for bar */}
         {savingReward && (
           <View style={[styles.savingCard, { backgroundColor: theme.surface, ...shadow.card }]}>
@@ -216,6 +284,25 @@ const styles = StyleSheet.create({
   starsCount: { fontFamily: fontFamily.bodyBold, fontSize: fontSize.lg },
 
   scroll: { paddingHorizontal: spacing.md, gap: spacing.md },
+
+  avatarsTitle: { fontFamily: fontFamily.heading, fontSize: fontSize.base, marginBottom: spacing.xs },
+  avatarRow: { gap: spacing.sm, paddingVertical: 2 },
+  avatarCard: {
+    borderRadius: 18, borderWidth: 2, padding: spacing.xs,
+    alignItems: 'center', position: 'relative',
+  },
+  avatarBadge: {
+    position: 'absolute', top: 4, right: 4,
+    width: 20, height: 20, borderRadius: 10,
+    alignItems: 'center', justifyContent: 'center',
+  },
+  avatarCost: {
+    flexDirection: 'row', alignItems: 'center', gap: 3,
+    paddingHorizontal: spacing.xs + 2, paddingVertical: 2, borderRadius: 10,
+    marginTop: 2,
+  },
+  avatarCostTxt: { fontFamily: fontFamily.bodyBold, fontSize: fontSize.xs },
+  avatarUse: { fontFamily: fontFamily.bodyBold, fontSize: fontSize.xs, marginTop: 2 },
 
   savingCard: { borderRadius: radius.card, padding: spacing.md, gap: spacing.sm },
   savingRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },

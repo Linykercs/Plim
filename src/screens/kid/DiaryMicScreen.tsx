@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View, Text, ScrollView, TouchableOpacity, StyleSheet, TextInput,
   Pressable,
@@ -15,6 +15,7 @@ import PlimIcon from '../../components/ui/PlimIcon';
 import PlimMascot from '../../components/mascot/PlimMascot';
 import { AVATAR_COLORS } from '../../theme/palettes';
 import { plimSay } from '../../content/plimVoice';
+import { speak } from '../../services/speech';
 import ClockFace from '../../components/diary/ClockFace';
 import CupGlyph from '../../components/diary/CupGlyph';
 
@@ -56,6 +57,13 @@ export default function DiaryMicScreen() {
 
   const [phase, setPhase] = useState<'form' | 'reward'>('form');
   const [phrase] = useState(() => plimSay('diaryMic'));
+
+  // Leitura assistida: metade do público ainda não lê
+  useEffect(() => {
+    if (phase === 'reward') {
+      speak(earned > 0 ? `${phrase} Você ganhou ${earned} estrelas!` : phrase);
+    }
+  }, [phase]);
   const [earned, setEarned] = useState(0);
   const [time, setTime] = useState(nowHM());
   const [cups, setCups] = useState(1);

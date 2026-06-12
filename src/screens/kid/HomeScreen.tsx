@@ -19,6 +19,9 @@ import PlimMascot from '../../components/mascot/PlimMascot';
 import PlimIcon, { type IconName } from '../../components/ui/PlimIcon';
 import { useAppStore, useTheme, countActiveDays } from '../../store/useAppStore';
 import { plimSay } from '../../content/plimVoice';
+import { lagoonPhase } from '../../content/lagoon';
+import LagoonScene from '../../components/lagoon/LagoonScene';
+import { speak } from '../../services/speech';
 import { defaultPalette, AVATAR_COLORS } from '../../theme/palettes';
 import { fontFamily, fontSize } from '../../theme/typography';
 import type { KidTabParamList, RootStackParamList } from '../../navigation/types';
@@ -71,6 +74,7 @@ export default function HomeScreen({ navigation }: { navigation: Nav }) {
     shiftCelebration, clearCelebrations, entries,
   } = useAppStore();
   const activeDays = useMemo(() => countActiveDays(entries), [entries]);
+  const lagoon = lagoonPhase(activeDays);
   const rootNav = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   useFocusEffect(useCallback(() => { checkAndResetMissions(); }, []));
@@ -161,8 +165,11 @@ export default function HomeScreen({ navigation }: { navigation: Nav }) {
               </View>
             </View>
 
-            {/* right: mascote */}
-            <View style={{ marginRight: -8, marginTop: -4 }}>
+            {/* right: mascote (toque para ouvir a frase) */}
+            <Pressable
+              onPress={() => speak(`Oi, ${profile?.name ?? 'amigo'}! ${callout}`)}
+              style={{ marginRight: -8, marginTop: -4 }}
+            >
               <PlimMascot
                 size={92}
                 mood={allDone ? 'cheer' : 'happy'}
@@ -170,6 +177,19 @@ export default function HomeScreen({ navigation }: { navigation: Nav }) {
                 accent={theme.coral}
                 dark={theme.text}
               />
+            </Pressable>
+          </View>
+
+          {/* ── Lagoa do Plim: floresce com os dias ativos ── */}
+          <View style={styles.lagoonWrap}>
+            <LagoonScene phase={lagoon.level} width={320} height={64} />
+            <View style={styles.lagoonLabelRow}>
+              <Text style={styles.lagoonName}>{lagoon.name}</Text>
+              {lagoon.nextAt !== undefined && (
+                <Text style={styles.lagoonNext}>
+                  faltam {lagoon.nextAt - activeDays} dias pra florescer mais
+                </Text>
+              )}
             </View>
           </View>
         </LinearGradient>
@@ -239,9 +259,15 @@ export default function HomeScreen({ navigation }: { navigation: Nav }) {
           </View>
         </View>
 
-        {/* ── 7-day activity strip ── */}
+        {/* ── 7-day activity strip (toque abre as Conquistas) ── */}
         <View style={[styles.section, { marginTop: 16 }]}>
-          <View style={[styles.weekStrip, { backgroundColor: theme.surface }]}>
+          <Pressable
+            onPress={() => rootNav.navigate('Achievements')}
+            style={({ pressed }) => [
+              styles.weekStrip,
+              { backgroundColor: theme.surface, opacity: pressed ? 0.9 : 1 },
+            ]}
+          >
             <Text style={[styles.weekLabel, { color: theme.muted }]}>Esta semana</Text>
             <View style={styles.weekDots}>
               {weekActivity.map((day, i) => (
@@ -260,7 +286,8 @@ export default function HomeScreen({ navigation }: { navigation: Nav }) {
                 </View>
               ))}
             </View>
-          </View>
+            <PlimIcon name="chevron" color={theme.muted} size={16} />
+          </Pressable>
         </View>
 
         {/* ── Quick tiles ── */}
@@ -467,6 +494,12 @@ const styles = StyleSheet.create({
     borderRadius: 14,
   },
   chipTxt:  { fontFamily: fontFamily.bodyBold, fontSize: fontSize.md, color: '#fff' },
+
+  // Lagoa
+  lagoonWrap: { alignItems: 'center', marginTop: 2 },
+  lagoonLabelRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: -4 },
+  lagoonName: { fontFamily: fontFamily.headingSemi, fontSize: fontSize.sm + 1, color: '#fff' },
+  lagoonNext: { fontFamily: fontFamily.body, fontSize: fontSize.xs, color: 'rgba(255,255,255,0.85)' },
 
   // Missions card
   cardOuter: { paddingHorizontal: 16, marginTop: -22 },

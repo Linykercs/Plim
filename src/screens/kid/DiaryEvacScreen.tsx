@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View, Text, ScrollView, TouchableOpacity, StyleSheet,
   TextInput, Pressable,
@@ -12,6 +12,7 @@ import { spacing, radius, shadow } from '../../theme/tokens';
 import { fontFamily, fontSize } from '../../theme/typography';
 import { useAppStore , useTheme} from '../../store/useAppStore';
 import PlimIcon from '../../components/ui/PlimIcon';
+import { speak } from '../../services/speech';
 import ClockFace from '../../components/diary/ClockFace';
 import BristolGlyph from '../../components/diary/BristolGlyph';
 import PoopBlob from '../../components/diary/PoopBlob';
@@ -89,6 +90,14 @@ export default function DiaryEvacScreen() {
   }
 
   const bristolGood = BRISTOL_INFO[bristol].good;
+
+  // Leitura assistida na recompensa
+  useEffect(() => {
+    if (phase === 'reward') {
+      const sub = bristolGood ? 'Cocô saudável!' : 'Obrigado por registrar! Beber água ajuda.';
+      speak(earned > 0 ? `Mandou bem! ${sub} Você ganhou ${earned} estrelas!` : `Mandou bem! ${sub}`);
+    }
+  }, [phase]);
 
   if (phase === 'reward') {
     return (

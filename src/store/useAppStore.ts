@@ -100,6 +100,8 @@ const DEFAULT_REWARDS: Reward[] = [
   { id: 'r8', name: 'Disney+',    icon: '🏰', cost: 1500 },
 ];
 
+export const AVATAR_COST = 25;
+
 // ─── Store ─────────────────────────────────────────────────────
 
 interface AppState {
@@ -118,9 +120,15 @@ interface AppState {
   setPalette: (p: Palette) => void;
 
   stars: number;
+  /** Total ganho na vida, nunca diminui: usado em conquistas */
+  starsLifetime: number;
   rewards: Reward[];
   redemptions: Redemption[];
   savingFor: string | null;
+  /** Índices de AVATAR_COLORS já desbloqueados */
+  unlockedAvatars: number[];
+  buyAvatar: (index: number) => void;
+  equipAvatar: (index: number) => void;
   addStars: (n: number) => void;
   redeemReward: (id: string) => void;
   addReward: (r: Reward) => void;
@@ -162,16 +170,37 @@ export const useAppStore = create<AppState>()(
       mode: 'kid',
       setMode: (m) => set({ mode: m }),
       profile: null,
-      setProfile: (p) => set({ profile: p }),
+      // O avatar escolhido no onboarding é gratuito e entra nos desbloqueados
+      setProfile: (p) => set((s) => ({
+        profile: p,
+        unlockedAvatars: s.unlockedAvatars.includes(p.avatarColor)
+          ? s.unlockedAvatars
+          : [...s.unlockedAvatars, p.avatarColor],
+      })),
 
       palette: defaultPalette,
       setPalette: (p) => set({ palette: p }),
 
       stars: 0,
+      starsLifetime: 0,
       rewards: DEFAULT_REWARDS,
       redemptions: [],
       savingFor: null,
-      addStars:  (n) => { if (n > 0) set((s) => ({ stars: s.stars + n })); },
+      unlockedAvatars: [0],
+      buyAvatar: (index) =>
+        set((s) => {
+          if (s.unlockedAvatars.includes(index) || s.stars < AVATAR_COST) return s;
+          return {
+            stars: s.stars - AVATAR_COST,
+            unlockedAvatars: [...s.unlockedAvatars, index],
+          };
+        }),
+      equipAvatar: (index) =>
+        set((s) => {
+          if (!s.profile || !s.unlockedAvatars.includes(index)) return s;
+          return { profile: { ...s.profile, avatarColor: index } };
+        }),
+      addStars:  (n) => { if (n > 0) set((s) => ({ stars: s.stars + n, starsLifetime: s.starsLifetime + n })); },
       redeemReward: (id) =>
         set((s) => {
           const reward = s.rewards.find((r) => r.id === id);
@@ -247,6 +276,13 @@ export const useAppStore = create<AppState>()(
           // senão tokens adicionados depois ficam undefined em installs antigos
           const current = Object.values(palettes).find(p => p.name === state.palette?.name);
           state.setPalette(current ?? defaultPalette);
+          // O avatar escolhido no onboarding (gratuito) conta como desbloqueado
+          const equipped = state.profile?.avatarColor;
+          if (equipped !== undefined && !state.unlockedAvatars.includes(equipped)) {
+            state.unlockedAvatars = [...state.unlockedAvatars, equipped];
+          }
+          // Installs antigos não acumularam starsLifetime: assume ao menos o saldo
+          if (state.starsLifetime < state.stars) state.starsLifetime = state.stars;
           state.setHasHydrated(true);
         }
       },
@@ -255,6 +291,8 @@ export const useAppStore = create<AppState>()(
         profile: s.profile,
         palette: s.palette,
         stars: s.stars,
+        starsLifetime: s.starsLifetime,
+        unlockedAvatars: s.unlockedAvatars,
         rewards: s.rewards,
         redemptions: s.redemptions,
         savingFor: s.savingFor,

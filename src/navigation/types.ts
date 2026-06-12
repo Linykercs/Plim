@@ -6,6 +6,7 @@ export type RootStackParamList = {
   ProfileSelect: undefined;
   KidTabs: undefined;
   ParentTabs: undefined;
+  Achievements: undefined;
 };
 
 export type DiaryStackParamList = {

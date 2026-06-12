@@ -7,6 +7,7 @@ import OnboardingScreen from '../screens/OnboardingScreen';
 import ProfileSelectScreen from '../screens/ProfileSelectScreen';
 import KidTabNavigator from './KidTabNavigator';
 import ParentTabNavigator from './ParentTabNavigator';
+import AchievementsScreen from '../screens/kid/AchievementsScreen';
 import type { RootStackParamList } from './types';
 import { navigationRef } from './navigationRef';
 
@@ -24,6 +25,11 @@ export default function RootNavigator() {
         <Stack.Screen name="ProfileSelect" component={ProfileSelectScreen} />
         <Stack.Screen name="KidTabs"       component={KidTabNavigator} />
         <Stack.Screen name="ParentTabs"    component={ParentTabNavigator} />
+        <Stack.Screen
+          name="Achievements"
+          component={AchievementsScreen}
+          options={{ animation: 'slide_from_right' }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

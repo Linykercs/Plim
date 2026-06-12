@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Pressable, TextInput } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
@@ -8,6 +8,7 @@ import { useAppStore, useTheme } from '../../store/useAppStore';
 import { AVATAR_COLORS } from '../../theme/palettes';
 import PlimMascot from '../../components/mascot/PlimMascot';
 import PlimIcon from '../../components/ui/PlimIcon';
+import { speak } from '../../services/speech';
 
 // Escape é parte do tratamento, nunca punição: a tela usa o tema claro
 // normal, o Plim acolhe, e registrar vale as mesmas estrelas do xixi.
@@ -26,6 +27,13 @@ export default function DiaryIncScreen() {
   const [earned, setEarned] = useState(0);
 
   const mascotColor = AVATAR_COLORS[profile?.avatarColor ?? 0];
+
+  // Leitura assistida: o acolhimento precisa chegar a quem não lê
+  useEffect(() => {
+    if (phase === 'reward') {
+      speak('Obrigado por me contar! Splash! Acontece com todo sapo, até comigo.');
+    }
+  }, [phase]);
 
   function handleSave() {
     addEntry({
