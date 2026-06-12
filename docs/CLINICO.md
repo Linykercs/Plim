@@ -1,5 +1,9 @@
 # Fundamentação clínica do Plim
 
+**Desenvolvedor:** Linyker Mendes Coelho
+**Colaboração clínica:** Flávia Franco, Livia Britto, Liliane Ganzerli de Souza e Andreia Reis (enfermeiras, estudantes do Albert Einstein)
+**Contexto:** trabalho desenvolvido para apresentação no Seminário de Estomaterapia, Albert Einstein (São Paulo)
+
 > **Status: rascunho para validação da especialista.** Este documento foi escrito pelo desenvolvedor mapeando as decisões do app aos conceitos de uroterapia que as inspiraram. Ele NÃO é verdade clínica: precisa ser revisado, corrigido e assinado por profissional de saúde (enfermeira especialista e/ou fisioterapeuta pélvica) antes de ser apresentado como fundamentação. As perguntas em aberto estão na última seção.
 
 ## O que o Plim é
