@@ -30,8 +30,9 @@ export default function SettingsScreen() {
   const profile = useAppStore(s => s.profile);
   const setProfile = useAppStore(s => s.setProfile);
   const setMode = useAppStore(s => s.setMode);
-  const setHasOnboarded = useAppStore(s => s.setHasOnboarded);
   const setPalette = useAppStore(s => s.setPalette);
+  const loadDemoData = useAppStore(s => s.loadDemoData);
+  const resetAllData = useAppStore(s => s.resetAllData);
 
   const [name, setName] = useState(profile?.name ?? '');
   const [age, setAge] = useState(profile?.age ?? 6);
@@ -61,9 +62,25 @@ export default function SettingsScreen() {
         {
           text: 'Reiniciar', style: 'destructive',
           onPress: () => {
-            setHasOnboarded(false);
-            setMode('kid');
+            resetAllData();
             nav.dispatch(CommonActions.reset({ index: 0, routes: [{ name: 'Splash' }] }));
+          },
+        },
+      ],
+    );
+  }
+
+  function handleLoadDemo() {
+    Alert.alert(
+      'Modo demonstração',
+      'Substitui TODOS os dados atuais por 3 semanas de dados de exemplo (perfil "Sofia, 7 anos"). Use para apresentações. Continuar?',
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        {
+          text: 'Carregar', style: 'destructive',
+          onPress: () => {
+            loadDemoData();
+            Alert.alert('Pronto!', 'Dados de demonstração carregados. Volte ao modo criança para ver a lagoa e o diário preenchidos.');
           },
         },
       ],
@@ -185,6 +202,21 @@ export default function SettingsScreen() {
           <PlimIcon name="chevron" size={18} color={theme.muted} />
         </TouchableOpacity>
 
+        {/* Demonstração */}
+        <View style={[styles.section, { backgroundColor: theme.surface, ...shadow.card }]}>
+          <Text style={[styles.sectionTitle, { color: theme.text }]}>Demonstração</Text>
+          <Text style={[styles.demoHint, { color: theme.muted }]}>
+            Preenche o app com 3 semanas de dados de exemplo para apresentar a lagoa, os gráficos e o relatório.
+          </Text>
+          <TouchableOpacity
+            style={[styles.dangerBtn, { borderColor: theme.secondary }]}
+            onPress={handleLoadDemo}
+          >
+            <PlimIcon name="sparkle" size={16} color={theme.secondary} />
+            <Text style={[styles.dangerLabel, { color: theme.secondary }]}>Carregar dados de exemplo</Text>
+          </TouchableOpacity>
+        </View>
+
         {/* Danger zone */}
         <View style={[styles.section, { backgroundColor: theme.surface, ...shadow.card }]}>
           <Text style={[styles.sectionTitle, { color: theme.coral }]}>Zona de perigo</Text>
@@ -237,6 +269,7 @@ const styles = StyleSheet.create({
   rowIcon: { width: 38, height: 38, borderRadius: 11, alignItems: 'center', justifyContent: 'center' },
   rowLabel: { fontFamily: fontFamily.body, fontSize: fontSize.base, flex: 1 },
 
+  demoHint: { fontFamily: fontFamily.body, fontSize: fontSize.sm, lineHeight: 18 },
   dangerBtn: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm, padding: spacing.sm, borderRadius: radius.chip, borderWidth: 1.5 },
   dangerLabel: { fontFamily: fontFamily.bodyBold, fontSize: fontSize.base },
 

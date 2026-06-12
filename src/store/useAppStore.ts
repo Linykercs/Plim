@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { defaultPalette, palettes, type Palette } from '../theme/palettes';
+import { buildDemoData } from '../content/demoData';
 
 // ─── Domain types ─────────────────────────────────────────────
 
@@ -156,6 +157,11 @@ interface AppState {
   completeMission: (key: keyof MissionsDone) => void;
   resetMissions: () => void;
   checkAndResetMissions: () => void;
+
+  /** Substitui tudo por 3 semanas de dados de exemplo (apresentações) */
+  loadDemoData: () => void;
+  /** Apaga todos os dados e volta ao estado de primeira abertura */
+  resetAllData: () => void;
 }
 
 export const useAppStore = create<AppState>()(
@@ -266,6 +272,36 @@ export const useAppStore = create<AppState>()(
       checkAndResetMissions: () => {
         if (shouldResetMissions(get().missionsResetDate)) get().resetMissions();
       },
+
+      loadDemoData: () =>
+        set({
+          ...buildDemoData(),
+          hasOnboarded: true,
+          rewards: DEFAULT_REWARDS,
+          alarms: DEFAULT_ALARMS,
+          pendingCelebrations: [],
+          missionsResetDate: new Date().toISOString(),
+        }),
+
+      resetAllData: () =>
+        set({
+          hasOnboarded: false,
+          mode: 'kid',
+          profile: null,
+          stars: 0,
+          starsLifetime: 0,
+          rewards: DEFAULT_REWARDS,
+          redemptions: [],
+          savingFor: null,
+          unlockedAvatars: [0],
+          entries: [],
+          alarms: DEFAULT_ALARMS,
+          waterToday: 0,
+          waterHistory: [],
+          pendingCelebrations: [],
+          missionsDone: { mic: false, water: false, game: false, learn: false, evac: false },
+          missionsResetDate: null,
+        }),
     }),
     {
       name: 'plim-store',

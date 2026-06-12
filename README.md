@@ -94,7 +94,8 @@ plim/
 │   └── store/
 │       └── useAppStore.ts      # Zustand: profile, stars, diário, missões...
 ├── docs/
-│   └── BACKEND.md              # plano de arquitetura do backend (fases, LGPD, sync)
+│   ├── BACKEND.md              # plano de arquitetura do backend (fases, LGPD, sync)
+│   └── CLINICO.md              # fundamentação clínica (rascunho p/ validação da especialista)
 ├── assets/
 └── App.tsx
 ```
@@ -166,6 +167,9 @@ Todas as 22 telas do roteiro original estão implementadas: splash, onboarding (
 - Sons nos minigames
 - Testes unitários da lógica clínica (economia, dias ativos, fases da lagoa)
 - Backend: ver [`docs/BACKEND.md`](docs/BACKEND.md)
+- Validação clínica: ver [`docs/CLINICO.md`](docs/CLINICO.md)
+
+> 💡 **Demonstração**: em Pais → Configurações → Demonstração, o botão "Carregar dados de exemplo" preenche o app com 3 semanas de uso realista (lagoa na fase 3, gráficos e relatório PDF populados).
 
 ---
 
