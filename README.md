@@ -1,23 +1,33 @@
 # 🐸 Plim — App de Reabilitação Pélvica Pediátrica
 
-> App lúdico para crianças de 4-10 anos em tratamento de enurrese, bexiga hiperativa, constipação e incontinência pélvica. Gamificação com mascote-sapo, diário miccional/evacuatório, minigames e sistema de recompensas reais.
+> App lúdico para crianças de 4 a 10 anos em tratamento de enurese, bexiga hiperativa, constipação e incontinência pélvica. Gamificação com mascote-sapo, diário miccional/evacuatório, minigames terapêuticos e recompensas reais curadas pelos pais.
 
 [![Expo SDK](https://img.shields.io/badge/Expo-SDK%2056-000020?logo=expo)](https://docs.expo.dev/versions/v56.0.0/)
 [![React Native](https://img.shields.io/badge/React%20Native-0.85-61DAFB?logo=react)](https://reactnative.dev/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-6.0-3178C6?logo=typescript)](https://www.typescriptlang.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178C6?logo=typescript)](https://www.typescriptlang.org/)
 [![Platform](https://img.shields.io/badge/Platform-iOS%20%7C%20Android-lightgrey)](https://docs.expo.dev/)
 
 ---
 
 ## Visão geral
 
-**Plim** tem três áreas principais:
-
 | Área | Descrição |
 |------|-----------|
-| 🧒 **App da Criança** | Interface lúdica com mascote Plim (sapo), missões diárias, minigames terapêuticos e lojinha de recompensas |
-| 👨‍👩‍👧 **App dos Pais** | Dashboards, gráficos de evolução, gerenciamento de recompensas e exportação de relatório PDF para o médico/fisio |
-| 🎮 **Minigames** | Foguete (contração), Balão (relaxamento) e Sapo Pulo (coordenação) |
+| 🧒 **App da Criança** | Home com a Lagoa do Plim que floresce com o uso, missões diárias, diários de xixi/cocô/escape, 3 minigames, lojinha e conquistas |
+| 👨‍👩‍👧 **App dos Pais** | Visão geral com métricas, diário completo, gráficos de evolução, relatório PDF, gestão de recompensas e ajustes |
+| 🎮 **Minigames** | Foguete (contração com descanso obrigatório), Balão (respiração guiada) e Pulo do Sapo (coordenação) |
+
+---
+
+## Princípios clínicos da gamificação
+
+Regras que o código segue e que **não devem ser quebradas** em features futuras:
+
+1. **Recompensa-se o comportamento, nunca o resultado clínico.** Registrar um escape vale as mesmas estrelas que registrar um xixi no banheiro. Noite seca gera celebração do mascote, não moeda. Motivo: se escape valesse menos, a criança aprenderia a esconder acidentes, destruindo o valor clínico do diário.
+2. **Acidente nunca é punição.** A tela de escape usa o mood `splash` do Plim com acolhimento ("Acontece com todo sapo, até comigo").
+3. **Sem streak que zera.** O progresso é contado em dias ativos, que só crescem. Dia sem registro é neutro.
+4. **Sem farm de estrelas.** Jogos dão recompensa cheia só na primeira conclusão do dia; repetir vale 1 estrela. Tentar sempre rende pelo menos 1, nunca zero.
+5. **Protocolo respeitado nos exercícios.** O Foguete impõe descanso maior ou igual à contração entre as repetições.
 
 ---
 
@@ -26,13 +36,15 @@
 | Camada | Tecnologia |
 |--------|-----------|
 | Framework | [Expo SDK 56](https://docs.expo.dev/versions/v56.0.0/) + React Native 0.85 |
-| Linguagem | TypeScript 6 (strict) |
-| Navegação | [React Navigation 7](https://reactnavigation.org/) — Native Stack + Bottom Tabs |
-| Estado global | [Zustand 5](https://zustand-demo.pmnd.rs/) |
+| Linguagem | TypeScript 5.8 (strict) |
+| Navegação | [React Navigation 7](https://reactnavigation.org/): Native Stack + Bottom Tabs |
+| Estado global | [Zustand 5](https://zustand-demo.pmnd.rs/) com persistência em AsyncStorage |
 | Animações | [Reanimated 4](https://docs.swmansion.com/react-native-reanimated/) |
-| Ilustrações | [react-native-svg](https://github.com/software-mansion/react-native-svg) (SVG paramétrico do mascote) |
+| Ilustrações | [react-native-svg](https://github.com/software-mansion/react-native-svg): mascote e lagoa paramétricos |
+| Leitura assistida | `expo-speech` (voz pt-BR para quem ainda não lê) |
+| Notificações | `expo-notifications` (alarmes locais) |
+| Relatório | `expo-print` + `expo-sharing` (PDF para o médico) |
 | Fontes | Fredoka (títulos) + Nunito (UI) via `@expo-google-fonts` |
-| Gradientes | `expo-linear-gradient` |
 
 ---
 
@@ -40,17 +52,19 @@
 
 | Token | Hex | Uso |
 |-------|-----|-----|
-| `primary` | `#5FCB8E` | verde menta — mascote, CTAs, sucesso |
-| `primaryDark` | `#3DA070` | sombra de botão estilo Duolingo |
-| `secondary` | `#7DC9E8` | azul céu — xixi, água |
-| `accent` | `#FFCE5C` | amarelo sol — estrelas, recompensas |
-| `coral` | `#FF8A7A` | alertas, escape, jogos |
+| `primary` | `#5FCB8E` | verde menta: mascote, superfícies, sucesso |
+| `primaryDark` | `#3DA070` | tom de apoio do primary |
+| `btn` / `btnDark` | `#2E8B5F` / `#1F6B47` | fundo de botões de ação (contraste >4:1 com texto branco) |
+| `secondary` | `#7DC9E8` | azul céu: xixi, água |
+| `accent` | `#FFCE5C` | amarelo sol: estrelas (apenas em ícones) |
+| `accentText` | `#9A7200` | âmbar legível quando o accent vira texto |
+| `coral` / `coralDark` | `#FF8A7A` / `#D54B38` | alertas suaves, botões de parar |
 | `bg` | `#FFF7EC` | fundo creme quente |
 | `surface` | `#FFFFFF` | cards |
 | `text` | `#1F3A4D` | texto principal |
-| `muted` | `#6B8499` | texto secundário |
+| `muted` | `#54707F` | texto secundário (4.5:1 sobre o bg) |
 
-Paletas alternativas: **Ocean** (azul) e **Sweet** (lavanda) disponíveis em `src/theme/palettes.ts`.
+Paletas alternativas: **Ocean** (azul) e **Sweet** (lavanda) em `src/theme/palettes.ts`. Acessibilidade: o amarelo nunca é usado como cor de texto, botões de ação usam os tokens `btn`, alvos de toque mínimos de 44px.
 
 ---
 
@@ -59,69 +73,62 @@ Paletas alternativas: **Ocean** (azul) e **Sweet** (lavanda) disponíveis em `sr
 ```
 plim/
 ├── src/
-│   ├── theme/
-│   │   ├── palettes.ts        # Fresh / Ocean / Sweet
-│   │   ├── tokens.ts          # spacing, radius, shadow
-│   │   └── typography.ts      # fontFamily, fontSize, letterSpacing
+│   ├── theme/                  # palettes (3 temas), tokens, typography
+│   ├── content/
+│   │   ├── plimVoice.ts        # frases do Plim por contexto
+│   │   └── lagoon.ts           # 5 fases da Lagoa por dias ativos
 │   ├── components/
-│   │   ├── mascot/
-│   │   │   ├── PlimMascot.tsx  # SVG paramétrico — 6 moods
-│   │   │   └── PlimLogo.tsx    # 4 variantes de logo
-│   │   └── ui/                 # Button, Card, TopBar, TabBar (próximas fases)
+│   │   ├── mascot/             # PlimMascot (SVG, 6 moods) + PlimLogo
+│   │   ├── lagoon/             # LagoonScene (SVG por fase)
+│   │   ├── diary/              # BristolGlyph, ClockFace, CupGlyph, PoopBlob
+│   │   └── ui/                 # PlimButton, PlimIcon
 │   ├── screens/
-│   │   ├── SplashScreen.tsx    # ✅ animação spring + bolhas flutuantes
-│   │   ├── ProfileSelectScreen.tsx  # placeholder
-│   │   └── ...                 # próximas telas
-│   ├── navigation/
-│   │   ├── types.ts            # RootStackParamList etc.
-│   │   └── RootNavigator.tsx   # Stack principal
-│   ├── store/
-│   │   └── useAppStore.ts      # Zustand — profile, stars, diary, alarms, rewards
-│   └── games/                  # minigames (próximas fases)
+│   │   ├── SplashScreen / Onboarding / ProfileSelect
+│   │   ├── kid/                # Home, diários (mic/evac/inc), jogos,
+│   │   │                       # Learn, Store, Alarms, Achievements
+│   │   └── parent/             # Overview, Diary, Chart, Report, Settings
+│   ├── navigation/             # Root stack + tabs (kid e parent)
+│   ├── services/
+│   │   ├── notifications.ts    # alarmes locais
+│   │   └── speech.ts           # leitura assistida pt-BR
+│   └── store/
+│       └── useAppStore.ts      # Zustand: profile, stars, diário, missões...
+├── docs/
+│   └── BACKEND.md              # plano de arquitetura do backend (fases, LGPD, sync)
 ├── assets/
-├── App.tsx                     # entry — carrega fontes, SplashScreen nativa
-├── app.json                    # configuração Expo
-└── babel.config.js
+└── App.tsx
 ```
 
 ---
 
 ## Mascote — "Plim, o sapo"
 
-SVG paramétrico 200×200 viewBox implementado em `src/components/mascot/PlimMascot.tsx`.
+SVG paramétrico em `src/components/mascot/PlimMascot.tsx`, cores via props (6 avatares desbloqueáveis na lojinha por 25⭐, o do onboarding é grátis).
 
-**Moods disponíveis:**
-
-| Mood | Uso |
-|------|-----|
+| Mood | Uso no app |
+|------|-----------|
 | `happy` | padrão, home |
-| `cheer` | celebração, conquistas |
-| `sleepy` | modo noturno, lembretes |
-| `focus` | durante jogo/exercício |
-| `water` | diário de xixi, hidratação |
-| `splash` | logo variante D, erros |
+| `cheer` | celebrações, fim de jogo, conquistas |
+| `sleepy` | lembretes noturnos |
+| `focus` | durante o Pulo do Sapo |
+| `water` | recompensa do diário de xixi |
+| `splash` | registro de escape (acolhimento) |
 
-**Cores do mascote são props** — permite 6 avatares coloridos desbloqueáveis por estrelas.
+A voz do mascote vem de `src/content/plimVoice.ts` (frases por contexto, sorteadas) e é falada em voz alta via `expo-speech`.
 
 ---
 
-## Modelo de dados (Zustand)
+## Economia de estrelas
 
-```ts
-// Stars e recompensas
-earnStars(n: number)         // após registro bom ou jogo
-redeemReward(id: string)     // troca estrelas por prêmio
-setSavingFor(id: string|null) // marca meta de recompensa
+| Ação | Estrelas | Limite |
+|------|----------|--------|
+| Registrar xixi **ou escape** | 3 | 1x/dia (missão `mic`) |
+| Registrar cocô | 5 | 1x/dia (missão `evac`) |
+| Beber 2 copos de água | 2 | 1x/dia (missão `water`) |
+| Completar um jogo | 5 a 10 | recompensa cheia 1x/dia, repetição vale 1 |
+| Aprender (respiração ou 2 categorias) | 2 | 1x/dia (missão `learn`) |
 
-// Diário
-addEntry(DiaryEntry)         // miccional | evacuatório | escape
-
-// Missões diárias
-completeMission('mic'|'water'|'game'|'learn')
-
-// Alarmes
-toggleAlarm(id: string)      // liga/desliga lembrete
-```
+`starsLifetime` acumula o total ganho na vida (nunca diminui) e alimenta as conquistas. As recompensas reais são cadastradas pelos pais e marcadas como entregues no painel.
 
 ---
 
@@ -129,83 +136,45 @@ toggleAlarm(id: string)      // liga/desliga lembrete
 
 ### Pré-requisitos
 - Node.js 18+
-- Expo CLI: `npm install -g expo-cli`
-- [Expo Go](https://expo.dev/go) no celular (iOS ou Android)
+- [Expo Go](https://expo.dev/go) no celular, ou emulador Android
 
-### Instalação
+### Instalação e desenvolvimento
 
 ```bash
-git clone https://github.com/SEU_USUARIO/plim.git
+git clone https://github.com/Linykercs/plim.git
 cd plim
 npm install
+
+npm start          # Metro bundler + QR code
+npm run android    # direto no emulador/USB
+npm run ios        # somente macOS
 ```
 
-### Desenvolvimento
-
-```bash
-# Inicia o Metro bundler + QR code
-npm start
-
-# Direto no Android (emulador ou USB)
-npm run android
-
-# Direto no iOS (somente macOS)
-npm run ios
-```
-
-Escaneie o QR code com o Expo Go para testar no celular.
+Typecheck: `npx tsc --noEmit`
 
 ---
 
-## Roadmap de telas
+## Status das telas
 
-| # | Tela | Status |
-|---|------|--------|
-| 0 | Splash (animação) | ✅ Feito |
-| 1 | Onboarding (5 passos) | 🔜 Próximo |
-| 2 | Profile Select | 🔜 Próximo |
-| 3 | Home (criança) | ⏳ |
-| 4 | Diário (menu) | ⏳ |
-| 5 | Diário Miccional | ⏳ |
-| 6 | Diário Evacuatório (Bristol) | ⏳ |
-| 7 | Lembretes / Alarmes | ⏳ |
-| 8-9 | Aprender (orientações) | ⏳ |
-| 10 | Hub de Jogos | ⏳ |
-| 11 | 🚀 Game Foguete | ⏳ |
-| 12 | 🎈 Game Balão | ⏳ |
-| 13 | 🐸 Game Sapo Pulo | ⏳ |
-| 14 | 🛍 Lojinha (recompensas reais) | ⏳ |
-| 15 | Conquistas & Avatares | ⏳ |
-| 16-17 | Pais — Overview | ⏳ |
-| 18 | Pais — Diário completo | ⏳ |
-| 19 | Pais — Evolução (gráficos) | ⏳ |
-| 20 | Pais — Relatório PDF | ⏳ |
-| 21 | Pais — Recompensas CRUD | ⏳ |
-| 22 | Pais — Ajustes | ⏳ |
+Todas as 22 telas do roteiro original estão implementadas: splash, onboarding (5 passos), seleção de perfil, home da criança com Lagoa evolutiva, 3 diários, lembretes, conteúdo educativo, hub + 3 minigames, lojinha com avatares, conquistas, e o painel dos pais completo (overview, diário, gráficos, PDF, recompensas, ajustes).
+
+### Próximos passos
+
+- Dificuldade dos jogos adaptativa por idade (4-5 / 6-7 / 8-10 anos)
+- Feedback visual ao registrar água na Home
+- Celebração quando a Lagoa muda de fase
+- Sons nos minigames
+- Testes unitários da lógica clínica (economia, dias ativos, fases da lagoa)
+- Backend: ver [`docs/BACKEND.md`](docs/BACKEND.md)
 
 ---
 
-## Decisões técnicas abertas
+## Backend
 
-1. **Backend**: app funciona 100% local (AsyncStorage → SQLite). Sync com Supabase/Firebase é futuro opcional.
-2. **Biofeedback**: v1 simula por toque na tela. v2 pode integrar sensores Bluetooth.
-3. **Relatório PDF**: `expo-print` + `expo-sharing` — template HTML do design handoff vira o layout.
-4. **Multi-perfil**: schema (`KidProfile`) já suporta múltiplos filhos, falta o seletor de perfil.
-5. **Notificações**: `expo-notifications` agenda as `Alarm[]` como notificações locais recorrentes.
-
----
-
-## Design handoff
-
-Design original em `downloads/design_handoff_plim/` com:
-- `README.md` — especificação completa de todas as telas
-- `screenshots/` — 23 screenshots de referência
-- `src/` — protótipos HTML/JSX de comportamento
-
-Abrir `Plim.html` com `npx serve .` para visualizar o protótipo completo no browser.
+O app é 100% offline-first (AsyncStorage) e deve continuar assim. O plano de evolução para sync, backup e compartilhamento com profissionais de saúde, incluindo as considerações de LGPD para dados de saúde de menores, está documentado em [`docs/BACKEND.md`](docs/BACKEND.md).
 
 ---
 
 ## Licença
 
-Projeto privado — uso exclusivo do titular.
+Projeto privado. Uso exclusivo do titular.
