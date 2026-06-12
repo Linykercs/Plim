@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback, useState, useRef, useEffect } from 'react';
 import {
   View,
   Text,
@@ -96,6 +96,27 @@ export default function HomeScreen({ navigation }: { navigation: Nav }) {
   const doneCount = missions.filter((m) => missionsDone[m.id]).length;
   const allDone = doneCount === missions.length;
   const callout = useMemo(() => plimSay(allDone ? 'allDone' : 'welcome'), [allDone]);
+
+  // Feedback ao registrar água: toast breve com o Plim em mood water
+  const [waterMsg, setWaterMsg] = useState<string | null>(null);
+  const waterTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => { if (waterTimer.current) clearTimeout(waterTimer.current); }, []);
+
+  function handleWater() {
+    const wasDone = useAppStore.getState().missionsDone.water;
+    addWater();
+    const s = useAppStore.getState();
+    let msg: string;
+    if (!wasDone && s.missionsDone.water) {
+      msg = 'Missão da água completa! +2 ⭐';
+      speak(plimSay('water'));
+    } else {
+      msg = s.waterToday === 1 ? '1 copo registrado' : `${s.waterToday} copos registrados`;
+    }
+    setWaterMsg(msg);
+    if (waterTimer.current) clearTimeout(waterTimer.current);
+    waterTimer.current = setTimeout(() => setWaterMsg(null), 1800);
+  }
   const savingReward = savingFor ? rewards.find((r) => r.id === savingFor) : null;
   const nextAlarm = useNextAlarm();
   const avatarColor = profile?.avatarColor !== undefined
@@ -227,7 +248,7 @@ export default function HomeScreen({ navigation }: { navigation: Nav }) {
                   <Pressable
                     key={m.id}
                     onPress={() => {
-                      if (isWater) { addWater(); }
+                      if (isWater) { handleWater(); }
                       else { navigation.navigate(m.tab); }
                     }}
                     style={[
@@ -386,6 +407,14 @@ export default function HomeScreen({ navigation }: { navigation: Nav }) {
           </Pressable>
         </View>
       </ScrollView>
+
+      {/* ── Water toast ── */}
+      {waterMsg && (
+        <View style={[styles.waterToast, { backgroundColor: theme.text }]}>
+          <PlimMascot size={36} mood="water" primary={avatarColor} accent={theme.coral} dark={theme.text} />
+          <Text style={styles.waterToastTxt}>{waterMsg}</Text>
+        </View>
+      )}
 
       {/* ── Reward celebration modal ── */}
       <Modal
@@ -614,6 +643,14 @@ const styles = StyleSheet.create({
   savingTrack:    { flex: 1, height: 8, borderRadius: 4, overflow: 'hidden' },
   savingFill:     { height: '100%', borderRadius: 4 },
   savingCost:     { fontFamily: fontFamily.bodyBold, fontSize: 11 },
+
+  // Water toast
+  waterToast: {
+    position: 'absolute', bottom: 110, alignSelf: 'center',
+    flexDirection: 'row', alignItems: 'center', gap: 10,
+    borderRadius: 22, paddingVertical: 8, paddingHorizontal: 16,
+  },
+  waterToastTxt: { fontFamily: fontFamily.bodyBold, fontSize: fontSize.md, color: '#fff' },
 
   // Celebration modal
   modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.55)', alignItems: 'center', justifyContent: 'center', padding: 32 },

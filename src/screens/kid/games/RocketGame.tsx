@@ -12,13 +12,10 @@ import { spacing, radius } from '../../../theme/tokens';
 import { fontFamily, fontSize } from '../../../theme/typography';
 import { useAppStore , useTheme} from '../../../store/useAppStore';
 import { AVATAR_COLORS } from '../../../theme/palettes';
+import { gameDifficulty } from '../../../content/difficulty';
 import PlimMascot from '../../../components/mascot/PlimMascot';
 import PlimIcon from '../../../components/ui/PlimIcon';
 
-const TOTAL_REPS = 8;
-const HOLD_MS = 3000;
-// Protocolo clínico: descanso maior ou igual à contração entre as reps
-const REST_MS = 6000;
 const ORBIT_RX = 64;
 const ORBIT_RY = 38;
 
@@ -50,6 +47,12 @@ export default function RocketGame() {
   const completeMission = useAppStore(s => s.completeMission);
   const profile = useAppStore(s => s.profile);
   const mascotColor = AVATAR_COLORS[profile?.avatarColor ?? 0];
+  // Protocolo por idade; descanso sempre maior ou igual à contração
+  const {
+    rocketHoldMs: HOLD_MS,
+    rocketRestMs: REST_MS,
+    rocketReps: TOTAL_REPS,
+  } = gameDifficulty(profile?.age);
 
   const [phase, setPhase] = useState<'idle' | 'playing' | 'done'>('idle');
   const [reps, setReps] = useState(0);

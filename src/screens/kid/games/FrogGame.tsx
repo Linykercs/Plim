@@ -11,11 +11,10 @@ import { spacing } from '../../../theme/tokens';
 import { fontFamily, fontSize } from '../../../theme/typography';
 import { useAppStore , useTheme} from '../../../store/useAppStore';
 import { AVATAR_COLORS } from '../../../theme/palettes';
+import { gameDifficulty } from '../../../content/difficulty';
 import PlimMascot from '../../../components/mascot/PlimMascot';
 import PlimIcon from '../../../components/ui/PlimIcon';
 
-const TOTAL_JUMPS = 15;
-const GAME_SECONDS = 30;
 const PAD_COUNT = 8;
 
 export default function FrogGame() {
@@ -26,6 +25,7 @@ export default function FrogGame() {
   const addStars = useAppStore(s => s.addStars);
   const completeMission = useAppStore(s => s.completeMission);
   const profile = useAppStore(s => s.profile);
+  const { frogJumps: TOTAL_JUMPS, frogSeconds: GAME_SECONDS } = gameDifficulty(profile?.age);
 
   const [phase, setPhase] = useState<'idle' | 'playing' | 'done'>('idle');
   const [jumps, setJumps] = useState(0);

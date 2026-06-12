@@ -11,6 +11,7 @@ import { spacing } from '../../../theme/tokens';
 import { fontFamily, fontSize } from '../../../theme/typography';
 import { useAppStore, useTheme } from '../../../store/useAppStore';
 import { AVATAR_COLORS } from '../../../theme/palettes';
+import { gameDifficulty } from '../../../content/difficulty';
 import PlimMascot from '../../../components/mascot/PlimMascot';
 import PlimIcon from '../../../components/ui/PlimIcon';
 
@@ -21,8 +22,6 @@ const PHASES = [
 ] as const;
 
 type PhaseKey = typeof PHASES[number]['key'];
-
-const TOTAL_CYCLES = 5;
 
 function BalloonSvg({ color }: { color: string }) {
   return (
@@ -44,6 +43,7 @@ export default function BalloonGame() {
   const completeMission = useAppStore(s => s.completeMission);
   const profile = useAppStore(s => s.profile);
   const mascotColor = AVATAR_COLORS[profile?.avatarColor ?? 0];
+  const { balloonCycles: TOTAL_CYCLES } = gameDifficulty(profile?.age);
 
   const [running, setRunning] = useState(false);
   const [cycles, setCycles] = useState(0);
